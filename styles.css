@@ -37,7 +37,7 @@ header {
 /* Estilos del slider de imágenes */
 #banner {
   position: relative;
-  height: 100vh;
+  height: 80vh;
   background-size: cover;
   background-position: center;
   overflow: hidden;
@@ -67,6 +67,15 @@ header {
   font-size: 1.5rem;
   color: #ffffff;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+#banner .fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#banner .fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
 
 #prev,

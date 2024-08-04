@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1510846699902-9211b99dac11?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   ]
+
   let currentIndex = 0
   let intervalId
 
@@ -30,7 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       banner.style.backgroundImage = `url(${images[currentIndex]})`
       banner.classList.remove('fade-out')
-    }, 500) // Tiempo para asegurar la animación de opacidad
+      banner.classList.add('fade-in')
+      setTimeout(() => {
+        banner.classList.remove('fade-in')
+      }, 500) // Tiempo para asegurar la animación de opacidad
+    }, 500) // Tiempo para la animación de opacidad de salida
   }
 
   const startAutoSlide = () => {
