@@ -3,179 +3,193 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page - Alquiler de Canchas de Padel</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Responsive Navbar</title>
   </head>
-  <body class="bg-gray-100 text-gray-900">
-    <header class="bg-white shadow-lg fixed w-full z-50">
-      <nav class="container mx-auto p-4 flex justify-between items-center">
-        <div class="text-2xl font-bold text-red-600">PadelPro</div>
-        <div class="hidden md:flex space-x-4">
-          <!-- Enlaces de navegación visibles en PC -->
-          <a href="#home" class="text-gray-800 hover:bg-red-600 hover:text-white px-4 py-2 rounded-md">Inicio</a>
-          <a href="#about" class="text-gray-800 hover:bg-red-600 hover:text-white px-4 py-2 rounded-md">Acerca de</a>
-          <a href="#contact" class="text-gray-800 hover:bg-red-600 hover:text-white px-4 py-2 rounded-md">Contacto</a>
-        </div>
-        <div class="md:hidden relative">
-          <button id="menuToggle" class="flex items-center space-x-2 focus:outline-none">
-            <span class="text-gray-900">Menu</span>
-            <div class="transform transition-transform duration-300">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-              </svg>
-            </div>
-          </button>
-          <div
-            id="mobileMenu"
-            class="fixed top-0 left-0 h-full bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300"
+  <body>
+    <header>
+      <div class="logo">
+        <h1>Logo</h1>
+        <label for="menu-toggle" class="menu-icon">
+          <svg
+            class="w-6 h-6 text-gray-800 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
           >
-            <button id="closeMenu" class="absolute top-4 right-4 text-gray-800 text-2xl">&times;</button>
-            <ul class="flex flex-col p-4 space-y-2">
-              <li>
-                <a href="#home" class="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white">Inicio</a>
-              </li>
-              <li>
-                <a href="#about" class="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white">Acerca de</a>
-              </li>
-              <li>
-                <a href="#contact" class="block px-4 py-2 text-gray-800 hover:bg-red-600 hover:text-white">Contacto</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
+          </svg>
+        </label>
+      </div>
+
+      <input class="hide" type="checkbox" id="menu-toggle" />
+
+      <nav class="menu">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
       </nav>
     </header>
 
-    <div
-      id="mobileMenu"
-      class="fixed inset-x-0 bottom-0 transform translate-y-full transition-transform duration-300 bg-white shadow-lg z-20 p-4 md:hidden"
-    >
-      <ul class="space-y-4">
-        <li><a href="#home" class="block text-gray-900 hover:text-red-600">Inicio</a></li>
-        <li><a href="#about" class="block text-gray-900 hover:text-red-600">Acerca de</a></li>
-        <li><a href="#contact" class="block text-gray-900 hover:text-red-600">Contacto</a></li>
-      </ul>
-    </div>
-    <section id="banner" class="relative h-screen flex items-center justify-center overflow-hidden">
-      <div
-        id="banner-content"
-        class="absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-in-out"
-      >
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div class="relative z-10 text-white text-center">
-          <h1 class="text-4xl md:text-6xl font-bold">Bienvenido a PadelPro</h1>
-          <p class="mt-4 text-lg md:text-xl">Tu mejor opción para alquilar canchas de padel</p>
+    <main>
+      <section class="slider">
+        <div class="list">
+          <div class="item active">
+            <div class="image" style="--url: url('img/image-1.jpg')"></div>
+            <div class="content">
+              <h2>Go Padel Uy</h2>
+              <p class="Text-Info">
+                Nulla magna irure incididunt irure nisi laboris adipisicing adipisicing ad aliquip exercitation sit
+                duis.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="image" style="--url: url('img/image-2.jpg')"></div>
+            <div class="content">
+              <h2>Go Padel Uy</h2>
+              <p class="Text-Info">
+                Nulla magna irure incididunt irure nisi laboris adipisicing adipisicing ad aliquip exercitation sit
+                duis.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="image" style="--url: url('img/image-3.jpg')"></div>
+            <div class="content">
+              <h2>Go Padel Uy</h2>
+              <p class="Text-Info">
+                Nulla magna irure incididunt irure nisi laboris adipisicing adipisicing ad aliquip exercitation sit
+                duis.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="absolute bottom-0 w-full flex justify-between p-4">
-        <button
-          id="prev"
-          class="bg-gray-900 text-white p-2 rounded-full shadow-lg hover:bg-gray-700 transition duration-300"
-        >
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </button>
-        <button
-          id="next"
-          class="bg-gray-900 text-white p-2 rounded-full shadow-lg hover:bg-gray-700 transition duration-300"
-        >
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </button>
-      </div>
-    </section>
+        <div class="arrows">
+          <button id="prev">
+            <svg
+              class="w-6 h-6 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 12h14M5 12l4-4m-4 4 4 4"
+              />
+            </svg>
+          </button>
+          <button id="next">
+            <svg
+              class="w-6 h-6 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 12H5m14 0-4 4m4-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </section>
 
-    <section id="about" class="container mx-auto my-12 p-6 bg-white shadow-lg rounded-lg">
-      <h2 class="text-3xl font-bold text-center text-red-600 mb-4">Alquiler de Canchas de Padel</h2>
-      <div class="flex flex-col md:flex-row items-center">
-        <img src="padel-court.svg" alt="Padel Court" class="w-1/2 md:w-1/3 mx-auto mb-6 md:mb-0" />
-        <div class="md:ml-6">
-          <p class="text-lg mb-4">
-            Disfruta de nuestras modernas instalaciones para jugar al padel. Contamos con canchas de alta calidad para
-            que vivas la mejor experiencia deportiva.
-          </p>
-          <a
-            href="#contact"
-            class="inline-block px-6 py-3 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition"
-            >Ingresa aquí</a
-          >
+      <section class="Services">
+        <h2>Nuestro Servicio</h2>
+        <div class="bento-grid">
+          <div class="bento-item">
+            <img src="./img/image-3.jpg" alt="Imagen 1" />
+            <div class="content">
+              <h3>Título 1</h3>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque numquam recusandae odit explicabo.
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/image-2.jpg" alt="Imagen 2" />
+            <div class="content">
+              <h3>Título 2</h3>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque numquam recusandae odit explicabo.
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/image-1.jpg" alt="Imagen 3" />
+            <div class="content">
+              <h3>Título 3</h3>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque numquam recusandae odit explicabo.
+              </p>
+            </div>
+          </div>
+          <!-- Add more bento items as needed -->
         </div>
-      </div>
-    </section>
-
-    <footer class="bg-gray-900 text-white p-8">
-      <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 class="text-xl font-bold mb-4">Sobre Nosotros</h3>
-          <p>
-            PadelPro es la mejor opción para alquilar canchas de padel. Ofrecemos instalaciones de alta calidad y una
-            experiencia deportiva única.
-          </p>
+        <div class="button-container">
+          <a href="#" class="button">Más Información</a>
         </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
+      </section>
+      <footer>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vehicula ex sit amet erat tincidunt, ac.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
           <ul>
-            <li><a href="#home" class="block py-2 text-gray-400 hover:text-white">Inicio</a></li>
-            <li><a href="#about" class="block py-2 text-gray-400 hover:text-white">Acerca de</a></li>
-            <li><a href="#contact" class="block py-2 text-gray-400 hover:text-white">Contacto</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
           </ul>
         </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4">Contáctanos</h3>
-          <form id="contact-form" class="space-y-4">
-            <div>
-              <label for="name" class="block text-sm">Nombre</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                class="w-full p-2 rounded bg-gray-800 text-white focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label for="email" class="block text-sm">Correo Electrónico</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                class="w-full p-2 rounded bg-gray-800 text-white focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label for="message" class="block text-sm">Mensaje</label>
-              <textarea
-                id="message"
-                name="message"
-                rows="4"
-                class="w-full p-2 rounded bg-gray-800 text-white focus:outline-none"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              class="w-full py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition"
-            >
-              Enviar
-            </button>
+        <div class="footer-column">
+          <h4>Contact Us</h4>
+          <p>123 Main Street, Anytown, USA</p>
+          <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+          <p>Phone: +1 234 567 890</p>
+        </div>
+        <div class="footer-column">
+          <h4>Follow Us</h4>
+          <div class="social-icons">
+            <a href="#" aria-label="Facebook">&#xf09a;</a>
+            <a href="#" aria-label="Twitter">&#xf099;</a>
+            <a href="#" aria-label="Instagram">&#xf16d;</a>
+            <a href="#" aria-label="LinkedIn">&#xf08c;</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Contact Form</h4>
+          <form class="contact-form">
+            <input type="text" placeholder="Your name" required />
+            <input type="email" placeholder="Your email address" required />
+            <textarea rows="4" placeholder="Your message" required></textarea>
+            <button type="submit">Send Message</button>
           </form>
         </div>
-      </div>
-      <div class="mt-8 text-center text-gray-500">
-        <p>&copy; 2024 PadelPro. Todos los derechos reservados.</p>
-      </div>
-    </footer>
+      </footer>
+    </main>
 
-    <script src="script.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
