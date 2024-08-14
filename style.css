@@ -177,6 +177,10 @@ footer {
   color: var(--text-color);
 }
 
+.map img{
+  max-width: var(--width-default);
+}
+
 .faq{
   max-width: var(--width-default);
   padding: 3rem 1rem;
