@@ -41,6 +41,52 @@ header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+:root {
+  --primary-color: #00ff00; /* Verde brillante del logo */
+  --secondary-color: #ffffff; /* Blanco */
+  --text-color: #333333;
+  --navbar-color: #000000c4; /* Gris oscuro para texto */
+}
+
+body {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+header {
+  background: var(--navbar-color); /* Semi-transparente verde */
+}
+
+.button,
+.contact-form button {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.button:hover,
+.contact-form button:hover {
+  background-color: rgba(0, 255, 0, 0.8);
+}
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+.logo-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.logo h1 {
+  color: #00ff00; /* Verde brillante del logo */
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+}
 /*Section Infor*/
 .Services {
   max-width: var(--width-default);
@@ -51,7 +97,7 @@ header {
   font-family: 'Bebas neue';
   text-align: center;
   font-size: 2.5rem;
-  color: #000000;
+  color: #00ff00;
   margin-bottom: 20px;
 }
 .bento-grid {
@@ -108,6 +154,66 @@ header {
 }
 .button:hover {
   background-color: #468181d8;
+}
+
+.about,
+.facilities,
+.schedule {
+  max-width: var(--width-default);
+  padding: 3rem 1rem;
+  margin: 0 auto;
+}
+
+.about h2,
+.facilities h2,
+.schedule h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.facility-item {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.facility-item img {
+  width: 100%;
+  height: auto;
+}
+
+.facility-item h3 {
+  padding: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.schedule table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule th,
+.schedule td {
+  padding: 10px;
+  border: 1px solid var(--primary-color);
+  text-align: left;
+}
+
+.schedule th {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 /*Footer*/
