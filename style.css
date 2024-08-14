@@ -18,11 +18,6 @@ svg {
   color: #fff;
 }
 
-:root {
-  --width-default: min(1200px, 90vw);
-  --diameter: 1432px;
-}
-
 header {
   width: 100%;
   height: 70px;
@@ -49,7 +44,9 @@ header {
   --primary-color: #00ff00; /* Verde brillante del logo */
   --secondary-color: #ffffff; /* Blanco */
   --text-color: #333333;
-  --navbar-color: #000000c4; /* Gris oscuro para texto */
+  --navbar-color: #000000c4;
+  --width-default: min(1200px, 90vw);
+  --diameter: 1432px; /* Gris oscuro para texto */
 }
 
 body {
@@ -156,13 +153,15 @@ footer {
   background-color: #468181d8;
 }
 
-.map{
-  max-width: var(--width-default);
+.map {
   padding: 3rem 1rem;
   margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.map h2{
+.map h2 {
   font-family: 'Bebas neue';
   text-align: center;
   font-size: 2.5rem;
@@ -170,60 +169,88 @@ footer {
   margin-bottom: 20px;
 }
 
-.map h3{
+.map h3 {
   padding: 1rem;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.5rem;
   color: var(--text-color);
 }
-
-.map img{
-  max-width: var(--width-default);
+.map .mapa {
+  display: flex;
+  justify-content: center;
 }
-
-.faq{
+.map .mapa iframe {
+  width: 100%;
+}
+.faq {
   max-width: var(--width-default);
   padding: 3rem 1rem;
   margin: 0 auto;
 }
 
-.faq h3{
-  padding: 1rem;
+.faq h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.5rem;
-  color: var(--text-color);
-}
-
-.faq h2{
-  font-family: 'Bebas neue';
   text-align: center;
   font-size: 2.5rem;
   color: #00ff00;
   margin-bottom: 20px;
 }
 
-.accordion{
-  background-color: #eee;
-  color: #444;
+.faq h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.accordion {
+  background-color: #f0f0f0;
+  color: #333;
   cursor: pointer;
-  padding: 18px;
+  padding: 1rem;
   width: 100%;
   text-align: left;
   border: none;
   outline: none;
-  transition: 0.4s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.4s ease, transform 0.2s ease;
 }
 
-.active, .accordion:hover {
-  background-color: #ccc;
+.accordion:hover {
+  background-color: #e0e0e0;
+}
+
+.accordion:active {
+  transform: scale(0.98);
+}
+
+.accordion-icon {
+  font-size: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.active .accordion-icon {
+  transform: rotate(45deg);
 }
 
 .panel {
-  padding: 0 18px;
+  padding: 0 1rem;
   background-color: white;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.2s ease-out;
+  transition: max-height 0.4s ease-out, padding 0.2s ease-out;
+  border-left: 2px solid #00ff00;
+  margin-bottom: 10px;
+}
+
+.panel p {
+  padding: 1rem 0;
+}
+
+.panel.open {
+  padding: 1rem;
 }
 
 .about,
