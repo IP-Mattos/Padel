@@ -156,6 +156,72 @@ footer {
   background-color: #468181d8;
 }
 
+.map{
+  max-width: var(--width-default);
+  padding: 3rem 1rem;
+  margin: 0 auto;
+}
+
+.map h2{
+  font-family: 'Bebas neue';
+  text-align: center;
+  font-size: 2.5rem;
+  color: #00ff00;
+  margin-bottom: 20px;
+}
+
+.map h3{
+  padding: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.faq{
+  max-width: var(--width-default);
+  padding: 3rem 1rem;
+  margin: 0 auto;
+}
+
+.faq h3{
+  padding: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.faq h2{
+  font-family: 'Bebas neue';
+  text-align: center;
+  font-size: 2.5rem;
+  color: #00ff00;
+  margin-bottom: 20px;
+}
+
+.accordion{
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
 .about,
 .facilities,
 .schedule {
