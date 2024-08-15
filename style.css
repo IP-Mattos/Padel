@@ -154,6 +154,7 @@ footer {
 }
 
 .map {
+  text-align: center;
   padding: 3rem 1rem;
   margin: 0 auto;
   display: flex;
@@ -180,7 +181,9 @@ footer {
   justify-content: center;
 }
 .map .mapa iframe {
-  width: 100%;
+  max-width: var(--width-default);
+  height: 500px;
+  width: 50%;
 }
 .faq {
   max-width: var(--width-default);
@@ -257,6 +260,7 @@ footer {
 .facilities,
 .schedule {
   max-width: var(--width-default);
+  width: 100%;
   padding: 3rem 1rem;
   margin: 0 auto;
 }
@@ -270,11 +274,26 @@ footer {
   color: var(--primary-color);
   margin-bottom: 20px;
 }
-
+.about_us {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 100px;
+}
+.about_us p {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+.about_us img {
+  width: 400px;
+  height: auto;
+}
 .facility-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
+  place-items: center;
 }
 
 .facility-item {
@@ -285,7 +304,7 @@ footer {
 }
 
 .facility-item img {
-  width: 100%;
+  width: 500px;
   height: auto;
 }
 
@@ -637,5 +656,8 @@ nav.menu ul li a {
   .slider .list .item .content h2 {
     font-size: 5em;
     line-height: 1em;
+  }
+  .about_us {
+    flex-direction: column;
   }
 }
