@@ -41,8 +41,8 @@ header {
   align-items: center;
 }
 :root {
-  --primary-color: #00ff00; /* Verde brillante del logo */
-  --secondary-color: #ffffff; /* Blanco */
+  --primary-color: #067302; /* Verde brillante del logo */
+  --secondary-color: #f0f0f; /* Blanco */
   --text-color: #333333;
   --navbar-color: #000000c4;
   --width-default: min(1200px, 90vw);
@@ -64,11 +64,6 @@ header {
   color: var(--secondary-color);
 }
 
-.button:hover,
-.contact-form button:hover {
-  background-color: rgba(0, 255, 0, 0.8);
-}
-
 footer {
   background-color: var(--primary-color);
   color: var(--secondary-color);
@@ -80,7 +75,7 @@ footer {
 }
 
 .logo h1 {
-  color: #00ff00; /* Verde brillante del logo */
+  color: var(--primary-color); /* Verde brillante del logo */
   font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
 }
@@ -94,7 +89,7 @@ footer {
   font-family: 'Bebas neue';
   text-align: center;
   font-size: 2.5rem;
-  color: #00ff00;
+  color: var(--primary-color);
   margin-bottom: 20px;
 }
 .bento-grid {
@@ -140,17 +135,17 @@ footer {
 .button {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font: 'Poppins';
   color: #fff;
-  background-color: #468181;
-
+  background-color: var(--primary-color);
   border: none;
   border-radius: 4px;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 .button:hover {
-  background-color: #468181d8;
+  background-color: #0673029f;
 }
 
 .map {
@@ -166,7 +161,7 @@ footer {
   font-family: 'Bebas neue';
   text-align: center;
   font-size: 2.5rem;
-  color: #00ff00;
+  color: var(--primary-color);
   margin-bottom: 20px;
 }
 
@@ -195,7 +190,7 @@ footer {
   font-family: 'Bebas Neue', sans-serif;
   text-align: center;
   font-size: 2.5rem;
-  color: #00ff00;
+  color: var(--primary-color);
   margin-bottom: 20px;
 }
 
@@ -244,7 +239,7 @@ footer {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease-out, padding 0.2s ease-out;
-  border-left: 2px solid #00ff00;
+  border-left: 2px solid var(--primary-color);
   margin-bottom: 10px;
 }
 
@@ -334,7 +329,7 @@ footer {
 
 /*Footer*/
 footer {
-  background-color: darkslategray;
+  background-color: #000000;
   color: #fff;
   padding: 3rem 1rem;
   display: flex;
