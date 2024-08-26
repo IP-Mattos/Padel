@@ -4,7 +4,8 @@
 body {
   margin: 0;
   font-size: 15px;
-  background-color: #eee;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
 }
 
 * {
@@ -31,7 +32,7 @@ header {
   right: 0;
   z-index: 1;
   padding: 0 40px;
-  background: rgba(47, 79, 79, 0.733); /* Semi-transparent background */
+  background: var(--navbar-color); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Glassmorphism effect */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
 }
@@ -47,15 +48,6 @@ header {
   --navbar-color: #000000c4;
   --width-default: min(1200px, 90vw);
   --diameter: 1432px; /* Gris oscuro para texto */
-}
-
-body {
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-}
-
-header {
-  background: var(--navbar-color); /* Semi-transparente verde */
 }
 
 .button,
@@ -281,7 +273,8 @@ footer {
   margin-bottom: 20px;
 }
 .about_us img {
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   height: auto;
 }
 .facility-grid {
@@ -299,7 +292,9 @@ footer {
 }
 
 .facility-item img {
-  width: 500px;
+  max-width: 500px;
+
+  width: 100%;
   height: auto;
 }
 
