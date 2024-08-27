@@ -115,7 +115,7 @@ footer {
   margin: 0;
 }
 .bento-item .content p {
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: #777;
   margin-top: 0.5rem;
   font-size: 1rem;
@@ -128,7 +128,7 @@ footer {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   font-size: 1.2rem;
-  font: 'Poppins';
+  font: 'Poppins', sans-serif;
   color: #fff;
   background-color: var(--primary-color);
   border: none;
@@ -268,8 +268,8 @@ footer {
   gap: 100px;
 }
 .about_us p {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
   margin-bottom: 20px;
 }
 .about_us img {
