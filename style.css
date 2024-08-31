@@ -5,6 +5,7 @@ body {
   font-size: 15px;
   background-color: var(--secondary-color);
   color: var(--text-color);
+  scroll-behavior: smooth;
 }
 
 * {
