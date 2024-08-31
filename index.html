@@ -32,16 +32,16 @@
 
       <nav class="menu">
         <ul>
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Sobre Nosotros</a></li>
-          <li><a href="#">Servicios</a></li>
-          <li><a href="#">Contactos</a></li>
+          <li><a href="#home">Inicio</a></li>
+          <li><a href="#services">Servicios</a></li>
+          <li><a href="#about">Sobre Nosotros</a></li>
+          <li><a href="#contact">Contactos</a></li>
         </ul>
       </nav>
     </header>
 
     <main>
-      <section class="slider">
+      <section class="slider" id="home">
         <div class="list">
           <div class="item active">
             <div class="image" style="--url: url('img/image-1.jpg')"></div>
@@ -109,7 +109,7 @@
         </div>
       </section>
 
-      <section class="Services">
+      <section class="Services" id="services">
         <h2>Nuestro Servicio</h2>
         <div class="bento-grid">
           <div class="bento-item">
@@ -140,7 +140,7 @@
         </div>
       </section>
 
-      <section class="about">
+      <section class="about" id="about">
         <h2>Sobre Nosotros</h2>
         <div class="about_us">
           <img src="img/Padel.svg" alt="Svg de Padel" />
@@ -211,7 +211,6 @@
 
       <section class="map">
         <h2>Encuéntranos Aquí</h2>
-        <h3>Dirección: example</h3>
         <div class="mapa">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.5635198085356!2d-56.21132889999999!3d-34.0832717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a11d3d8d7fa78b%3A0xb41f99b31af84754!2sGoPadel%20Pro!5e1!3m2!1ses!2suy!4v1725075048231!5m2!1ses!2suy"
@@ -224,7 +223,7 @@
           ></iframe>
         </div>
       </section>
-      <footer>
+      <footer id="contact">
         <div class="footer-column">
           <h4>Company</h4>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vehicula ex sit amet erat tincidunt, ac.</p>
@@ -232,10 +231,10 @@
         <div class="footer-column">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#services">Servicios</a></li>
+            <li><a href="#about">Sobre Nosotros</a></li>
+            <li><a href="#contact">Contactos</a></li>
           </ul>
         </div>
         <div class="footer-column">
