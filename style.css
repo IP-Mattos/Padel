@@ -640,7 +640,11 @@ nav.menu ul li a {
   #menu-toggle:checked ~ nav.menu {
     transform: translateX(0);
   }
-
+  .map .mapa iframe {
+    max-width: var(--width-default);
+    height: 500px;
+    width: 100%;
+  }
   .slider .list .item .content {
     display: block;
     text-align: center;
