@@ -87,6 +87,16 @@ window.onclick = function(event) {
     }
 }
 
+const input = document.getElementById('cedula');
+const input2 = document.getElementById('phone');
+
+input.addEventListener('input', function(){
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+input2.addEventListener('input', function(){
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+
   const setSlider = () => {
     let oldActive = document.querySelector('.slider .list .item.active')
     if (oldActive) oldActive.classList.remove('active')
