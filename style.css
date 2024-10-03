@@ -169,10 +169,10 @@ header {
 }
 
 :root {
-  --primary-color: #067302; /* Verde brillante del logo */
+  --primary-color: rgb(1, 254, 3); /* Verde brillante del logo */
   --secondary-color: #f0f0f; /* Blanco */
   --text-color: #333333;
-  --navbar-color: #000000c4;
+  --navbar-color: #0011adc4;
   --width-default: min(1200px, 90vw);
   --diameter: 1432px; /* Gris oscuro para texto */
   --title-font: 'Roboto';
@@ -379,7 +379,7 @@ nav.menu ul li a {
   gap: 1rem;
 }
 .bento-item {
-  background: #fff;
+  background: #1021b8;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -400,29 +400,32 @@ nav.menu ul li a {
 .bento-item .content h3 {
   font-family: var(--title-font);
   font-size: 1.5rem;
-  color: #555;
+  color: white;
   margin: 0;
 }
 .bento-item .content p {
   font-family: 'Poppins', sans-serif;
-  color: #777;
+  color: white;
   margin-top: 0.5rem;
   font-size: 1rem;
 }
 
 .about,
-.facilities,
 .schedule {
   font-family: 'Poppins';
   max-width: var(--width-default);
   width: 100%;
   padding: 3rem 1rem;
-  margin: 0 auto;
+  margin: 1% auto;
+  background-color: #1021b8;
+  color: white;
+  border-radius: 8px;
 }
 
 .schedule-table{
   border-radius: 8px;
   overflow: hidden;
+  color: white;
 }
 
 .about h2,
@@ -468,18 +471,19 @@ nav.menu ul li a {
 .faq h3 {
   font-family: var(--title-font), sans-serif;
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: white;
   margin: 0;
 }
 
 .accordion {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #1021b8;
+  color: white;
   cursor: pointer;
   padding: 1rem;
   width: 100%;
   text-align: left;
   border: none;
+  border-radius: 8px;
   outline: none;
   display: flex;
   justify-content: space-between;
@@ -488,7 +492,7 @@ nav.menu ul li a {
 }
 
 .accordion:hover {
-  background-color: #e0e0e0;
+  opacity: 0.8;
 }
 
 .accordion:active {
@@ -530,10 +534,11 @@ nav.menu ul li a {
 }
 
 .facility-item {
-  background: #fff;
+  background: #1021b8;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 1% auto;
 }
 
 .facility-item img {
@@ -547,7 +552,7 @@ nav.menu ul li a {
   padding: 1rem;
   font-family: var(--title-font), sans-serif;
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: white;
 }
 
 .schedule table {
