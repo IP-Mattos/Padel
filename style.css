@@ -715,6 +715,10 @@ footer {
     display: none
   }
 
+  nav.menu #openModal2{
+    display: none
+  }
+
   #menu-toggle:checked ~ nav.menu {
     transform: translateX(0);
   }
