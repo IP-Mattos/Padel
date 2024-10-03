@@ -7,6 +7,86 @@ document.addEventListener('DOMContentLoaded', () => {
   let active = 0
   let intervalId
 
+  // Get the modal
+const modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+const openModalButton = document.getElementById("openModal");
+const openModalButton2 = document.getElementById("openModal2");
+
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName("close")[0];
+
+// Get the button and form elements
+const formOneButton = document.getElementById("formOneButton");
+const formTwoButton = document.getElementById("formTwoButton");
+const returnButton = document.getElementById("returnButton");
+const returnButtonAction = document.getElementById("returnButtonAction");
+const formOne = document.getElementById("formOne");
+const formTwo = document.getElementById("formTwo");
+
+// Function to open the modal
+function openModal() {
+    modal.style.display = "block";
+    setInitialContent(); // Set initial content on open
+    setTimeout(() => {
+        modal.querySelector(".modal-content").classList.add("show"); // Add the show class for sliding effect
+    }, 10); // Small timeout to ensure the display block is set
+}
+
+// Function to set initial content
+function setInitialContent() {
+    formOne.classList.add("hidden");
+    formTwo.classList.add("hidden");
+    returnButton.classList.add("hidden"); // Hide the return button
+    formOneButton.style.display = "inline-block"; // Show the form buttons
+    formTwoButton.style.display = "inline-block"; // Show the form buttons
+}
+
+// Event listeners for the form switching buttons
+formOneButton.onclick = function() {
+    formOne.classList.remove("hidden"); // Show Form One
+    formTwo.classList.add("hidden"); // Hide Form Two
+    returnButton.classList.remove("hidden"); // Show Return button
+    formOneButton.style.display = "none"; // Hide Form One button
+    formTwoButton.style.display = "none"; // Hide Form Two button
+}
+
+formTwoButton.onclick = function() {
+    formTwo.classList.remove("hidden"); // Show Form Two
+    formOne.classList.add("hidden"); // Hide Form One
+    returnButton.classList.remove("hidden"); // Show Return button
+    formOneButton.style.display = "none"; // Hide Form One button
+    formTwoButton.style.display = "none"; // Hide Form Two button
+}
+
+// Return button action
+returnButtonAction.onclick = function() {
+    setInitialContent(); // Reset to initial content
+}
+
+// When the user clicks the button, open the modal 
+openModalButton.onclick = openModal;
+openModalButton2.onclick = openModal;
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.querySelector(".modal-content").classList.remove("show"); // Remove the show class
+    setTimeout(() => {
+        modal.style.display = "none"; // Hide after animation
+    }, 300); // Match this duration with the CSS transition duration
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.querySelector(".modal-content").classList.remove("show");
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
+    }
+}
+
   const setSlider = () => {
     let oldActive = document.querySelector('.slider .list .item.active')
     if (oldActive) oldActive.classList.remove('active')
