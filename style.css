@@ -420,6 +420,11 @@ nav.menu ul li a {
   margin: 0 auto;
 }
 
+.schedule-table{
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .about h2,
 .facilities h2,
 .schedule h2 {
@@ -593,6 +598,7 @@ nav.menu ul li a {
   max-width: var(--width-default);
   height: 500px;
   width: 50%;
+  border-radius: 8px;
 }
 
 /*Footer*/
