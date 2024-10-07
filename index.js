@@ -20,10 +20,13 @@ const span = document.getElementsByClassName("close")[0];
 // Get the button and form elements
 const formOneButton = document.getElementById("formOneButton");
 const formTwoButton = document.getElementById("formTwoButton");
+const formThreeButton = document.getElementById("formThreeButton")
 const returnButton = document.getElementById("returnButton");
 const returnButtonAction = document.getElementById("returnButtonAction");
 const formOne = document.getElementById("formOne");
 const formTwo = document.getElementById("formTwo");
+const formThree = document.getElementById("formThree");
+const buttonContainer = document.getElementById("buttonContainer");
 
 // Function to open the modal
 function openModal() {
@@ -38,26 +41,34 @@ function openModal() {
 function setInitialContent() {
     formOne.classList.add("hidden");
     formTwo.classList.add("hidden");
+    formThree.classList.add("hidden")
     returnButton.classList.add("hidden"); // Hide the return button
-    formOneButton.style.display = "inline-block"; // Show the form buttons
-    formTwoButton.style.display = "inline-block"; // Show the form buttons
+    buttonContainer.style.display = "inline-block";
 }
 
 // Event listeners for the form switching buttons
 formOneButton.onclick = function() {
     formOne.classList.remove("hidden"); // Show Form One
     formTwo.classList.add("hidden"); // Hide Form Two
+    formThree.classList.add("hidden"); //Hide Form Three
     returnButton.classList.remove("hidden"); // Show Return button
-    formOneButton.style.display = "none"; // Hide Form One button
-    formTwoButton.style.display = "none"; // Hide Form Two button
+    buttonContainer.style.display = "none";
 }
 
 formTwoButton.onclick = function() {
     formTwo.classList.remove("hidden"); // Show Form Two
     formOne.classList.add("hidden"); // Hide Form One
+    formThree.classList.add("hidden"); //Hide Form Three
     returnButton.classList.remove("hidden"); // Show Return button
-    formOneButton.style.display = "none"; // Hide Form One button
-    formTwoButton.style.display = "none"; // Hide Form Two button
+    buttonContainer.style.display = "none";
+}
+
+formThreeButton.onclick = function(){
+    formThree.classList.remove("hidden"); //Show Form Three
+    formOne.classList.add("hidden"); //Hide Form One
+    formTwo.classList.add("hidden"); //Hide Form Two
+    returnButton.classList.remove("hidden"); //Show Return button
+    buttonContainer.style.display = "none";
 }
 
 // Return button action
@@ -74,7 +85,7 @@ span.onclick = function() {
     modal.querySelector(".modal-content").classList.remove("show"); // Remove the show class
     setTimeout(() => {
         modal.style.display = "none"; // Hide after animation
-    }, 300); // Match this duration with the CSS transition duration
+    }, 500); // Match this duration with the CSS transition duration
 }
 
 // When the user clicks anywhere outside of the modal, close it
