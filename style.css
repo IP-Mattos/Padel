@@ -52,7 +52,7 @@ body {
 }
 
 .close {
-  color: #aaa;
+  color: white;
   float: right;
   font-size: 28px;
   font-weight: bold;
@@ -744,9 +744,6 @@ footer {
   .login-icon{
     display: flex;
     margin-left: 4px;
-  }
-  .close{
-    color: black;
   }
   .modal-content{
     width: 200px;
