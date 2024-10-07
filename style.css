@@ -747,6 +747,7 @@ footer {
   }
   .modal-content{
     width: 200px;
+    margin: 15% auto;
   }
   #buttonContainer{
     margin-top: 50%;
