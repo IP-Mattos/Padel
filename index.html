@@ -27,7 +27,6 @@
           >
             <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
           </svg>
-        </label>
         <label for="login-toggle" class="login-icon">
           <svg 
             width="19" 
@@ -43,7 +42,6 @@
             <circle cx="12" cy="8" r="5" />
             <path d="M3,21 h18 C 21,12 3,12 3,21"/>
           </svg>
-        </label>
       </div>
 
       <input class="hide" type="checkbox" id="menu-toggle" />
@@ -141,7 +139,7 @@
                       <input type="text" id="user">
                       <label for="password">Contraseña:</label>
                       <input type="password" id="password">
-                      <button id="submit" type="submit">Envíar</button>
+                      <button id="submitPassword" type="submit">Envíar</button>
                   </form>
               </div>
               <div id="formThree" class="hidden">
@@ -151,19 +149,19 @@
                       <input type="text" id="phone" maxlength="20">
                       <label for="cedula">Cédula:</label>
                       <input type="text" id="cedula" maxlength="8">
-                      <button id="submit" type="submit">Envíar</button>
+                      <button id="submitPhone" type="submit">Envíar</button>
                   </form>
               </div>
               <div id="formTwo" class="hidden">
                   <h2>Registro</h2>
-                  <form>
+                  <form action="./landing.html">
                       <label for="name">Nombre:</label>
                       <input type="text" id="name">
-                      <label for="cedula">Cédula:</label>
-                      <input type="text" id="cedula" maxlength="8">
-                      <label for="phone">Celular:</label>
-                      <input type="text" id="phone" maxlength="20">
-                      <button id="submit" type="submit">Envíar</button>
+                      <label for="cedulaRegist">Cédula:</label>
+                      <input type="text" id="cedulaRegist" maxlength="8">
+                      <label for="phoneRegist">Celular:</label>
+                      <input type="text" id="phoneRegist" maxlength="20">
+                      <button id="submitRegist" type="submit">Envíar</button>
                   </form>
               </div>
           </div>

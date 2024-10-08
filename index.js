@@ -100,11 +100,19 @@ window.onclick = function(event) {
 
 const input = document.getElementById('cedula');
 const input2 = document.getElementById('phone');
+const input3 = document.getElementById('cedulaRegist');
+const input4 = document.getElementById('phoneRegist');
 
 input.addEventListener('input', function(){
   this.value = this.value.replace(/[^0-9]/g, '');
 });
 input2.addEventListener('input', function(){
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+input3.addEventListener('input', function(){
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+input4.addEventListener('input', function(){
   this.value = this.value.replace(/[^0-9]/g, '');
 });
 
