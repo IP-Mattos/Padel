@@ -81,6 +81,55 @@ color: white;
 font-size: 18px;
 }
 
+.Services {
+max-width: var(--width-default);
+padding: 3rem 1rem;
+margin: 50px auto;
+}
+.Services h2 {
+font-family: var(--title-font);
+text-align: center;
+font-size: 2.5rem;
+color: var(--primary-color);
+margin-bottom: 20px;
+}
+.bento-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1rem;
+}
+.bento-item {
+background: #1021b8;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.bento-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.bento-item img {
+width: 100%;
+height: auto;
+display: block;
+}
+.bento-item .content {
+padding: 1rem;
+}
+.bento-item .content h3 {
+font-family: var(--title-font);
+font-size: 1.5rem;
+color: white;
+margin: 0;
+}
+.bento-item .content p {
+font-family: 'Poppins', sans-serif;
+color: white;
+margin-top: 0.5rem;
+font-size: 1rem;
+}
+
 @media (max-width: 768px) {
 .logo {
 width: 100%;
