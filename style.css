@@ -10,7 +10,7 @@
 body {
   margin: 0;
   font-size: 15px;
-  background-color: var(--secondary-color);
+  background-color: #080d3d;
   color: var(--text-color);
 }
 
