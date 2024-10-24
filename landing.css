@@ -95,7 +95,7 @@ margin-bottom: 20px;
 }
 .bento-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+grid-template-columns: repeat(3, 1fr);
 gap: 1rem;
 }
 .bento-item {
@@ -128,6 +128,12 @@ font-family: 'Poppins', sans-serif;
 color: white;
 margin-top: 0.5rem;
 font-size: 1rem;
+}
+#contentDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
 }
 
 @media (max-width: 768px) {
