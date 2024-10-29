@@ -12,6 +12,7 @@ body {
   font-size: 15px;
   background-color: #080d3d;
   color: var(--text-color);
+  user-select: none;
 }
 
 .modal {
@@ -757,11 +758,11 @@ footer {
     margin-left: 4px;
   }
   .modal-content{
-    width: 200px;
+    width: 80%;
     margin-top: 100px;
   }
   #buttonContainer{
-    margin-top: 50%;
+    margin-top: 30%;
   }
   input[type=text], input[type=password] {
     padding: 6px 10px;

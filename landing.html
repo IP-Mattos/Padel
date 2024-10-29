@@ -30,7 +30,7 @@
         <section class="Services" id="home">
             <h2>Bienvenido! Qué haremos hoy?</h2>
             <div class="bento-grid">
-              <div class="bento-item" id="loadButton">
+              <div class="bento-item" id="openReserve">
                 <img src="./img/image-3.jpg" alt="Imagen 1" />
                 <div class="content">
                   <h3>Reservar canchas</h3>
@@ -51,8 +51,27 @@
               <!-- Add more bento items as needed -->
             </div>
           </section>
+          <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="calendar" id="calendar"></div>
+                <div class="court" id="court">
+                  <div class="court-img"><img src="./img/padel-court.jpg"></div>
+                  <div class="court-hs" id="court-hs"></div>
+                </div>
+                <div class="practice" id="practice">
+                  <div class="practice-img"><img src="./img/padel-machine.avif"></div>
+                  <div class="practice-hs" id="practice-hs"></div>
+                </div>
+                <div class="cantine" id="cantine">
+                  <div class="cantine-img"><img src="./img/padel-cantine.webp"></div>
+                  <div class="cantine-hs" id="cantine-hs"></div>
+                </div>
+                <div class="buttons">
+                  <button id="closeReserve">Cancelar</button>
+                  <button id="acceptReserve">Aceptar</button></div>
+            </div>
+        </div>
     </main>
-    <div id="contentDiv"></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="landing.js"></script>
