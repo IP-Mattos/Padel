@@ -1,16 +1,20 @@
 document.addEventListener('DOMContentLoaded', () =>{
     const modal = document.getElementById('myModal');
     const openReserve = document.getElementById('openReserve');
+    const openReserve2 = document.getElementById('openReserve2');
     const closeReserve = document.getElementById('closeReserve');
     const acceptReserve = document.getElementById('acceptReserve');
     const calendar = document.getElementById('calendar');
 
-    openReserve.onclick = function() {
+    function openModal() {
         modal.style.display = 'block';
         setTimeout(() => {
             modal.querySelector(".modal-content").classList.add('show');
         }, 10)
     }
+
+    openReserve.onclick = openModal;
+    openReserve2.onclick = openModal;
 
     function closeModal() {
         modal.querySelector(".modal-content").classList.remove('show');
