@@ -254,7 +254,7 @@ font-size: 1rem;
 .practice-img,
 .cantine-img{
     display: flex;
-    width: 70%;
+    width: 50%;
     height: 70%;
     margin: auto auto 2%;
     border-radius: 5px;
@@ -324,6 +324,11 @@ nav.menu ul li a{
 .practice-hs,
 .cantine-hs{
     width: 80%;
+}
+.court-img,
+.practice-img,
+.cantine-img{
+    width: 70%;
 }
 }
 @media (max-width: 400px){
