@@ -10,7 +10,7 @@
 body {
   margin: 0;
   font-size: 15px;
-  background-color: #080d3d;
+  background-color: #061425;
   color: var(--text-color);
   user-select: none;
 }
@@ -28,11 +28,11 @@ body {
 }
 
 .modal-content {
-  background-color: #0011adc4;
+  background-color: #285bada9;
   backdrop-filter: blur(10px);
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-color);
   margin: 7% auto;
   padding: 20px;
   border-radius: 8px;
@@ -53,7 +53,7 @@ body {
 }
 
 .close {
-  color: white;
+  color: var(--text-color);
   float: right;
   font-size: 28px;
   font-weight: bold;
@@ -75,7 +75,7 @@ input[type=text], input[type=password] {
   margin: 8px 0;
   border-radius: 8px;
   display: inline-block;
-  border: 1px solid #ccc;
+  border: 1px solid var(--text-color);
   box-sizing: border-box;
 }
 
@@ -94,8 +94,8 @@ input[type=text], input[type=password] {
 #formOneButton,
 #formTwoButton,
 #formThreeButton{
-  background-color: rgb(0, 211, 0);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   padding: 14px 20px;
   margin: 5% auto;
   border-radius: 8px;
@@ -114,8 +114,8 @@ input[type=text], input[type=password] {
 #submitPassword,
 #submitPhone,
 #submitRegist{
-  background-color: rgb(0, 211, 0);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   padding: 14px 20px;
   margin: 8px 0;
   border-radius: 8px;
@@ -136,7 +136,7 @@ input[type=text], input[type=password] {
 
 .cancel{
   background-color: #ce0e00;
-  color: white;
+  color: var(--text-color);
   padding: 14px 20px;
   margin: 8px 0;
   border-radius: 8px;
@@ -154,7 +154,7 @@ input[type=text], input[type=password] {
 }
 
 svg {
-  color: #fff;
+  color: var(--text-color);
 }
 
 header {
@@ -186,16 +186,16 @@ header {
   margin-right: 10px;
 }
 .logo h1 {
-  color: white;
+  color: var(--text-color);
   font-family: var(--title-font), sans-serif;
   font-size: 24px;
 }
 
 :root {
-  --primary-color: rgb(1, 254, 3); /* Verde brillante del logo */
+  --primary-color: #03FF03; /* Verde brillante del logo */
   --secondary-color: #f0f0f; /* Blanco */
-  --text-color: #333333;
-  --navbar-color: #0011adc4;
+  --text-color: #EDF2FA;
+  --navbar-color: #394b6ad7;
   --width-default: min(1200px, 90vw);
   --diameter: 1432px; /* Gris oscuro para texto */
   --title-font: 'Roboto';
@@ -213,12 +213,12 @@ nav.menu ul li {
 
 nav.menu ul li a {
   text-decoration: none;
-  color: white;
+  color: var(--text-color);
   font-size: 18px;
 }
 
 .slider {
-  color: #eee;
+  color: var(--text-color);
   width: 100vw;
   height: 100vh;
   position: relative;
@@ -272,7 +272,7 @@ nav.menu ul li a {
   white-space: nowrap;
 }
 .slider .list .item .content a{
-  color: rgb(1, 254, 3);
+  color: var(--primary-color);
 }
 .slider .list .item .content p {
   font-size: 2em;
@@ -378,7 +378,7 @@ nav.menu ul li a {
 
 .arrows button {
   background: none;
-  color: #fff;
+  color: var(--text-color);
   border: none;
   font-size: 3em;
   cursor: pointer;
@@ -399,11 +399,11 @@ nav.menu ul li a {
 }
 .bento-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
 }
 .bento-item {
-  background: #1021b8;
+  background: #143E74;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -424,12 +424,12 @@ nav.menu ul li a {
 .bento-item .content h3 {
   font-family: var(--title-font);
   font-size: 1.5rem;
-  color: white;
+  color: var(--text-color);
   margin: 0;
 }
 .bento-item .content p {
   font-family: 'Poppins', sans-serif;
-  color: white;
+  color: var(--text-color);
   margin-top: 0.5rem;
   font-size: 1rem;
 }
@@ -441,15 +441,15 @@ nav.menu ul li a {
   width: 100%;
   padding: 3rem 1rem;
   margin: 1% auto;
-  background-color: #1021b8;
-  color: white;
+  background-color: #143E74;
+  color: var(--text-color);
   border-radius: 8px;
 }
 
 .schedule-table{
   border-radius: 8px;
   overflow: hidden;
-  color: white;
+  color: var(--text-color);
 }
 
 .about h2,
@@ -495,13 +495,13 @@ nav.menu ul li a {
 .faq h3 {
   font-family: var(--title-font), sans-serif;
   font-size: 1.5rem;
-  color: white;
+  color: var(--text-color);
   margin: 0;
 }
 
 .accordion {
-  background-color: #1021b8;
-  color: white;
+  background-color: #143E74;
+  color: var(--text-color);
   cursor: pointer;
   padding: 1rem;
   width: 100%;
@@ -534,7 +534,7 @@ nav.menu ul li a {
 
 .panel {
   padding: 0 1rem;
-  background-color: white;
+  background-color: var(--text-color);
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease-out, padding 0.2s ease-out;
@@ -558,7 +558,7 @@ nav.menu ul li a {
 }
 
 .facility-item {
-  background: #1021b8;
+  background: #143E74;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -576,7 +576,7 @@ nav.menu ul li a {
   padding: 1rem;
   font-family: var(--title-font), sans-serif;
   font-size: 1.5rem;
-  color: white;
+  color: var(--text-color);
 }
 
 .schedule table {
@@ -632,8 +632,8 @@ nav.menu ul li a {
 
 /*Footer*/
 footer {
-  background-color: #1021b8;
-  color: #fff;
+  background-color: #143E74;
+  color: var(--text-color);
   padding: 3rem 1rem;
   display: flex;
   flex-wrap: wrap;
@@ -649,20 +649,20 @@ footer {
   font-family: var(--title-font);
   font-size: 1.25rem;
   margin-bottom: 1rem;
-  color: #eee;
+  color: var(--text-color);
 }
 .footer-column p,
 .footer-column a {
   font-family: 'Poppins';
   font-size: 0.875rem;
-  color: #ccc;
+  color: var(--text-color);
   line-height: 1.6;
 }
 .footer-column a {
   text-decoration: none;
 }
 .footer-column a:hover {
-  color: #fff;
+  color: var(--text-color);
 }
 .footer-column ul {
   list-style: none;
@@ -673,12 +673,12 @@ footer {
 }
 .social-icons a {
   margin-right: 1rem;
-  color: #eee;
+  color: var(--text-color);
   font-size: 1.5rem;
   transition: color 0.3s ease;
 }
 .social-icons a:hover {
-  color: #fff;
+  color: var(--text-color);
 }
 .contact-form {
   display: flex;
@@ -699,7 +699,7 @@ footer {
   border-radius: 4px;
   background-color: var(--primary-color);
 
-  color: #eee;
+  color: var(--text-color);
   cursor: pointer;
   font-size: 0.875rem;
   transition: background-color 0.3s ease;
@@ -724,7 +724,7 @@ footer {
   padding: 0.75rem 1.5rem;
   font-size: 1.2rem;
   font-family: 'Poppins';
-  color: #fff;
+  color: var(--text-color);
   background-color: var(--primary-color);
   border: none;
   border-radius: 4px;
@@ -791,7 +791,7 @@ footer {
     left: 0;
     width: 250px; /* Width of the side menu */
     height: 100vh;
-    background-color: #eee;
+    background-color: var(--text-color);
     overflow-y: auto;
 
     transition: transform 0.3s ease;

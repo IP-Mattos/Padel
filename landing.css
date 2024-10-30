@@ -10,7 +10,7 @@ font-style: normal;
 body {
 margin: 0;
 font-size: 15px;
-background-color: #080d3d;
+background-color: #061425;
 color: var(--text-color);
 user-select: none;
 }
@@ -57,10 +57,10 @@ font-family: var(--title-font), sans-serif;
 font-size: 24px;
 }
 :root {
---primary-color: rgb(1, 254, 3); /* Verde brillante del logo */
+--primary-color: #03FF03; /* Verde brillante del logo */
 --secondary-color: #f0f0f; /* Blanco */
---text-color: #333333;
---navbar-color: #0011adc4;
+--text-color: #EDF2FA;
+--navbar-color: #394b6ad7;
 --width-default: min(1200px, 90vw);
 --diameter: 1432px; /* Gris oscuro para texto */
 --title-font: 'Roboto';
@@ -78,7 +78,7 @@ list-style: none;
 
 nav.menu ul li a {
 text-decoration: none;
-color: white;
+color: var(--text-color);
 font-size: 18px;
 }
 .modal {
@@ -93,9 +93,9 @@ overflow: hidden;
 background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 .modal-content{
-background-color: rgba(200, 200, 200, 0.726);
+background-color: #285bada9;
 backdrop-filter: blur(10px);
-color: white;
+color: var(--text-color);
 margin: 1% auto;
 padding: 20px;
 border-radius: 8px;
@@ -128,7 +128,7 @@ grid-template-rows: repeat(3, 1fr);
 gap: 1rem;
 }
 .bento-item {
-background: #1021b8;
+background: #143E74;
 border-radius: 8px;
 overflow: hidden;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -153,12 +153,12 @@ padding: 1rem;
 .bento-item .content h3 {
 font-family: var(--title-font);
 font-size: 1.5rem;
-color: white;
+color: var(--text-color);
 margin: 0;
 }
 .bento-item .content p {
 font-family: 'Poppins', sans-serif;
-color: white;
+color: var(--text-color);
 margin-top: 0.5rem;
 font-size: 1rem;
 }
@@ -229,7 +229,7 @@ font-size: 1rem;
     border: none;
     padding: 20px;
     border-radius: 5px;
-    background-color: rgb(1, 254, 3);
+    background-color: var(--primary-color);
     font-family: 'Poppins';
 }
 #closeReserve{
