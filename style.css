@@ -95,7 +95,7 @@ input[type=text], input[type=password] {
 #formTwoButton,
 #formThreeButton{
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: black;
   padding: 14px 20px;
   margin: 5% auto;
   border-radius: 8px;
@@ -115,7 +115,7 @@ input[type=text], input[type=password] {
 #submitPhone,
 #submitRegist{
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: black;
   padding: 14px 20px;
   margin: 8px 0;
   border-radius: 8px;
@@ -593,7 +593,7 @@ nav.menu ul li a {
 
 .schedule th {
   background-color: var(--primary-color);
-  color: var(--secondary-color);
+  color: black;
 }
 
 .map {
@@ -698,8 +698,7 @@ footer {
   border: none;
   border-radius: 4px;
   background-color: var(--primary-color);
-
-  color: var(--text-color);
+  color: black;
   cursor: pointer;
   font-size: 0.875rem;
   transition: background-color 0.3s ease;
@@ -711,7 +710,7 @@ footer {
 .button,
 .contact-form button {
   background-color: var(--primary-color);
-  color: var(--secondary-color);
+  color: black;
 }
 /*Section Infor*/
 
@@ -724,7 +723,7 @@ footer {
   padding: 0.75rem 1.5rem;
   font-size: 1.2rem;
   font-family: 'Poppins';
-  color: var(--text-color);
+  color: black;
   background-color: var(--primary-color);
   border: none;
   border-radius: 4px;
