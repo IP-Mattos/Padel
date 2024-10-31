@@ -124,26 +124,30 @@ margin-bottom: 20px;
 }
 .bento-grid {
 display: grid;
-grid-template-rows: repeat(3, 1fr);
+grid-template-columns: repeat(3, 320px);
+grid-template-rows: 300px;
 gap: 1rem;
+align-items: center;
+justify-content: center;
 }
 .bento-item {
 background: #143E74;
-border-radius: 8px;
+border-radius: 50%;
 overflow: hidden;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 transition: transform 0.3s ease, box-shadow 0.3s ease;
 display: flex;
 align-items: center;
-justify-content: left;
-height: 5rem;
+justify-content: flex-end;
+height: 20rem;
+flex-direction: column;
 }
 .bento-item:hover {
 transform: translateY(-5px);
 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .bento-item img {
-width: 70%;
+width: 100%;
 height: auto;
 display: block;
 }
@@ -329,6 +333,13 @@ nav.menu ul li a{
 .practice-img,
 .cantine-img{
     width: 70%;
+}
+.bento-grid{
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: 100px;
+}
+.bento-item{
+    height: 6.3rem;
 }
 }
 @media (max-width: 400px){

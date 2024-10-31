@@ -97,24 +97,33 @@ window.onclick = function(event) {
         }, 300);
     }
 }
+const menuToggle = document.getElementById('menu-toggle');
+const menu = document.querySelector('.menu');
 
-const input = document.getElementById('cedula');
-const input2 = document.getElementById('phone');
-const input3 = document.getElementById('cedulaRegist');
-const input4 = document.getElementById('phoneRegist');
+menuToggle.addEventListener('change', () => {
+    if (menuToggle.checked) {
+        menu.classList.add('open'); // Open menu
+    } else {
+        menu.classList.remove('open'); // Close menu
+    }
+});
 
-input.addEventListener('input', function(){
-  this.value = this.value.replace(/[^0-9]/g, '');
+const menuItems = document.querySelectorAll('.menu a');
+menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+        menuToggle.checked = false; // Uncheck the menu toggle
+        menu.classList.remove('open'); // Close menu
+    });
 });
-input2.addEventListener('input', function(){
-  this.value = this.value.replace(/[^0-9]/g, '');
-});
-input3.addEventListener('input', function(){
-  this.value = this.value.replace(/[^0-9]/g, '');
-});
-input4.addEventListener('input', function(){
-  this.value = this.value.replace(/[^0-9]/g, '');
-});
+
+
+const sanitizeInput = (id) => {
+  const input = document.getElementById(id);
+  input.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+  });
+};
+['cedula', 'phone', 'cedulaRegist', 'phoneRegist'].forEach(sanitizeInput);
 
   const setSlider = () => {
     let oldActive = document.querySelector('.slider .list .item.active')
