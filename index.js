@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const cover = document.getElementById('cover');
+  const loader = document.getElementById('loader');
+
+  window.onload = function() {
+      loader.style.display = 'none'; // Hide loader
+      cover.style.display = 'none'; // Hide cover
+  };
+
   let items = document.querySelectorAll('.slider .list .item')
   let prevBtn = document.getElementById('prev')
   let nextBtn = document.getElementById('next')

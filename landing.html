@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="landing.css" />
     <title>Responsive Navbar</title>
   </head>
+  <div id="loader" class="loader"></div>
+  <div id="cover"></div>
   <body>
     <header>
       <div class="logo">
@@ -30,7 +32,7 @@
         <section class="Services" id="home">
             <h2>Bienvenido! Qué haremos hoy?</h2>
             <div class="bento-grid">
-              <div class="bento-item">
+              <div class="bento-item" id="openProfile">
                 <img src="./img/image-3.jpg" alt="Imagen 1" />
                 <div class="content">
                   <h3>Perfil</h3>
@@ -70,6 +72,38 @@
                   <button id="closeReserve">Cancelar</button>
                   <button id="acceptReserve">Aceptar</button></div>
             </div>
+        </div>
+        <div id="myModal2" class="modal2">
+          <div class="modal-content2">
+            <div class="profile">
+              <img src="./img/profile.png" alt="perfil">
+              <h2>Guillermo</h2>
+            </div>
+            <div class="profile-detail">
+              <div class="row">
+                <h3>Nombre</h3><span>Guillermo Nicrosi</span>
+              </div>
+              <hr>
+              <div class="row">
+                <h3>Cédula</h3><span>50143868</span>
+              </div>
+              <hr>
+              <div class="row">
+                <h3>Celular</h3><span>091234567</span>
+              </div>
+              <hr>
+              <div class="row">
+                <h3>Dirección</h3><span>Hector V. Guillén 904</span>
+              </div>
+              <hr>
+              <div class="row">
+                <h3>Saldo</h3><span>$2000</span>
+              </div>
+              <hr>
+              <button>Editar</button>
+            </div>
+            <button id="closeProfile">Cerrar</button>
+          </div>
         </div>
     </main>
   </body>

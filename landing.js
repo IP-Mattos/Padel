@@ -1,7 +1,18 @@
 document.addEventListener('DOMContentLoaded', () =>{
+    const cover = document.getElementById('cover');
+    const loader = document.getElementById('loader');
+
+    window.onload = function() {
+        loader.style.display = 'none'; // Hide loader
+        cover.style.display = 'none'; // Hide cover
+    };
+    
     const modal = document.getElementById('myModal');
+    const modal2 = document.getElementById('myModal2');
+    const openProfile = document.getElementById('openProfile');
     const openReserve = document.getElementById('openReserve');
     const openReserve2 = document.getElementById('openReserve2');
+    const closeProfile = document.getElementById('closeProfile');
     const closeReserve = document.getElementById('closeReserve');
     const acceptReserve = document.getElementById('acceptReserve');
     const calendar = document.getElementById('calendar');
@@ -12,9 +23,16 @@ document.addEventListener('DOMContentLoaded', () =>{
             modal.querySelector(".modal-content").classList.add('show');
         }, 10)
     }
+    function openModal2() {
+        modal2.style.display = 'block';
+        setTimeout(() =>{
+            modal2.querySelector(".modal-content2").classList.add('show');
+        }, 10)
+    }
 
     openReserve.onclick = openModal;
     openReserve2.onclick = openModal;
+    openProfile.onclick = openModal2;
 
     function closeModal() {
         modal.querySelector(".modal-content").classList.remove('show');
@@ -22,6 +40,13 @@ document.addEventListener('DOMContentLoaded', () =>{
             modal.style.display = 'none';
         }, 350)
     }
+    function closeModal2() {
+        modal2.querySelector(".modal-content2").classList.remove('show');
+        setTimeout(() => {
+            modal2.style.display = 'none';
+        }, 350);
+    }
+    closeProfile.onclick = closeModal2;
     closeReserve.onclick = closeModal;
     acceptReserve.onclick = closeModal;
 
