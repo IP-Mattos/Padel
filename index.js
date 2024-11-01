@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   const cover = document.getElementById('cover');
   const loader = document.getElementById('loader');
+  document.body.style.overflow = "hidden"
 
   window.onload = function() {
       loader.style.display = 'none'; // Hide loader
       cover.style.display = 'none'; // Hide cover
+      document.body.style.overflow = "auto"
   };
 
   let items = document.querySelectorAll('.slider .list .item')
