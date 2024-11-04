@@ -24,7 +24,7 @@
           <li><a href="#home">Inicio</a></li>
           <li><a href="#reserves" id="openReserve2">Reservas</a></li>
           <li><a href="#matches">Partidos</a></li>
-          <li><a href="#profile">Perfil</a></li>
+          <li><a href="#profile" id="openProfile2">Perfil</a></li>
         </ul>
       </nav>
     </header>
@@ -81,26 +81,31 @@
             </div>
             <div class="profile-detail">
               <div class="row">
-                <h3>Nombre</h3><span>Guillermo Nicrosi</span>
+                <h3>Nombre</h3>
+                <span>Guillermo Nicrosi</span>
+                <input type="text" value="Guillermo Nicrosi" class="hidden">
               </div>
               <hr>
               <div class="row">
-                <h3>Cédula</h3><span>50143868</span>
+                <h3>Cédula</h3><a>50143868</a>
               </div>
               <hr>
               <div class="row">
                 <h3>Celular</h3><span>091234567</span>
+                <input type="text" value="091234567" class="hidden">
               </div>
               <hr>
               <div class="row">
                 <h3>Dirección</h3><span>Hector V. Guillén 904</span>
+                <input type="text" value="Hector V. Guillén 904" class="hidden">
               </div>
               <hr>
               <div class="row">
-                <h3>Saldo</h3><span>$2000</span>
+                <h3>Saldo</h3><a>$2000</a>
               </div>
               <hr>
-              <button>Editar</button>
+              <button id="editProfile">Editar</button>
+              <button id="saveProfile" class="hidden">Guardar</button>
             </div>
             <button id="closeProfile">Cerrar</button>
           </div>

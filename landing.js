@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     const modal = document.getElementById('myModal');
     const modal2 = document.getElementById('myModal2');
     const openProfile = document.getElementById('openProfile');
+    const openProfile2 = document.getElementById('openProfile2');
     const openReserve = document.getElementById('openReserve');
     const openReserve2 = document.getElementById('openReserve2');
     const closeProfile = document.getElementById('closeProfile');
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     openReserve.onclick = openModal;
     openReserve2.onclick = openModal;
     openProfile.onclick = openModal2;
+    openProfile2.onclick = openModal2;
 
     function closeModal() {
         modal.querySelector(".modal-content").classList.remove('show');
@@ -202,5 +204,33 @@ const calendar3 = document.getElementById('cantine-hs'); // Third container
 createHourCards(calendar1, new Date().getHours(), 8); // Current hour
 createHourCards(calendar2, new Date().getHours(), 8); // Next 8 hours
 createHourCards(calendar3, new Date().getHours(), 8); // Following 8 hours
+
+document.getElementById('editProfile').addEventListener('click', function() {
+    const displayElements = document.querySelectorAll('.profile-detail span');
+    const inputElements = document.querySelectorAll('.profile-detail input');
+
+    displayElements.forEach((span, index) => {
+        span.classList.add('hidden');
+        inputElements[index].classList.remove('hidden');
+    });
+
+    document.getElementById('editProfile').classList.add('hidden');
+    document.getElementById('saveProfile').classList.remove('hidden');
+});
+
+document.getElementById('saveProfile').addEventListener('click', function() {
+
+    const displayElements = document.querySelectorAll('.profile-detail span');
+    const inputElements = document.querySelectorAll('.profile-detail input');
+
+    displayElements.forEach((span, index) => {
+        span.textContent = inputElements[index].value;
+        span.classList.remove('hidden');
+        inputElements[index].classList.add('hidden');
+    });
+
+    document.getElementById('editProfile').classList.remove('hidden');
+    document.getElementById('saveProfile').classList.add('hidden');
+});
 
 })
