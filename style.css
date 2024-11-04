@@ -1,18 +1,18 @@
-@import url('https://fonts.cdnfonts.com/css/poppins');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@font-face{
-  font-family: 'BlippoBlack';
-  src: url("font/BlippoBlack.ttf") format('truetype');
+@import url("https://fonts.cdnfonts.com/css/poppins");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@font-face {
+  font-family: "BlippoBlack";
+  src: url("font/BlippoBlack.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
-#cover  {
-  position: fixed; 
-  height: 100%; 
-  width: 100%; 
-  top:0; 
-  left: 0; 
-  background: #061425; 
+#cover {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #061425;
   z-index: 9998;
 }
 
@@ -32,7 +32,7 @@
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background: #03FF03;
+  background: #03ff03;
   animation: loading-bounce 0.5s ease-in-out infinite alternate;
 }
 
@@ -80,7 +80,7 @@ body {
   width: 25%;
   height: 460px;
   position: relative;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   transform: translateY(100%); /* Start off-screen */
   transition: transform 0.3s ease; /* Sliding effect */
 }
@@ -100,7 +100,7 @@ body {
   font-weight: bold;
   top: 0;
   right: 10px;
-  position: absolute
+  position: absolute;
 }
 
 .close:hover,
@@ -110,7 +110,8 @@ body {
   cursor: pointer;
 }
 
-input[type=text], input[type=password] {
+input[type="text"],
+input[type="password"] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -120,21 +121,21 @@ input[type=text], input[type=password] {
   box-sizing: border-box;
 }
 
-#formOne{
+#formOne {
   margin-top: 10%;
 }
 
-#formThree{
+#formThree {
   margin-top: 10%;
 }
 
-#buttonContainer{
+#buttonContainer {
   margin-top: 25%;
 }
 
 #formOneButton,
 #formTwoButton,
-#formThreeButton{
+#formThreeButton {
   background-color: var(--primary-color);
   color: black;
   padding: 14px 20px;
@@ -147,14 +148,13 @@ input[type=text], input[type=password] {
 
 #formOneButton:hover,
 #formTwoButton:hover,
-#formThreeButton:hover{
+#formThreeButton:hover {
   opacity: 0.8;
 }
 
-
 #submitPassword,
 #submitPhone,
-#submitRegist{
+#submitRegist {
   background-color: var(--primary-color);
   color: black;
   padding: 14px 20px;
@@ -167,15 +167,15 @@ input[type=text], input[type=password] {
 
 #submitPassword:hover,
 #submitPhone:hover,
-#submitRegist:hover{
+#submitRegist:hover {
   opacity: 0.8;
 }
 
-.cancel:hover{
+.cancel:hover {
   opacity: 0.8;
 }
 
-.cancel{
+.cancel {
   background-color: #ce0e00;
   color: var(--text-color);
   padding: 14px 20px;
@@ -216,7 +216,7 @@ header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
 }
 
-.logo a{
+.logo a {
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -233,17 +233,17 @@ header {
 }
 
 :root {
-  --primary-color: #03FF03; /* Verde brillante del logo */
+  --primary-color: #03ff03; /* Verde brillante del logo */
   --secondary-color: #f0f0f; /* Blanco */
-  --text-color: #EDF2FA;
+  --text-color: #edf2fa;
   --navbar-color: #394b6ad7;
   --width-default: min(1200px, 90vw);
   --diameter: 1432px; /* Gris oscuro para texto */
-  --title-font: 'Roboto';
+  --title-font: "Roboto";
 }
 
 nav.menu ul {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   display: flex;
   gap: 20px;
 }
@@ -293,10 +293,9 @@ nav.menu ul li a {
 }
 
 .slider .list .item .content h2:first-child {
-  
   font-size: 8em;
   text-align: center;
-  font-family: 'BlippoBlack', sans-serif;
+  font-family: "BlippoBlack", sans-serif;
   line-height: 0.6em;
   transform: translateY(-100%);
   transition: transform 1s;
@@ -312,7 +311,7 @@ nav.menu ul li a {
   transition: transform 1s;
   white-space: nowrap;
 }
-.slider .list .item .content a{
+.slider .list .item .content a {
   color: var(--primary-color);
 }
 .slider .list .item .content p {
@@ -339,7 +338,7 @@ nav.menu ul li a {
   position: absolute;
   width: 70%;
   height: 70%;
-  content: '';
+  content: "";
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -444,7 +443,7 @@ nav.menu ul li a {
   gap: 1rem;
 }
 .bento-item {
-  background: #143E74;
+  background: #143e74;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -469,7 +468,7 @@ nav.menu ul li a {
   margin: 0;
 }
 .bento-item .content p {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: var(--text-color);
   margin-top: 0.5rem;
   font-size: 1rem;
@@ -477,17 +476,17 @@ nav.menu ul li a {
 
 .about,
 .schedule {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   max-width: var(--width-default);
   width: 100%;
   padding: 3rem 1rem;
   margin: 1% auto;
-  background-color: #143E74;
+  background-color: #143e74;
   color: var(--text-color);
   border-radius: 8px;
 }
 
-.schedule-table{
+.schedule-table {
   border-radius: 8px;
   overflow: hidden;
   color: var(--text-color);
@@ -509,7 +508,7 @@ nav.menu ul li a {
   gap: 100px;
 }
 .about_us p {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   margin-bottom: 20px;
 }
@@ -541,7 +540,7 @@ nav.menu ul li a {
 }
 
 .accordion {
-  background-color: #143E74;
+  background-color: #143e74;
   color: var(--text-color);
   cursor: pointer;
   padding: 1rem;
@@ -599,7 +598,7 @@ nav.menu ul li a {
 }
 
 .facility-item {
-  background: #143E74;
+  background: #143e74;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -673,7 +672,7 @@ nav.menu ul li a {
 
 /*Footer*/
 footer {
-  background-color: #143E74;
+  background-color: #143e74;
   color: var(--text-color);
   padding: 3rem 1rem;
   display: flex;
@@ -694,7 +693,7 @@ footer {
 }
 .footer-column p,
 .footer-column a {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-size: 0.875rem;
   color: var(--text-color);
   line-height: 1.6;
@@ -763,7 +762,7 @@ footer {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   font-size: 1.2rem;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   color: black;
   background-color: var(--primary-color);
   border: none;
@@ -790,25 +789,26 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .loader{
+  .loader {
     margin: 50% auto;
   }
   .menu-icon {
     display: flex;
     margin-right: 4px;
   }
-  .login-icon{
+  .login-icon {
     display: flex;
     margin-left: 4px;
   }
-  .modal-content{
+  .modal-content {
     width: 80%;
     margin-top: 100px;
   }
-  #buttonContainer{
+  #buttonContainer {
     margin-top: 30%;
   }
-  input[type=text], input[type=password] {
+  input[type="text"],
+  input[type="password"] {
     padding: 6px 10px;
   }
 
@@ -824,7 +824,7 @@ footer {
   #menu-toggle {
     display: none;
   }
-  #login-toggle{
+  #login-toggle {
     display: none;
   }
 
@@ -862,12 +862,12 @@ footer {
     background-color: #cac6c6fd;
   }
 
-  nav.menu #openModal{
-    display: none
+  nav.menu #openModal {
+    display: none;
   }
 
-  nav.menu #openModal2{
-    display: none
+  nav.menu #openModal2 {
+    display: none;
   }
 
   #menu-toggle:checked ~ nav.menu {
@@ -896,7 +896,7 @@ footer {
     line-height: 1em;
   }
 
-  .slider .list .item .content p{
+  .slider .list .item .content p {
     font-size: 1em;
     text-align: center;
     padding: 10px;
@@ -904,7 +904,7 @@ footer {
   .about_us {
     flex-direction: column;
   }
-  .facility-item{
+  .facility-item {
     width: 90%;
     margin: 5% auto;
   }
@@ -929,16 +929,12 @@ footer {
 
 @keyframes loading-step {
   0% {
-    box-shadow: 0 10px 0 rgba(0, 0, 0, 0),
-            0 10px 0 #f2f2f2,
-            -35px 50px 0 #f2f2f2,
-            -70px 90px 0 #f2f2f2;
+    box-shadow: 0 10px 0 rgba(0, 0, 0, 0), 0 10px 0 #f2f2f2,
+      -35px 50px 0 #f2f2f2, -70px 90px 0 #f2f2f2;
   }
 
   100% {
-    box-shadow: 0 10px 0 #f2f2f2,
-            -35px 50px 0 #f2f2f2,
-            -70px 90px 0 #f2f2f2,
-            -70px 90px 0 rgba(0, 0, 0, 0);
+    box-shadow: 0 10px 0 #f2f2f2, -35px 50px 0 #f2f2f2, -70px 90px 0 #f2f2f2,
+      -70px 90px 0 rgba(0, 0, 0, 0);
   }
 }
