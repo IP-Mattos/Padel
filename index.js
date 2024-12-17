@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.querySelector(".modal-content").classList.remove("show"); // Remove the show class
     setTimeout(() => {
       modal.style.display = "none"; // Hide after animation
-    }, 500); // Match this duration with the CSS transition duration
+    }, 300); // Match this duration with the CSS transition duration
   };
 
   // When the user clicks anywhere outside of the modal, close it
@@ -208,3 +208,62 @@ document.addEventListener("DOMContentLoaded", () => {
     setDiameter();
   });
 });
+
+document
+  .getElementById("registrationForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this); // Get form data
+
+    // Send the form data via AJAX (Fetch API)
+    fetch(this.action, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json()) // Parse the JSON response
+      .then((data) => {
+        // Check if the response contains confirmacionResponse and codigoError
+        if (
+          data &&
+          data.confirmacionResponse &&
+          data.confirmacionResponse.codigoError === "0" // Success: codigoError is 0
+        ) {
+          // Get the 'detalle' message for success
+          const mensaje = data.confirmacionResponse.mensaje.detalle;
+
+          // Display the success message on the screen
+          Swal.fire({
+            title: "Perfecto",
+            text: mensaje,
+            icon: "success",
+          }).then(function () {
+            window.location.replace("https://gopadel.uy");
+          });
+
+          // Optionally, hide or reset the form
+          // document.getElementById('formTwo').classList.add('hidden');
+        } else {
+          // Error: 'codigoError' is not 0, show error message
+          const errorMensaje =
+            data.confirmacionResponse && data.confirmacionResponse.detalleError
+              ? data.confirmacionResponse.detalleError
+              : "An unknown error occurred.";
+
+          Swal.fire({
+            title: "Oops!",
+            text: errorMensaje,
+            icon: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        // Handle errors like network issues, JSON parsing issues, etc.
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Oops!",
+          text: "Hubo un problema, por favor intente otra vez",
+          icon: "error",
+        });
+      });
+  });

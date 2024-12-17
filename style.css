@@ -69,6 +69,8 @@ body {
 }
 
 .modal-content {
+  display: flex;
+  flex-direction: column;
   background-color: #285bada9;
   backdrop-filter: blur(10px);
   align-items: center;
@@ -130,7 +132,7 @@ input[type="password"] {
 }
 
 #buttonContainer {
-  margin-top: 25%;
+  margin: auto;
 }
 
 #formOneButton,
@@ -246,6 +248,7 @@ nav.menu ul {
   font-family: "Poppins";
   display: flex;
   gap: 20px;
+  white-space: nowrap;
 }
 
 nav.menu ul li {
@@ -805,7 +808,7 @@ footer {
     margin-top: 100px;
   }
   #buttonContainer {
-    margin-top: 30%;
+    margin: auto;
   }
   input[type="text"],
   input[type="password"] {

@@ -179,13 +179,29 @@
             </div>
             <div id="formTwo" class="hidden">
               <h2>Registro</h2>
-              <form action="./landing.html">
+              <form
+                id="registrationForm"
+                action="./accion/putUser.php"
+                method="POST"
+              >
                 <label for="name">Nombre:</label>
-                <input type="text" id="name" />
+                <input type="text" id="name" name="nombre" required />
                 <label for="cedulaRegist">Cédula:</label>
-                <input type="text" id="cedulaRegist" maxlength="8" />
+                <input
+                  type="text"
+                  id="cedulaRegist"
+                  name="cedula"
+                  maxlength="8"
+                  required
+                />
                 <label for="phoneRegist">Celular:</label>
-                <input type="text" id="phoneRegist" maxlength="20" />
+                <input
+                  type="text"
+                  id="phoneRegist"
+                  name="celular"
+                  maxlength="20"
+                  required
+                />
                 <button id="submitRegist" type="submit">Envíar</button>
               </form>
             </div>
@@ -392,6 +408,7 @@
       </footer>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="index.js"></script>
   </body>
 </html>
