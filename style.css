@@ -127,20 +127,15 @@ input[type="password"] {
   margin-top: 10%;
 }
 
-#formThree {
-  margin-top: 10%;
-}
-
 #buttonContainer {
   margin: auto;
 }
 
 #formOneButton,
-#formTwoButton,
-#formThreeButton {
+#formTwoButton {
   background-color: var(--primary-color);
   color: black;
-  padding: 14px 20px;
+  padding: 14px 30px;
   margin: 5% auto;
   border-radius: 8px;
   border: none;
@@ -149,8 +144,7 @@ input[type="password"] {
 }
 
 #formOneButton:hover,
-#formTwoButton:hover,
-#formThreeButton:hover {
+#formTwoButton:hover {
   opacity: 0.8;
 }
 

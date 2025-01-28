@@ -30,12 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Get the button and form elements
   const formOneButton = document.getElementById("formOneButton");
   const formTwoButton = document.getElementById("formTwoButton");
-  const formThreeButton = document.getElementById("formThreeButton");
   const returnButton = document.getElementById("returnButton");
   const returnButtonAction = document.getElementById("returnButtonAction");
   const formOne = document.getElementById("formOne");
   const formTwo = document.getElementById("formTwo");
-  const formThree = document.getElementById("formThree");
   const buttonContainer = document.getElementById("buttonContainer");
 
   // Function to open the modal
@@ -51,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function setInitialContent() {
     formOne.classList.add("hidden");
     formTwo.classList.add("hidden");
-    formThree.classList.add("hidden");
     returnButton.classList.add("hidden"); // Hide the return button
     buttonContainer.style.display = "inline-block";
   }
@@ -60,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   formOneButton.onclick = function () {
     formOne.classList.remove("hidden"); // Show Form One
     formTwo.classList.add("hidden"); // Hide Form Two
-    formThree.classList.add("hidden"); //Hide Form Three
     returnButton.classList.remove("hidden"); // Show Return button
     buttonContainer.style.display = "none";
   };
@@ -68,16 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   formTwoButton.onclick = function () {
     formTwo.classList.remove("hidden"); // Show Form Two
     formOne.classList.add("hidden"); // Hide Form One
-    formThree.classList.add("hidden"); //Hide Form Three
     returnButton.classList.remove("hidden"); // Show Return button
-    buttonContainer.style.display = "none";
-  };
-
-  formThreeButton.onclick = function () {
-    formThree.classList.remove("hidden"); //Show Form Three
-    formOne.classList.add("hidden"); //Hide Form One
-    formTwo.classList.add("hidden"); //Hide Form Two
-    returnButton.classList.remove("hidden"); //Show Return button
     buttonContainer.style.display = "none";
   };
 
@@ -132,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.value = this.value.replace(/[^0-9]/g, "");
     });
   };
-  ["cedula", "phone", "cedulaRegist", "phoneRegist"].forEach(sanitizeInput);
+  ["cedula", "celular", "cedulaRegist", "phoneRegist"].forEach(sanitizeInput);
 
   const setSlider = () => {
     let oldActive = document.querySelector(".slider .list .item.active");
@@ -207,6 +194,14 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", () => {
     setDiameter();
   });
+
+  function randomNumber() {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
+
+  document.getElementById("loginForm").onsubmit = function () {
+    document.getElementById("cud").value = randomNumber();
+  };
 });
 
 document
@@ -223,6 +218,7 @@ document
     })
       .then((response) => response.json()) // Parse the JSON response
       .then((data) => {
+        console.log(data);
         // Check if the response contains confirmacionResponse and codigoError
         if (
           data &&
@@ -248,7 +244,7 @@ document
           const errorMensaje =
             data.confirmacionResponse && data.confirmacionResponse.detalleError
               ? data.confirmacionResponse.detalleError
-              : "An unknown error occurred.";
+              : "Ocurrió un error desconocido.";
 
           Swal.fire({
             title: "Oops!",
