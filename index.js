@@ -199,67 +199,151 @@ document.addEventListener("DOMContentLoaded", () => {
     return Math.floor(100000 + Math.random() * 900000);
   }
 
-  document.getElementById("loginForm").onsubmit = function () {
-    document.getElementById("cud").value = randomNumber();
+  const veriCode = (document.getElementById("cud").value = randomNumber());
+  document.getElementById("cud2").value = veriCode;
+
+  const loginModal = document.getElementById("loginModal");
+  const cancelLogin = document.getElementById("cancelLogin");
+  const verifyButton = document.getElementById("verifyCode");
+  let clickCount = 0;
+
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var formData = new FormData(this);
+
+      fetch("./accion/loginUserFast.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.confirmacionResponse.codigoError === "0") {
+            loginModal.style.display = "block";
+
+            const token = data.confirmacionResponse.token;
+            let currentDate = new Date();
+            currentDate.setTime(
+              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
+            );
+            let expires = "expires=" + currentDate.toUTCString();
+
+            document.cookie = `goCookToken=${token}; ${expires}; path=/`;
+          } else {
+            const errorMensaje =
+              data.confirmacionResponse && data.confirmacionResponse.mensaje
+                ? data.confirmacionResponse.mensaje
+                : "Sus credenciales son incorrectas, intente de nuevo";
+            Swal.fire({
+              title: "Error",
+              text: errorMensaje,
+              icon: "error",
+            });
+          }
+        })
+        .catch((error) => {
+          alert(error, "Ocurrió un error, intente de nuevo");
+        });
+    });
+
+  cancelLogin.onclick = function () {
+    loginModal.style.display = "none";
   };
-});
 
-document
-  .getElementById("registrationForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the default form submission
+  verifyButton.onclick = function () {
+    var userInput = document.getElementById("userInput").value;
+    var randomNumber = document.getElementById("cud").value;
+    clickCount++;
 
-    const formData = new FormData(this); // Get form data
+    if (userInput === randomNumber.toString()) {
+      window.location.href = "/landing.php";
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "Código incorrecto, intente otra vez",
+        icon: "error",
+      });
+    }
 
-    // Send the form data via AJAX (Fetch API)
-    fetch(this.action, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json()) // Parse the JSON response
-      .then((data) => {
-        console.log(data);
-        // Check if the response contains confirmacionResponse and codigoError
-        if (
-          data &&
-          data.confirmacionResponse &&
-          data.confirmacionResponse.codigoError === "0" // Success: codigoError is 0
-        ) {
-          // Get the 'detalle' message for success
-          const mensaje = data.confirmacionResponse.mensaje.detalle;
+    if (clickCount >= 5) {
+      Swal.fire({
+        title: "Ups!",
+        text: "Ha llegado a su límite de intentos, ingrese sus credenciales de nuevo e intente otra vez",
+        icon: "error",
+      }).then(function () {
+        console.log("Alert closed");
+        window.location.reload();
+      });
+    }
+  };
 
-          // Display the success message on the screen
-          Swal.fire({
-            title: "Perfecto",
-            text: mensaje,
-            icon: "success",
-          }).then(function () {
-            window.location.replace("https://gopadel.uy");
-          });
+  document
+    .getElementById("registrationForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent the default form submission
 
-          // Optionally, hide or reset the form
-          // document.getElementById('formTwo').classList.add('hidden');
-        } else {
-          // Error: 'codigoError' is not 0, show error message
-          const errorMensaje =
-            data.confirmacionResponse && data.confirmacionResponse.detalleError
-              ? data.confirmacionResponse.detalleError
-              : "Ocurrió un error desconocido.";
+      const formData = new FormData(this); // Get form data
 
+      // Send the form data via AJAX (Fetch API)
+      fetch(this.action, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json()) // Parse the JSON response
+        .then((data) => {
+          console.log(data);
+          // Check if the response contains confirmacionResponse and codigoError
+          if (
+            data &&
+            data.confirmacionResponse &&
+            data.confirmacionResponse.codigoError === "0" // Success: codigoError is 0
+          ) {
+            // Get the 'detalle' message for success
+            const mensaje = data.confirmacionResponse.mensaje;
+            const token = data.confirmacionResponse.token;
+            let currentDate = new Date();
+            currentDate.setTime(
+              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
+            );
+            let expires = "expires=" + currentDate.toUTCString();
+
+            document.cookie = `goCookToken=${token}; ${expires}; path=/`;
+
+            // Display the success message on the screen
+            Swal.fire({
+              title: "Perfecto",
+              text: mensaje,
+              icon: "success",
+            }).then(function () {
+              loginModal.style.display = "block";
+            });
+
+            // Optionally, hide or reset the form
+            // document.getElementById('formTwo').classList.add('hidden');
+          } else {
+            // Error: 'codigoError' is not 0, show error message
+            const errorMensaje =
+              data.confirmacionResponse && data.confirmacionResponse.mensaje
+                ? data.confirmacionResponse.mensaje
+                : "Ocurrió un error desconocido.";
+
+            Swal.fire({
+              title: "Oops!",
+              text: errorMensaje,
+              icon: "error",
+            });
+          }
+        })
+        .catch((error) => {
+          // Handle errors like network issues, JSON parsing issues, etc.
+          console.error("Error:", error);
           Swal.fire({
             title: "Oops!",
-            text: errorMensaje,
+            text: "Hubo un problema, por favor intente otra vez",
             icon: "error",
           });
-        }
-      })
-      .catch((error) => {
-        // Handle errors like network issues, JSON parsing issues, etc.
-        console.error("Error:", error);
-        Swal.fire({
-          title: "Oops!",
-          text: "Hubo un problema, por favor intente otra vez",
-          icon: "error",
         });
-      });
-  });
+    });
+});

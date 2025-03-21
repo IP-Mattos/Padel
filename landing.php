@@ -3,13 +3,13 @@ if (isset($_COOKIE['goCookToken'])) {
   $token = $_COOKIE['goCookToken'];
 } else {
   // Redirect to login page if no token is found
-  header("Location: index.html");
+  header("Location: index.php");
   exit();
 }
 
 if (isset($_GET['acredit'])) {
   if ($_GET['acredit'] == 0) {
-    header("Location: index.html");
+    header("Location: index.php");
   }
 }
 ?>
@@ -30,7 +30,7 @@ if (isset($_GET['acredit'])) {
   <header>
     <div class="logo">
       <div class="logo">
-        <a href="#home">
+        <a href="/">
           <img src="img/logo.jpg" alt="Padel Pro-Florida Logo" class="logo-image" />
           <h1>Padel Pro-Florida</h1>
         </a>
@@ -40,11 +40,11 @@ if (isset($_GET['acredit'])) {
     <nav class="menu">
       <ul>
         <li><a href="#home">Inicio</a></li>
-        <li><a href="#reserves" id="openReserve2">Reservas</a></li>
+        <li><a href="#reserves" id="openReserve2">Reservar</a></li>
         <li><a href="#profile" id="openProfile2">Perfil</a></li>
         <li>
           <form action="logout.php" method="POST">
-            <button>Log Out</button>
+            <button type="submit" name="logout" id="logout">Log Out</button>
           </form>
         </li>
       </ul>
@@ -63,7 +63,7 @@ if (isset($_GET['acredit'])) {
         <div class="bento-item" id="openReserve" style="cursor: pointer">
           <img src="./img/image-5.jpg" alt="Imagen 2" />
           <div class="content">
-            <h3>Reservas</h3>
+            <h3>Reservar</h3>
           </div>
         </div>
         <div class="bento-item">

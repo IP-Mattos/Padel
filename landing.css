@@ -121,6 +121,17 @@ nav.menu ul li a {
   color: var(--text-color);
   font-size: 18px;
 }
+
+#logout {
+  font-family: "Poppins";
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .modal,
 .modal2 {
   display: none; /* Hidden by default */
@@ -444,6 +455,10 @@ nav.menu ul li a {
   }
   nav.menu ul li a {
     font-size: 13px;
+  }
+  #logout {
+    font-size: 13px;
+    white-space: nowrap;
   }
   .modal-content,
   .modal-content2 {
