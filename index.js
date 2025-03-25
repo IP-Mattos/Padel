@@ -221,16 +221,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((data) => {
           if (data.confirmacionResponse.codigoError === "0") {
-            loginModal.style.display = "block";
-
             const token = data.confirmacionResponse.token;
-            let currentDate = new Date();
-            currentDate.setTime(
-              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
-            );
-            let expires = "expires=" + currentDate.toUTCString();
-
-            document.cookie = `goCookToken=${token}; ${expires}; path=/`;
+            document.getElementById("cookie").value = token;
+            loginModal.style.display = "block";
           } else {
             const errorMensaje =
               data.confirmacionResponse && data.confirmacionResponse.mensaje
@@ -252,20 +245,38 @@ document.addEventListener("DOMContentLoaded", () => {
     loginModal.style.display = "none";
   };
 
-  verifyButton.onclick = function () {
-    var userInput = document.getElementById("userInput").value;
-    var randomNumber = document.getElementById("cud").value;
+  verifyButton.onclick = function (event) {
+    event.preventDefault();
+    var cookie = document.getElementById("cookie").value;
     clickCount++;
 
-    if (userInput === randomNumber.toString()) {
-      window.location.href = "/landing.php";
-    } else {
-      Swal.fire({
-        title: "Error",
-        text: "Código incorrecto, intente otra vez",
-        icon: "error",
+    var formData = new FormData(document.getElementById("verifyForm"));
+
+    fetch("./accion/getValidateCodigo6.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.confirmacionResponse.codigoError === "0") {
+          console.log("hola", cookie);
+          let currentDate = new Date();
+          currentDate.setTime(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+          let expires = "expires=" + currentDate.toUTCString();
+          document.cookie = `goCookToken=${cookie}; ${expires}; path=/`;
+          window.location.href = "/landing.php";
+        } else {
+          const errorMensaje =
+            data.confirmacionResponse && data.confirmacionResponse.mensaje
+              ? data.confirmacionResponse.mensaje
+              : "Código incorrecto, intente otra vez";
+          Swal.fire({
+            title: "Error",
+            text: errorMensaje,
+            icon: "error",
+          });
+        }
       });
-    }
 
     if (clickCount >= 5) {
       Swal.fire({
@@ -303,13 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
             // Get the 'detalle' message for success
             const mensaje = data.confirmacionResponse.mensaje;
             const token = data.confirmacionResponse.token;
-            let currentDate = new Date();
-            currentDate.setTime(
-              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
-            );
-            let expires = "expires=" + currentDate.toUTCString();
-
-            document.cookie = `goCookToken=${token}; ${expires}; path=/`;
 
             // Display the success message on the screen
             Swal.fire({
@@ -317,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
               text: mensaje,
               icon: "success",
             }).then(function () {
+              document.getElementById("cookie").value = token;
               loginModal.style.display = "block";
             });
 

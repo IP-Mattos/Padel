@@ -257,7 +257,7 @@ header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
 }
 
-.logo a {
+.logo a:nth-child(1) {
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -843,7 +843,7 @@ footer {
     margin-left: 4px;
   }
   .modal-content {
-    width: 80%;
+    width: 100%;
     margin-top: 100px;
   }
   #buttonContainer {
@@ -852,6 +852,7 @@ footer {
   input[type="text"],
   input[type="password"] {
     padding: 6px 10px;
+    font-size: 20px;
   }
 
   .logo {
@@ -910,6 +911,10 @@ footer {
 
   nav.menu #openModal2 {
     display: none;
+  }
+
+  .loginModal-content {
+    width: 70%;
   }
 
   #menu-toggle:checked ~ nav.menu {

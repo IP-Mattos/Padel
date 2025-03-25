@@ -14,7 +14,7 @@ if (isset($_GET['acredit'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8" />
@@ -39,12 +39,11 @@ if (isset($_GET['acredit'])) {
 
     <nav class="menu">
       <ul>
-        <li><a href="#home">Inicio</a></li>
-        <li><a href="#reserves" id="openReserve2">Reservar</a></li>
+        <li><a href="#reserves" id="openReserve2">Reserva</a></li>
         <li><a href="#profile" id="openProfile2">Perfil</a></li>
         <li>
           <form action="logout.php" method="POST">
-            <button type="submit" name="logout" id="logout">Log Out</button>
+            <button type="submit" name="logout" id="logout"><img src="./img/logout.png" alt="Logout"></button>
           </form>
         </li>
       </ul>
@@ -55,28 +54,20 @@ if (isset($_GET['acredit'])) {
       <h2>Bienvenido! Qué haremos hoy?</h2>
       <div class="bento-grid">
         <div class="bento-item" id="openProfile" style="cursor: pointer">
-          <img src="./img/image-4.jpg" alt="Imagen 1" />
-          <div class="content">
-            <h3>Perfil</h3>
-          </div>
+          <img src="./img/perfil.png" alt="Imagen 1" />
         </div>
         <div class="bento-item" id="openReserve" style="cursor: pointer">
-          <img src="./img/image-5.jpg" alt="Imagen 2" />
-          <div class="content">
-            <h3>Reservar</h3>
-          </div>
+          <img src="./img/reserva.png" alt="Imagen 2" />
         </div>
-        <div class="bento-item">
-          <img src="./img/image-8.jpg" alt="Imagen 3" />
-          <div class="content">
-            <h3>Partidos</h3>
-          </div>
+        <div class="bento-item" style="cursor: pointer;">
+          <img src="./img/socios.png" alt="Imagen 3" />
         </div>
         <!-- Add more bento items as needed -->
       </div>
     </section>
     <div id="myModal" class="modal">
       <div class="modal-content">
+        <span id="close" class="close">&times;</span>
         <div class="calendar" id="calendar"></div>
         <div class="court" id="court">
           <div class="court-img"><img src="./img/padel-court.jpg" /></div>
@@ -102,6 +93,7 @@ if (isset($_GET['acredit'])) {
     </div>
     <div id="myModal2" class="modal2">
       <div class="modal-content2">
+        <span id="close2" class="close2">&times;</span>
         <div class="profile">
           <img src="./img/profile.png" alt="perfil" />
           <h2>Guillermo</h2>

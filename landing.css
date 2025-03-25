@@ -123,13 +123,13 @@ nav.menu ul li a {
 }
 
 #logout {
-  font-family: "Poppins";
-  text-decoration: none;
-  color: var(--text-color);
-  font-size: 18px;
   background: none;
   border: none;
   cursor: pointer;
+}
+
+#logout img {
+  width: 26px;
 }
 
 .modal,
@@ -146,9 +146,8 @@ nav.menu ul li a {
 }
 .modal-content,
 .modal-content2 {
-  background-color: #285bada9;
-  backdrop-filter: blur(10px);
-  color: var(--text-color);
+  background-color: darkgray;
+  color: black;
   margin: 1% auto;
   padding: 20px;
   border-radius: 8px;
@@ -179,10 +178,9 @@ nav.menu ul li a {
   margin-bottom: 20px;
 }
 .bento-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 320px);
-  grid-template-rows: 300px;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
   align-items: center;
   justify-content: center;
 }
@@ -193,54 +191,17 @@ nav.menu ul li a {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
   height: 20rem;
-  flex-direction: column;
 }
-.bento-item:nth-child(1) {
-  grid-column: 1;
-  grid-row: 1;
-}
-.bento-item:nth-child(2) {
-  grid-column: 2;
-  grid-row: 2;
-  margin-top: -250px;
-}
-.bento-item:nth-child(3) {
-  grid-column: 3;
-  grid-row: 3;
-  margin-top: -250px;
-}
+
 .bento-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .bento-item img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-}
-.bento-item .content {
-  padding: 1rem;
-}
-.bento-item .content h3 {
-  font-family: var(--title-font);
-  font-size: 1.5rem;
-  color: var(--text-color);
-  margin: 0;
-}
-.bento-item .content p {
-  font-family: "Poppins", sans-serif;
-  color: var(--text-color);
-  margin-top: 0.5rem;
-  font-size: 1rem;
-}
-#contentDiv {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
 }
 .profile {
   display: flex;
@@ -378,6 +339,7 @@ nav.menu ul li a {
   border-radius: 5px;
   margin-right: 10px;
   background-color: rgb(254, 1, 3);
+  color: white;
   font-family: "Poppins";
   cursor: pointer;
 }
@@ -439,6 +401,24 @@ nav.menu ul li a {
   flex-direction: column;
   align-items: center;
 }
+.close,
+.close2 {
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  top: 0;
+  right: 10px;
+  position: absolute;
+}
+
+.close:hover,
+.close:focus,
+.close2:hover,
+.close2:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
 
 @media (max-width: 768px) {
   .loader {
@@ -455,10 +435,6 @@ nav.menu ul li a {
   }
   nav.menu ul li a {
     font-size: 13px;
-  }
-  #logout {
-    font-size: 13px;
-    white-space: nowrap;
   }
   .modal-content,
   .modal-content2 {
@@ -482,23 +458,9 @@ nav.menu ul li a {
   .cantine-img {
     width: 70%;
   }
-  .bento-grid {
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: 100px;
-  }
   .bento-item {
-    height: 6.3rem;
-  }
-  .bento-item:nth-child(2) {
-    margin-top: -80px;
-  }
-  .bento-item:nth-child(3) {
-    margin-top: -80px;
-  }
-}
-@media (max-width: 400px) {
-  .bento-item .content h3 {
-    font-size: 0.8rem;
+    height: 9rem;
+    width: 9rem;
   }
 }
 @keyframes loading-bounce {

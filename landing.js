@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const openReserve2 = document.getElementById("openReserve2");
   const closeProfile = document.getElementById("closeProfile");
   const closeReserve = document.getElementById("closeReserve");
+  const close = document.getElementById("close");
+  const close2 = document.getElementById("close2");
   const acceptReserve = document.getElementById("acceptReserve");
   const calendar = document.getElementById("calendar");
 
@@ -51,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 350);
   }
   closeProfile.onclick = closeModal2;
+  close.onclick = closeModal;
+  close2.onclick = closeModal2;
   closeReserve.onclick = closeModal;
   acceptReserve.onclick = closeModal;
 
