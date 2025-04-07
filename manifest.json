@@ -1,0 +1,26 @@
+{
+  "name": "GO Padel",
+  "short_name": "GO",
+  "description": "Deporte y diversión!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#061425",
+  "icons": [
+    {
+      "src": "img/logo192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "img/logo512.png",
+      "size": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "es-ES",
+  "dir": "ltr"
+}

@@ -48,6 +48,36 @@
   animation: loading-step 1s ease-in-out infinite;
 }
 
+.loader2 {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  position: relative;
+  animation: roll 1s ease-in-out infinite alternate;
+  margin: 20% auto;
+}
+.loader2:after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 5px solid;
+  border-color: white transparent;
+}
+
+.loader2-container {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 body {
   margin: 0;
   font-size: 15px;
@@ -85,14 +115,6 @@ body {
   font-family: "Poppins";
   transform: translateY(100%); /* Start off-screen */
   transition: transform 0.3s ease; /* Sliding effect */
-}
-
-.show {
-  transform: translateY(0); /* Slide into view */
-}
-
-.hidden {
-  display: none; /* Hide the forms */
 }
 
 .close {
@@ -227,6 +249,47 @@ input[type="password"] {
   width: 100%;
 }
 
+#installButton {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#installButton:hover {
+  background-color: #00cf00;
+}
+
+.install-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.imodal-content {
+  display: flex;
+  flex-direction: column;
+  background-color: #143e74;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 95%;
+  margin: auto auto 5%;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  align-items: center;
+  gap: 1rem;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -319,60 +382,25 @@ nav.menu ul li a {
 
 .slider .list .item .content {
   position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translateY(-100%);
   width: max-content;
   max-width: 100%;
-  text-align: center;
-  display: grid;
-  grid-template-columns: repeat(1, 800px);
-  text-align: left;
-  gap: 80px;
   font-size: 1.2em;
   font-family: var(--title-font);
   text-shadow: 0 0 80px #000;
+  transition: transform 1s;
 }
 
-.slider .list .item .content h2:first-child {
-  font-size: 8em;
-  text-align: center;
-  font-family: "BlippoBlack", sans-serif;
-  line-height: 0.6em;
-  transform: translateY(-100%);
-  transition: transform 1s;
-  white-space: nowrap;
-}
-
-.slider .list .item .content h2 {
-  font-size: 6.5em;
-  text-align: center;
-  font-family: var(--title-font), sans-serif;
-  line-height: 0.6em;
-  transform: translateY(-100%);
-  transition: transform 1s;
-  white-space: nowrap;
-}
-.slider .list .item .content a {
-  color: var(--primary-color);
-}
-.slider .list .item .content p {
-  font-size: 2em;
-  text-align: center;
-  width: 100%;
-}
 .slider .list .item .image {
   flex-shrink: 0;
   width: var(--diameter);
   height: var(--diameter);
   background-image: var(--url);
-  background-size: var(--diameter) var(--diameter);
   background-position: center;
   border-radius: 50%;
   transform: rotate(-60deg);
   position: relative;
   transition: 1s;
-  background-size: auto;
 }
 
 .slider .list .item .image::before,
@@ -402,7 +430,8 @@ nav.menu ul li a {
 
 .slider .list .item .image {
   filter: blur(30px);
-  background-size: auto;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .slider .list .item {
@@ -418,7 +447,8 @@ nav.menu ul li a {
 .slider .item.active .image {
   filter: blur(0px);
   transform: rotate(0deg);
-  background-size: auto;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .slider .item.active .image::before,
@@ -426,7 +456,7 @@ nav.menu ul li a {
   transform: translate(-50%, -50%) rotate(0deg);
 }
 
-.slider .list .item.active .content h2 {
+.slider .list .item.active .content {
   transform: translateY(0);
 }
 
@@ -516,8 +546,7 @@ nav.menu ul li a {
   font-size: 1rem;
 }
 
-.about,
-.schedule {
+.about {
   font-family: "Poppins";
   max-width: var(--width-default);
   width: 100%;
@@ -528,15 +557,12 @@ nav.menu ul li a {
   border-radius: 8px;
 }
 
-.schedule-table {
-  border-radius: 8px;
-  overflow: hidden;
-  color: var(--text-color);
+.facilities {
+  margin-top: 3rem;
 }
 
 .about h2,
-.facilities h2,
-.schedule h2 {
+.facilities h2 {
   font-family: var(--title-font), sans-serif;
   text-align: center;
   font-size: 2.5rem;
@@ -661,23 +687,6 @@ nav.menu ul li a {
   color: var(--text-color);
 }
 
-.schedule table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.schedule th,
-.schedule td {
-  padding: 10px;
-  border: 1px solid var(--primary-color);
-  text-align: left;
-}
-
-.schedule th {
-  background-color: var(--primary-color);
-  color: black;
-}
-
 .map {
   text-align: center;
   padding: 3rem 1rem;
@@ -718,82 +727,36 @@ footer {
   color: var(--text-color);
   padding: 3rem 1rem;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
-}
-.footer-column {
-  flex: 1;
-  min-width: 200px;
-  margin: 1rem;
-}
-.footer-column h4 {
-  font-family: var(--title-font);
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  color: var(--text-color);
-}
-.footer-column p,
-.footer-column a {
   font-family: "Poppins";
-  font-size: 0.875rem;
-  color: var(--text-color);
-  line-height: 1.6;
-}
-.footer-column a {
-  text-decoration: none;
-}
-.footer-column a:hover {
-  color: var(--text-color);
-}
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-}
-.footer-column ul li {
-  margin-bottom: 0.5rem;
-}
-.social-icons a {
-  margin-right: 1rem;
-  color: var(--text-color);
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
-}
-.social-icons a:hover {
-  color: var(--text-color);
-}
-.contact-form {
-  display: flex;
-  flex-direction: column;
-}
-.contact-form input,
-.contact-form textarea {
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-}
-.contact-form button {
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  background-color: var(--primary-color);
-  color: black;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.3s ease;
-}
-.contact-form button:hover {
-  opacity: 0.8;
 }
 
-.button,
-.contact-form button {
-  background-color: var(--primary-color);
-  color: black;
+.social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 10px;
 }
+
+.copyright {
+  display: flex;
+  margin-top: 1rem;
+  margin-right: 2rem;
+  justify-content: flex-end;
+}
+
+.social-links a {
+  width: 25px;
+  height: 25px;
+}
+
+.social-links a img {
+  width: 25px;
+}
+
 /*Section Infor*/
 
 .button-container {
@@ -826,12 +789,25 @@ footer {
   cursor: pointer;
 }
 
-.hide {
-  display: none;
+.show {
+  transform: translateY(0); /* Slide into view */
+}
+
+.hidden {
+  display: none; /* Hide the forms */
+}
+
+@media (min-width: 769px) {
+  #landing {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
   .loader {
+    margin: 50% auto;
+  }
+  .loader2 {
     margin: 50% auto;
   }
   .menu-icon {
@@ -925,7 +901,7 @@ footer {
   }
   .map .mapa iframe {
     max-width: var(--width-default);
-    height: 500px;
+    height: 300px;
     width: 100%;
   }
   .slider .list .item .content {
@@ -933,27 +909,20 @@ footer {
     text-align: center;
   }
 
-  .slider .list .item .content h2:first-child {
-    font-size: 2.5em;
-    line-height: 1em;
+  .slider .list .item .content img {
+    width: 10rem;
   }
 
-  .slider .list .item .content h2 {
-    font-size: 4em;
-    line-height: 1em;
-  }
-
-  .slider .list .item .content p {
-    font-size: 1em;
-    text-align: center;
-    padding: 10px;
-  }
   .about_us {
     flex-direction: column;
   }
   .facility-item {
     width: 90%;
     margin: 5% auto;
+  }
+  .copyright {
+    justify-content: center;
+    margin-right: 0;
   }
 }
 @keyframes loading-bounce {
@@ -983,5 +952,14 @@ footer {
   100% {
     box-shadow: 0 10px 0 #f2f2f2, -35px 50px 0 #f2f2f2, -70px 90px 0 #f2f2f2,
       -70px 90px 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes roll {
+  0% {
+    transform: translateX(-150%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(360deg);
   }
 }

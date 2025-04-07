@@ -1,24 +1,23 @@
 <?php
+// Start the session
+session_start();
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Start the session
-session_start();
-
 // Check if the form was submitted
 if (isset($_POST['logout'])) {
-    // Optionally, remove the session cookie
-    if (isset($_COOKIE['goCookToken'])) {
-        // Expire the cookie by setting the expiration time to one hour ago
-        setcookie("goCookToken", '', time() - 3600, '/');
-    }
-
     // Unset all session variables
     session_unset();
 
     // Destroy the session
     session_destroy();
+
+    // Clear the session cookie by setting its expiration time to the past
+    if (isset($_COOKIE[session_name()])) {
+        setcookie(session_name(), '', time() - 3600, '/'); // Delete the cookie
+    }
 
     // Clear the output buffer
     ob_end_clean();
@@ -29,4 +28,3 @@ if (isset($_POST['logout'])) {
 } else {
     echo "No logout request found.";
 }
-?>

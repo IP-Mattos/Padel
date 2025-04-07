@@ -1,4 +1,12 @@
-<?php $isCookieSet = isset($_COOKIE['goCookToken']); ?>
+<?php
+session_start();
+
+if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
+  $loggedIn = true;
+} else {
+  $loggedIn = false;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,10 +14,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css" />
   <title>GO Padel</title>
 </head>
 <div id="loader" class="loader"></div>
+<div id="loader2" class="loader2-container">
+  <div class="loader2"></div>
+</div>
 <div id="cover"></div>
 
 <body>
@@ -27,7 +39,7 @@
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
         </svg>
       </label>
-      <label for="login-toggle" class="<?php if ($isCookieSet) {
+      <label for="login-toggle" class="<?php if ($loggedIn) {
         echo 'hidden';
       } else {
         echo 'login-icon';
@@ -38,7 +50,7 @@
           <path d="M3,21 h18 C 21,12 3,12 3,21" />
         </svg>
       </label>
-      <a href="/landing.php" class="<?php if (!$isCookieSet) {
+      <a id="landing" href="/landing.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
         <svg width="19" height="23" viewBox="0 0 24 24" stroke="#03ff03" stroke-width="2" stroke-linecap="round"
@@ -49,7 +61,7 @@
       </a>
     </div>
 
-    <input class="hide" type="checkbox" id="menu-toggle" />
+    <input class="hidden" type="checkbox" id="menu-toggle" />
 
     <nav class="menu">
       <ul>
@@ -57,9 +69,9 @@
         <li><a href="#services">Servicios</a></li>
         <li><a href="#about">Sobre Nosotros</a></li>
         <li><a href="#contact">Contactos</a></li>
-        <li class="reservas <?php if (!$isCookieSet)
+        <li class="reservas <?php if (!$loggedIn)
           echo 'hidden' ?>"><a href="/landing.php">Reservas</a></li>
-          <li class="ingresar <?php if ($isCookieSet)
+          <li class="ingresar <?php if ($loggedIn)
           echo 'hidden' ?>"><a href="#login" id="openModal2">Ingresar</a></li>
 
         </ul>
@@ -72,37 +84,19 @@
           <div class="item active">
             <div class="image" style="--url: url('img/image-1.jpg')"></div>
             <div class="content">
-              <h2><a>Go</a> Padel</h2>
-              <h2>Florida</h2>
-
-              <p class="Text-Info">
-                Canchas y cantina, ¡disfruta con nosotros de lo lindo de la
-                vida!
-              </p>
+              <img src="/img/logot1.png" alt="">
             </div>
           </div>
           <div class="item">
             <div class="image" style="--url: url('img/image-2.jpg')"></div>
             <div class="content">
-              <h2><a>Go</a> Padel</h2>
-              <h2>Florida</h2>
-
-              <p class="Text-Info">
-                Canchas y cantina, ¡disfruta con nosotros de lo lindo de la
-                vida!
-              </p>
+              <img src="/img/logot1.png" alt="">
             </div>
           </div>
           <div class="item">
             <div class="image" style="--url: url('img/image-3.jpg')"></div>
             <div class="content">
-              <h2><a>Go</a> Padel</h2>
-              <h2>Florida</h2>
-
-              <p class="Text-Info">
-                Canchas y cantina, ¡disfruta con nosotros de lo lindo de la
-                vida!
-              </p>
+              <img src="/img/logot1.png" alt="">
             </div>
           </div>
         </div>
@@ -132,8 +126,6 @@
             <div id="formOne" class="hidden">
               <h2>Login</h2>
               <form id="loginForm" action="./accion/loginUserFast.php" method="POST">
-                <input type="hidden" name="cud" id="cud" />
-
                 <label for="user">Cédula:</label>
                 <input type="text" id="cedula" name="cedula" maxlength="8" />
                 <label for="password">Celular:</label>
@@ -144,8 +136,6 @@
             <div id="formTwo" class="hidden">
               <h2>Registro</h2>
               <form id="registrationForm" action="./accion/putUser.php" method="POST">
-                <input type="hidden" name="cud" id="cud2" />
-
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" name="nombre" required />
                 <label for="cedulaRegist">Cédula:</label>
@@ -175,6 +165,14 @@
             <button id="verifyCode">Verificar</button>
             <button id="cancelLogin">Cancelar</button>
           </form>
+        </div>
+      </div>
+
+      <div id="installModal" class="install-modal">
+        <div class="imodal-content">
+          <span id="closeInstall" class="close">&times;</span>
+          <p>Instalá la APP aquí:</p>
+          <button id="installButton">Instalar</button>
         </div>
       </div>
 
@@ -233,9 +231,6 @@
           </div>
           <!-- Add more bento items as needed -->
         </div>
-        <div class="button-container">
-          <a href="#" class="button">Más Información</a>
-        </div>
       </section>
 
       <section class="about" id="about">
@@ -252,7 +247,7 @@
         </div>
       </section>
 
-      <section class="faq">
+      <!-- <section class="faq">
         <h2>Preguntas Frecuentes</h2>
 
         <button class="accordion">
@@ -278,7 +273,7 @@
         <div class="panel">
           <p>respuesta 3</p>
         </div>
-      </section>
+      </section> -->
 
       <section class="facilities">
         <h2>Nuestras Instalaciones</h2>
@@ -288,26 +283,6 @@
             <h3>Canchas de Última Generación</h3>
           </div>
           <!-- Añade más items según sea necesario -->
-        </div>
-      </section>
-
-      <section class="schedule">
-        <h2>Horarios</h2>
-        <div class="schedule-table">
-          <table>
-            <tr>
-              <th>Día</th>
-              <th>Horario</th>
-            </tr>
-            <tr>
-              <td>Lunes - Viernes</td>
-              <td>7:00 AM - 10:00 PM</td>
-            </tr>
-            <tr>
-              <td>Sábado - Domingo</td>
-              <td>8:00 AM - 8:00 PM</td>
-            </tr>
-          </table>
         </div>
       </section>
 
@@ -321,45 +296,18 @@
         </div>
       </section>
       <footer id="contact">
-        <div class="footer-column">
-          <h4>Company</h4>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            vehicula ex sit amet erat tincidunt, ac.
-          </p>
+        <div class="social-links">
+          <h2>SIGUENOS EN</h2>
+          <a href="https://www.facebook.com/people/Go-Padel-Florida/61564071791688/" target="_blank">
+            <img src="./img/facebook.png" alt="fb">
+          </a>
+          <a href="https://www.instagram.com/gopadelflorida/" target="_blank">
+            <img src="./img/instagram.png" alt="insta">
+          </a>
         </div>
-        <div class="footer-column">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="#home">Inicio</a></li>
-            <li><a href="#services">Servicios</a></li>
-            <li><a href="#about">Sobre Nosotros</a></li>
-            <li><a href="#contact">Contactos</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Contact Us</h4>
-          <p>123 Main Street, Anytown, USA</p>
-          <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
-          <p>Phone: +1 234 567 890</p>
-        </div>
-        <div class="footer-column">
-          <h4>Follow Us</h4>
-          <div class="social-icons">
-            <a href="#" aria-label="Facebook">&#xf09a;</a>
-            <a href="#" aria-label="Twitter">&#xf099;</a>
-            <a href="#" aria-label="Instagram">&#xf16d;</a>
-            <a href="#" aria-label="LinkedIn">&#xf08c;</a>
-          </div>
-        </div>
-        <div class="footer-column">
-          <h4>Contact Form</h4>
-          <form class="contact-form">
-            <input type="text" placeholder="Your name" required />
-            <input type="email" placeholder="Your email address" required />
-            <textarea rows="4" placeholder="Your message" required></textarea>
-            <button type="submit">Send Message</button>
-          </form>
+        <hr>
+        <div class="copyright">
+          <p>MCN Service © 2025</p>
         </div>
       </footer>
     </main>

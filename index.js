@@ -195,13 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setDiameter();
   });
 
-  function randomNumber() {
-    return Math.floor(100000 + Math.random() * 900000);
-  }
-
-  const veriCode = (document.getElementById("cud").value = randomNumber());
-  document.getElementById("cud2").value = veriCode;
-
   const loginModal = document.getElementById("loginModal");
   const cancelLogin = document.getElementById("cancelLogin");
   const verifyButton = document.getElementById("verifyCode");
@@ -211,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("loginForm")
     .addEventListener("submit", function (event) {
       event.preventDefault();
+      document.getElementById("loader2").style.display = "block";
 
       var formData = new FormData(this);
 
@@ -220,10 +214,15 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((response) => response.json())
         .then((data) => {
+          document.getElementById("loader2").style.display = "none";
           if (data.confirmacionResponse.codigoError === "0") {
             const token = data.confirmacionResponse.token;
             document.getElementById("cookie").value = token;
-            loginModal.style.display = "block";
+            if (data.confirmacionResponse.usSMS === true) {
+              loginModal.style.display = "block";
+            } else {
+              window.location.href = "/landing.php";
+            }
           } else {
             const errorMensaje =
               data.confirmacionResponse && data.confirmacionResponse.mensaje
@@ -259,7 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.confirmacionResponse.codigoError === "0") {
-          console.log("hola", cookie);
           let currentDate = new Date();
           currentDate.setTime(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
           let expires = "expires=" + currentDate.toUTCString();
@@ -294,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("registrationForm")
     .addEventListener("submit", function (event) {
       event.preventDefault(); // Prevent the default form submission
-
+      document.getElementById("loader2").style.display = "block";
       const formData = new FormData(this); // Get form data
 
       // Send the form data via AJAX (Fetch API)
@@ -304,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((response) => response.json()) // Parse the JSON response
         .then((data) => {
-          console.log(data);
+          document.getElementById("loader2").style.display = "none";
           // Check if the response contains confirmacionResponse and codigoError
           if (
             data &&
@@ -351,4 +349,63 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
     });
+
+  let deferredPrompt; // Will hold the event to trigger the install prompt
+
+  // Listen for the beforeinstallprompt event
+  window.addEventListener("beforeinstallprompt", (e) => {
+    // Prevent the default install prompt
+    e.preventDefault();
+
+    // Save the event so it can be triggered later
+    deferredPrompt = e;
+
+    // Show the install button
+    const installButton = document.getElementById("installButton");
+    const installModal = document.getElementById("installModal");
+    const closeInstall = document.getElementById("closeInstall");
+
+    installModal.style.display = "flex";
+    setTimeout(() => {
+      installModal.querySelector(".imodal-content").classList.add("show");
+    }, 10);
+
+    function closeModal() {
+      installModal.querySelector(".imodal-content").classList.remove("show");
+      setTimeout(() => {
+        installModal.style.display = "none";
+      }, 350);
+    }
+
+    closeInstall.onclick = closeModal;
+
+    // Add an event listener to the install button
+    installButton.addEventListener("click", () => {
+      closeModal();
+      // Show the install prompt when the button is clicked
+      deferredPrompt.prompt();
+
+      // Wait for the user to respond to the prompt
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the install prompt");
+        } else {
+          console.log("User dismissed the install prompt");
+        }
+        // Reset the deferredPrompt variable, as the prompt has been shown
+        deferredPrompt = null;
+      });
+    });
+  });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then((registration) => {
+        console.log("SW Registered", registration);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  }
 });

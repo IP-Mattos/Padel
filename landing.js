@@ -14,8 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
   const openReserve = document.getElementById("openReserve");
-  const openReserve2 = document.getElementById("openReserve2");
-  const closeProfile = document.getElementById("closeProfile");
   const closeReserve = document.getElementById("closeReserve");
   const close = document.getElementById("close");
   const close2 = document.getElementById("close2");
@@ -36,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   openReserve.onclick = openModal;
-  openReserve2.onclick = openModal;
   openProfile.onclick = openModal2;
   openProfile2.onclick = openModal2;
 
@@ -52,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
       modal2.style.display = "none";
     }, 350);
   }
-  closeProfile.onclick = closeModal2;
   close.onclick = closeModal;
   close2.onclick = closeModal2;
   closeReserve.onclick = closeModal;
@@ -88,10 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if this card represents today
     if (i === 0) {
       // Set the background color and increase font weight for today
-      dayCard.style.backgroundColor = "#1021b8"; // Change to your desired color
-      dayCard.querySelector(".day").style.textShadow = "1px 0 0 white"; // Increase font weight
-      dayCard.style.color = "white";
-      dayCard.querySelector(".date").style.textShadow = "1px 0 0 white";
+      dayCard.style.backgroundColor = "var(--primary-color)"; // Change to your desired color
+      dayCard.querySelector(".day").style.textShadow = "1px 0 0 black"; // Increase font weight
+      dayCard.style.color = "black";
+      dayCard.querySelector(".date").style.textShadow = "1px 0 0 black";
 
       // Set selected card to today
       selectedCard = dayCard;
@@ -113,10 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Set the background color and increase font weight of the clicked card
-      dayCard.style.backgroundColor = "#1021b8"; // Change to your desired color
-      dayCard.querySelector(".day").style.textShadow = "1px 0 0 white"; // Increase font weight
-      dayCard.style.color = "white";
-      dayCard.querySelector(".date").style.textShadow = "1px 0 0 white";
+      dayCard.style.backgroundColor = "var(--primary-color)"; // Change to your desired color
+      dayCard.querySelector(".day").style.textShadow = "1px 0 0 black"; // Increase font weight
+      dayCard.style.color = "black";
+      dayCard.querySelector(".date").style.textShadow = "1px 0 0 black";
 
       // Update the selected card
       selectedCard = dayCard;
@@ -196,11 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   style.textContent = `
     .card.selected {
-        background-color: #1021b8; /* Change to your desired color */
-        color: white;
+        background-color: var(--primary-color); /* Change to your desired color */
+        color: black;
     }
     .card.selected .hour {
-        text-shadow: 1px 0 0 white; /* Increase font weight */
+        text-shadow: 1px 0 0 black; /* Increase font weight */
     }`;
 
   document.head.appendChild(style);
