@@ -12,20 +12,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const cModal = document.getElementById("courtModal");
   const pModal = document.getElementById("profileModal");
   const caModal = document.getElementById("cantineModal");
+  const tModal = document.getElementById("trainingModal");
 
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
   const openReserve = document.getElementById("openReserve");
   const openCantine = document.getElementById("openCantine");
+  const openTraining = document.getElementById("openTraining");
 
   const closeReserve = document.getElementById("closeReserve");
   const closeProfile = document.getElementById("closeProfile");
   const closeCantine = document.getElementById("closeCantine");
+  const closeTraining = document.getElementById("closeTraining");
   const acceptReserve = document.getElementById("acceptReserve");
   const acceptCantine = document.getElementById("acceptCantine");
+  const acceptTraining = document.getElementById("acceptTraining");
 
   const courtCalendar = document.getElementById("court-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
+  const trainingCalendar = document.getElementById("training-calendar");
 
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
@@ -45,12 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
   openProfile.onclick = () => openModal(pModal, ".pModal-content");
   openProfile2.onclick = () => openModal(pModal, ".pModal-content");
   openCantine.onclick = () => openModal(caModal, ".caModal-content");
+  openTraining.onclick = () => openModal(tModal, ".tModal-content");
 
   closeReserve.onclick = () => closeModal(cModal, ".cModal-content");
   closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
   closeCantine.onclick = () => closeModal(caModal, ".caModal-content");
+  closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
   acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
+  acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
@@ -124,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const courtCalendarUtils = populateCalendarCards(courtCalendar);
   const cantineCalendarUtils = populateCalendarCards(cantineCalendar);
+  const trainingCalendarUtils = populateCalendarCards(trainingCalendar);
 
   const selectedCards = []; // Array to track selected cards
 
@@ -191,17 +200,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.head.appendChild(style);
   const courths = document.getElementById("court-hs"); // First container
   const cantinehs = document.getElementById("cantine-hs");
+  const traininghs = document.getElementById("training-hs");
 
   createHourCards(courths, new Date().getHours(), 9); // Current hour
   createHourCards(cantinehs, new Date().getHours(), 9);
+  createHourCards(traininghs, new Date().getHours(), 9);
 
   document.getElementById("editProfile").addEventListener("click", function () {
-    const displayElements = document.querySelectorAll(".profile-detail span");
-    const inputElements = document.querySelectorAll(".profile-detail input");
+    const rows = document.querySelectorAll(".profile-detail .row");
 
-    displayElements.forEach((span, index) => {
-      span.classList.add("hidden");
-      inputElements[index].classList.remove("hidden");
+    rows.forEach((row) => {
+      const span = row.querySelector("span");
+      const input = row.querySelector("input");
+
+      if (span && input) {
+        span.classList.add("hidden");
+        input.classList.remove("hidden");
+      }
     });
 
     document.getElementById("editProfile").classList.add("hidden");
@@ -209,13 +224,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("saveProfile").addEventListener("click", function () {
-    const displayElements = document.querySelectorAll(".profile-detail span");
-    const inputElements = document.querySelectorAll(".profile-detail input");
+    const rows = document.querySelectorAll(".profile-detail .row");
 
-    displayElements.forEach((span, index) => {
-      span.textContent = inputElements[index].value;
-      span.classList.remove("hidden");
-      inputElements[index].classList.add("hidden");
+    rows.forEach((row) => {
+      const span = row.querySelector("span");
+      const input = row.querySelector("input");
+
+      if (span && input) {
+        span.textContent = input.value;
+        span.classList.remove("hidden");
+        input.classList.add("hidden");
+      }
     });
 
     document.getElementById("editProfile").classList.remove("hidden");

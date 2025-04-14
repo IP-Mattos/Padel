@@ -58,7 +58,7 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resClases.png" alt="Imagen 2">
         </div>
         <h3>Clases</h3>
-        <div class="bento-item">
+        <div class="bento-item" id="openTraining">
           <img src="./img/resEntrenar.png" alt="Imagen 3">
         </div>
         <h3>Entrenar</h3>
@@ -83,23 +83,35 @@ if (isset($_SESSION['userId'])) {
     </section>
     <div id="courtModal" class="cModal">
       <div class="cModal-content">
-        <img src="./img/resCancha.png" alt="" id="court-ico">
+        <img src="./img/resCancha.png" alt="" class="service-ico">
         <span id="closeReserve" class="close">&times;</span>
         <h2>Reservando cancha</h2>
         <div class="calendar" id="court-calendar"></div>
-        <div class="court-hs" id="court-hs"></div>
+        <div class="hs" id="court-hs"></div>
         <div class="buttons">
           <button id="acceptReserve">Confirmar</button>
         </div>
       </div>
     </div>
+    <div id="trainingModal" class="tModal">
+      <div class="tModal-content">
+        <img src="./img/resEntrenar.png" alt="" class="service-ico">
+        <span id="closeTraining" class="close">&times;</span>
+        <h2>Reserva de entrenamiento</h2>
+        <div class="calendar" id="training-calendar"></div>
+        <div class="hs" id="training-hs"></div>
+        <div class="buttons">
+          <button id="acceptTraining">Confirmar</button>
+        </div>
+      </div>
+    </div>
     <div id="cantineModal" class="caModal">
       <div class="caModal-content">
-        <img src="./img/resChelada.png" alt="" id="chelada-ico">
+        <img src="./img/resChelada.png" alt="" class="service-ico">
         <span id="closeCantine" class="close">&times;</span>
         <h2>Reservando cantina</h2>
         <div class="calendar" id="cantine-calendar"></div>
-        <div class="cantine-hs" id="cantine-hs"></div>
+        <div class="hs" id="cantine-hs"></div>
         <div class="buttons">
           <button id="acceptCantine">Confirmar</button>
         </div>
@@ -115,7 +127,7 @@ if (isset($_SESSION['userId'])) {
           <div class="row">
             <h3>Nombre</h3>
             <span><?php echo $_SESSION['userNombre'] ?></span>
-            <input type="text" value="Guillermo Nicrosi" class="hidden" />
+            <input type="text" value="<?php echo $_SESSION['userNombre'] ?>" class="hidden" />
           </div>
           <hr />
           <div class="row">
@@ -137,25 +149,25 @@ if (isset($_SESSION['userId'])) {
             echo $formattedNumber;
             ?>
             </span>
-            <input type="text" value="091234567" class="hidden" />
+            <input type="text" value="<?php echo $formattedNumber ?>" class="hidden" />
           </div>
           <hr />
           <div class="row">
             <h3>Categoría</h3>
             <span><?php echo $_SESSION['userCategoria'] ?></span>
-            <input type="text" value="Hector V. Guillén 904" class="hidden" />
+            <input type="text" value="<?php echo $_SESSION['userCategoria'] ?>" class="hidden" />
           </div>
           <hr />
           <div class="row">
             <h3>Fecha de nacimiento</h3>
             <span><?php echo $_SESSION['userFechNac'] ?></span>
-            <input type="text" value="Hector V. Guillén 904" class="hidden" />
+            <input type="date" value="<?php echo $_SESSION['userFechNac'] ?>" class="hidden" />
           </div>
           <hr />
           <div class="row">
             <h3>Frase</h3>
             <span><?php echo $_SESSION['userFrase'] ?></span>
-            <input type="text" value="Hector V. Guillén 904" class="hidden" />
+            <input type="text" value="<?php echo $_SESSION['userFrase'] ?>" class="hidden" />
           </div>
           <hr />
           <button id="editProfile">Editar</button>

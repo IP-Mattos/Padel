@@ -135,7 +135,8 @@ nav.menu ul li a {
 
 .cModal,
 .pModal,
-.caModal {
+.caModal,
+.tModal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 1;
@@ -150,7 +151,8 @@ nav.menu ul li a {
 }
 .cModal-content,
 .pModal-content,
-.caModal-content {
+.caModal-content,
+.tModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -165,7 +167,8 @@ nav.menu ul li a {
   overflow-y: auto;
 }
 .cModal-content h2,
-.caModal-content h2 {
+.caModal-content h2,
+.tModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 5%;
@@ -259,8 +262,7 @@ nav.menu ul li a {
   border-top: 1px solid;
 }
 
-#court-ico,
-#chelada-ico {
+.service-ico {
   display: none;
   width: 100px;
   margin: auto auto 2%;
@@ -324,7 +326,8 @@ nav.menu ul li a {
   margin: 2%;
 }
 #acceptReserve,
-#acceptCantine {
+#acceptCantine,
+#acceptTraining {
   border: none;
   padding: 20px;
   border-radius: 5px;
@@ -335,22 +338,19 @@ nav.menu ul li a {
   font-weight: bold;
 }
 #acceptReserve:hover,
-#acceptCantine:hover {
+#acceptCantine:hover,
+#acceptTraining:hover {
   opacity: 0.8;
 }
 
-.court-hs,
-.practice-hs,
-.cantine-hs {
+.hs {
   display: flex; /* Change to flex for horizontal alignment */
   white-space: nowrap; /* Prevent line breaks */
   margin: auto auto 5%;
   justify-content: center;
 }
 
-.court-hs .card,
-.practice-hs .card,
-.cantine-hs .card {
+.hs .card {
   border: solid 1px;
   border-radius: 8px;
   width: 65px;
@@ -404,7 +404,8 @@ nav.menu ul li a {
   }
   .cModal-content,
   .pModal-content,
-  .caModal-content {
+  .caModal-content,
+  .tModal-content {
     margin: auto auto;
   }
   .bento-grid {
@@ -413,19 +414,18 @@ nav.menu ul li a {
   .bento-grid h3 {
     display: block;
   }
-  #court-ico,
-  #chelada-ico {
+  .service-ico {
     display: block;
   }
-  .court-hs,
-  .practice-hs,
-  .cantine-hs {
+  .hs {
     width: 80%;
     display: grid;
     grid-template-columns: auto auto auto;
     row-gap: 1rem;
   }
-  #acceptReserve {
+  #acceptReserve,
+  #acceptCantine,
+  #acceptTraining {
     width: 80%;
   }
   .bento-item {
