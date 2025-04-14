@@ -119,7 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
       this.value = this.value.replace(/[^0-9]/g, "");
     });
   };
-  ["cedula", "celular", "cedulaRegist", "phoneRegist"].forEach(sanitizeInput);
+  ["cedula", "celular", "cedulaRegist", "phoneRegist", "userInput"].forEach(
+    sanitizeInput
+  );
 
   const setSlider = () => {
     let oldActive = document.querySelector(".slider .list .item.active");
@@ -381,7 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add an event listener to the install button
     installButton.addEventListener("click", () => {
-      closeModal();
       // Show the install prompt when the button is clicked
       deferredPrompt.prompt();
 
@@ -391,6 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("User accepted the install prompt");
         } else {
           console.log("User dismissed the install prompt");
+          closeModal();
         }
         // Reset the deferredPrompt variable, as the prompt has been shown
         deferredPrompt = null;

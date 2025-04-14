@@ -133,8 +133,9 @@ nav.menu ul li a {
   width: 26px;
 }
 
-.modal,
-.modal2 {
+.cModal,
+.pModal,
+.caModal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 1;
@@ -142,29 +143,32 @@ nav.menu ul li a {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  backdrop-filter: blur(10px);
+  scrollbar-width: none;
 }
-.modal-content,
-.modal-content2 {
+.cModal-content,
+.pModal-content,
+.caModal-content {
   background-color: #061425;
   color: white;
-  margin: 1% auto;
+  margin: auto auto;
   padding: 20px;
   border-radius: 8px;
   width: 95%;
-  height: 95%;
+  height: max-content;
   position: relative;
   font-family: "Poppins";
   transform: translateY(100%); /* Start off-screen */
   transition: transform 0.3s ease; /* Sliding effect */
   overflow-y: auto;
 }
-.show {
-  transform: translateY(0); /* Slide into view */
-}
-.hidden {
-  display: none;
+.cModal-content h2,
+.caModal-content h2 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 5%;
 }
 .Services {
   max-width: var(--width-default);
@@ -255,6 +259,13 @@ nav.menu ul li a {
   border-top: 1px solid;
 }
 
+#court-ico,
+#chelada-ico {
+  display: none;
+  width: 100px;
+  margin: auto auto 2%;
+}
+
 .calendar {
   display: flex; /* Change to flex for horizontal alignment */
   overflow-x: auto; /* Enable horizontal scrolling */
@@ -312,68 +323,29 @@ nav.menu ul li a {
   justify-content: center;
   margin: 2%;
 }
-#acceptReserve {
+#acceptReserve,
+#acceptCantine {
   border: none;
   padding: 20px;
   border-radius: 5px;
   background-color: var(--primary-color);
   font-family: "Poppins";
   cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
 }
-#acceptReserve:hover {
+#acceptReserve:hover,
+#acceptCantine:hover {
   opacity: 0.8;
-}
-#closeReserve {
-  border: none;
-  padding: 20px;
-  border-radius: 5px;
-  margin-right: 10px;
-  background-color: rgb(254, 1, 3);
-  color: white;
-  font-family: "Poppins";
-  cursor: pointer;
-}
-#closeReserve:hover {
-  opacity: 0.8;
-}
-
-.court,
-.practice,
-.cantine {
-  height: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.court-img,
-.practice-img,
-.cantine-img {
-  display: flex;
-  width: 50%;
-  height: 70%;
-  margin: auto auto 2%;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.court-img img,
-.practice-img img,
-.cantine-img img {
-  width: 100%;
-  height: 100%;
 }
 
 .court-hs,
 .practice-hs,
 .cantine-hs {
   display: flex; /* Change to flex for horizontal alignment */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  overflow-y: visible;
   white-space: nowrap; /* Prevent line breaks */
-  margin: 10px;
-  max-width: 600px;
-  scrollbar-width: none; /* For Firefox */
+  margin: auto auto 5%;
+  justify-content: center;
 }
 
 .court-hs .card,
@@ -391,8 +363,7 @@ nav.menu ul li a {
   flex-direction: column;
   align-items: center;
 }
-.close,
-.close2 {
+.close {
   color: white;
   float: right;
   font-size: 28px;
@@ -403,11 +374,16 @@ nav.menu ul li a {
 }
 
 .close:hover,
-.close:focus,
-.close2:hover,
-.close2:focus {
+.close:focus {
   text-decoration: none;
   cursor: pointer;
+}
+
+.show {
+  transform: translateY(0); /* Slide into view */
+}
+.hidden {
+  display: none;
 }
 
 @media (max-width: 768px) {
@@ -426,9 +402,10 @@ nav.menu ul li a {
   nav.menu ul li a {
     font-size: 13px;
   }
-  .modal-content,
-  .modal-content2 {
-    margin: 2% auto;
+  .cModal-content,
+  .pModal-content,
+  .caModal-content {
+    margin: auto auto;
   }
   .bento-grid {
     grid-template-columns: auto auto;
@@ -436,20 +413,20 @@ nav.menu ul li a {
   .bento-grid h3 {
     display: block;
   }
-  .court,
-  .practice,
-  .cantine {
-    height: 30%;
+  #court-ico,
+  #chelada-ico {
+    display: block;
   }
   .court-hs,
   .practice-hs,
   .cantine-hs {
     width: 80%;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    row-gap: 1rem;
   }
-  .court-img,
-  .practice-img,
-  .cantine-img {
-    width: 70%;
+  #acceptReserve {
+    width: 80%;
   }
   .bento-item {
     height: 9rem;

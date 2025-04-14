@@ -127,9 +127,9 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
               <h2>Login</h2>
               <form id="loginForm" action="./accion/loginUserFast.php" method="POST">
                 <label for="user">Cédula:</label>
-                <input type="text" id="cedula" name="cedula" maxlength="8" />
+                <input type="tel" id="cedula" name="cedula" maxlength="8" />
                 <label for="password">Celular:</label>
-                <input type="text" id="celular" name="celular" maxlength="9" />
+                <input type="tel" id="celular" name="celular" maxlength="9" />
                 <button id="submitPassword" type="submit">Envíar</button>
               </form>
             </div>
@@ -139,9 +139,9 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" name="nombre" required />
                 <label for="cedulaRegist">Cédula:</label>
-                <input type="text" id="cedulaRegist" name="cedula" maxlength="8" required />
+                <input type="tel" id="cedulaRegist" name="cedula" maxlength="8" required />
                 <label for="phoneRegist">Celular:</label>
-                <input type="text" id="phoneRegist" name="celular" maxlength="9" required />
+                <input type="tel" id="phoneRegist" name="celular" maxlength="9" required />
                 <button id="submitRegist" type="submit">Envíar</button>
               </form>
             </div>
@@ -160,7 +160,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
         <div class="loginModal-content">
           <form id="verifyForm" action="./accion/getValidateCodigo6.php" method="POST">
             <p>Ingrese el código de confirmación que recibió a WhatsApp:</p>
-            <input type="text" name="userInput" id="userInput" placeholder="XXXXXX" maxlength="6" required />
+            <input type="text" name="userInput" id="userInput" placeholder="□□□□□□" maxlength="6" required />
             <input type="hidden" id="cookie">
             <button id="verifyCode">Verificar</button>
             <button id="cancelLogin">Cancelar</button>

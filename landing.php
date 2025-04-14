@@ -16,7 +16,7 @@ if (isset($_SESSION['userId'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="landing.css" />
-  <title>Responsive Navbar</title>
+  <title>Reservas</title>
 </head>
 <div id="loader" class="loader"></div>
 <div id="cover"></div>
@@ -66,7 +66,7 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resRivales.png" alt="Imagen 4">
         </div>
         <h3>Oponentes</h3>
-        <div class="bento-item">
+        <div class="bento-item" id="openCantine">
           <img src="./img/resChelada.png" alt="Imagen 5">
         </div>
         <h3>Cantina</h3>
@@ -81,35 +81,33 @@ if (isset($_SESSION['userId'])) {
         <!-- Add more bento items as needed -->
       </div>
     </section>
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span id="close" class="close">&times;</span>
-        <div class="calendar" id="calendar"></div>
-        <div class="court" id="court">
-          <div class="court-img"><img src="./img/padel-court.jpg" /></div>
-          <div class="court-hs" id="court-hs"></div>
-        </div>
-        <div class="practice" id="practice">
-          <div class="practice-img">
-            <img src="./img/padel-machine.avif" />
-          </div>
-          <div class="practice-hs" id="practice-hs"></div>
-        </div>
-        <div class="cantine" id="cantine">
-          <div class="cantine-img">
-            <img src="./img/padel-cantine.webp" />
-          </div>
-          <div class="cantine-hs" id="cantine-hs"></div>
-        </div>
+    <div id="courtModal" class="cModal">
+      <div class="cModal-content">
+        <img src="./img/resCancha.png" alt="" id="court-ico">
+        <span id="closeReserve" class="close">&times;</span>
+        <h2>Reservando cancha</h2>
+        <div class="calendar" id="court-calendar"></div>
+        <div class="court-hs" id="court-hs"></div>
         <div class="buttons">
-          <button id="closeReserve">Cancelar</button>
-          <button id="acceptReserve">Aceptar</button>
+          <button id="acceptReserve">Confirmar</button>
         </div>
       </div>
     </div>
-    <div id="myModal2" class="modal2">
-      <div class="modal-content2">
-        <span id="close2" class="close2">&times;</span>
+    <div id="cantineModal" class="caModal">
+      <div class="caModal-content">
+        <img src="./img/resChelada.png" alt="" id="chelada-ico">
+        <span id="closeCantine" class="close">&times;</span>
+        <h2>Reservando cantina</h2>
+        <div class="calendar" id="cantine-calendar"></div>
+        <div class="cantine-hs" id="cantine-hs"></div>
+        <div class="buttons">
+          <button id="acceptCantine">Confirmar</button>
+        </div>
+      </div>
+    </div>
+    <div id="profileModal" class="pModal">
+      <div class="pModal-content">
+        <span id="closeProfile" class="close">&times;</span>
         <div class="profile">
           <img src="./img/profile.png" alt="perfil" />
         </div>
