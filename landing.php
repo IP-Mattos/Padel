@@ -54,7 +54,7 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resCancha.png" alt="Imagen 1" />
         </div>
         <h3>Canchas</h3>
-        <div class="bento-item">
+        <div class="bento-item" id="openClasses">
           <img src="./img/resClases.png" alt="Imagen 2">
         </div>
         <h3>Clases</h3>
@@ -90,6 +90,36 @@ if (isset($_SESSION['userId'])) {
         <div class="hs" id="court-hs"></div>
         <div class="buttons">
           <button id="acceptReserve">Confirmar</button>
+        </div>
+      </div>
+    </div>
+    <div id="classesModal" class="clModal">
+      <div class="clModal-content">
+        <img src="./img/resClases.png" alt="" class="service-ico">
+        <span id="closeClasses" class="close">&times;</span>
+        <h2>Seleccione profesor</h2>
+        <div class="teachContainer">
+          <div class="teachCard" data-teacher="1"></div>
+          <div class="teachCard" data-teacher="2"></div>
+          <div class="teachCard" data-teacher="3"></div>
+        </div>
+        <div class="classContainer">
+          <div class="class1cards">
+            <div class="classCard"></div>
+            <div class="classCard"></div>
+          </div>
+          <div class="class2cards">
+            <div class="classCard"></div>
+            <div class="classCard"></div>
+            <div class="classCard"></div>
+          </div>
+          <div class="class3cards">
+            <div class="classCard"></div>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="backToTeachers">Volver</button>
+          <button id="acceptClasses">Confirmar</button>
         </div>
       </div>
     </div>

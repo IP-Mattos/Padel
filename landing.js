@@ -13,20 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const pModal = document.getElementById("profileModal");
   const caModal = document.getElementById("cantineModal");
   const tModal = document.getElementById("trainingModal");
+  const clModal = document.getElementById("classesModal");
 
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
   const openReserve = document.getElementById("openReserve");
   const openCantine = document.getElementById("openCantine");
   const openTraining = document.getElementById("openTraining");
+  const openClasses = document.getElementById("openClasses");
 
   const closeReserve = document.getElementById("closeReserve");
   const closeProfile = document.getElementById("closeProfile");
   const closeCantine = document.getElementById("closeCantine");
   const closeTraining = document.getElementById("closeTraining");
+  const closeClasses = document.getElementById("closeClasses");
   const acceptReserve = document.getElementById("acceptReserve");
   const acceptCantine = document.getElementById("acceptCantine");
   const acceptTraining = document.getElementById("acceptTraining");
+  const acceptClasses = document.getElementById("acceptClasses");
 
   const courtCalendar = document.getElementById("court-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
@@ -51,14 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
   openProfile2.onclick = () => openModal(pModal, ".pModal-content");
   openCantine.onclick = () => openModal(caModal, ".caModal-content");
   openTraining.onclick = () => openModal(tModal, ".tModal-content");
+  openClasses.onclick = () => openModal(clModal, ".clModal-content");
 
   closeReserve.onclick = () => closeModal(cModal, ".cModal-content");
   closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
   closeCantine.onclick = () => closeModal(caModal, ".caModal-content");
   closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
+  closeClasses.onclick = () => closeModal(clModal, ".clModal-content");
   acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
+  acceptClasses.onclick = () => closeModal(clModal, ".clModal-content");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
@@ -239,5 +246,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("editProfile").classList.remove("hidden");
     document.getElementById("saveProfile").classList.add("hidden");
+  });
+
+  const teachCards = document.querySelectorAll(".teachCard");
+  const teachContainer = document.querySelector(".teachContainer");
+  const classContainer = document.querySelector(".classContainer");
+  const classSections = {
+    1: document.querySelector(".class1cards"),
+    2: document.querySelector(".class2cards"),
+    3: document.querySelector(".class3cards"),
+  };
+  const backBtn = document.getElementById("backToTeachers");
+
+  //hide all class card sections initially
+  Object.values(classSections).forEach(
+    (section) => (section.style.display = "none")
+  );
+  classContainer.style.display = "none";
+
+  teachCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const teacher = card.getAttribute("data-teacher");
+
+      //hide teacher selection
+      teachContainer.style.display = "none";
+
+      //show class container
+      classContainer.style.display = "block";
+
+      //hide all class cards and only show the selected one
+      Object.entries(classSections).forEach(([key, section]) => {
+        section.style.display = key === teacher ? "grid" : "none";
+      });
+    });
+  });
+
+  backBtn.addEventListener("click", () => {
+    //show teacher selection
+    teachContainer.style.display = "grid";
+
+    //hide class container
+    classContainer.style.display = "none";
+
+    //hide all class card sections
+    Object.values(classSections).forEach((section) => {
+      section.style.display = "none";
+    });
   });
 });

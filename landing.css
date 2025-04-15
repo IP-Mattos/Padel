@@ -136,7 +136,8 @@ nav.menu ul li a {
 .cModal,
 .pModal,
 .caModal,
-.tModal {
+.tModal,
+.clModal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 1;
@@ -152,7 +153,8 @@ nav.menu ul li a {
 .cModal-content,
 .pModal-content,
 .caModal-content,
-.tModal-content {
+.tModal-content,
+.clModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -168,11 +170,43 @@ nav.menu ul li a {
 }
 .cModal-content h2,
 .caModal-content h2,
-.tModal-content h2 {
+.tModal-content h2,
+.clModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 5%;
 }
+
+.teachContainer {
+  display: grid;
+  margin: auto auto 5%;
+  grid-template-columns: repeat(3, 100px);
+  gap: 1rem;
+  justify-content: center;
+}
+
+.teachCard {
+  height: 100px;
+  background-color: blue;
+  border-radius: 5px;
+}
+
+.classCard {
+  height: 100px;
+  background-color: green;
+  border-radius: 5px;
+}
+
+.class1cards,
+.class2cards,
+.class3cards {
+  display: none;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 100px);
+  justify-content: center;
+  margin-bottom: 5%;
+}
+
 .Services {
   max-width: var(--width-default);
   padding: 3rem 1rem;
@@ -324,10 +358,13 @@ nav.menu ul li a {
   align-items: center;
   justify-content: center;
   margin: 2%;
+  gap: 1rem;
 }
 #acceptReserve,
 #acceptCantine,
-#acceptTraining {
+#acceptTraining,
+#acceptClasses,
+#backToTeachers {
   border: none;
   padding: 20px;
   border-radius: 5px;
@@ -339,7 +376,9 @@ nav.menu ul li a {
 }
 #acceptReserve:hover,
 #acceptCantine:hover,
-#acceptTraining:hover {
+#acceptTraining:hover,
+#acceptClasses:hover,
+#backToTeachers:hover {
   opacity: 0.8;
 }
 
@@ -405,7 +444,8 @@ nav.menu ul li a {
   .cModal-content,
   .pModal-content,
   .caModal-content,
-  .tModal-content {
+  .tModal-content,
+  .clModal-content {
     margin: auto auto;
   }
   .bento-grid {
@@ -425,7 +465,9 @@ nav.menu ul li a {
   }
   #acceptReserve,
   #acceptCantine,
-  #acceptTraining {
+  #acceptTraining,
+  #acceptClasses,
+  #backToTeachers {
     width: 80%;
   }
   .bento-item {
