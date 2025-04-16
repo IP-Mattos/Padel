@@ -180,21 +180,32 @@ nav.menu ul li a {
 .teachContainer {
   display: grid;
   margin: auto auto 5%;
-  grid-template-columns: repeat(3, 100px);
+  grid-template-columns: repeat(3, auto);
   gap: 1rem;
   justify-content: center;
 }
 
 .teachCard {
-  height: 100px;
+  height: 150px;
   background-color: blue;
   border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  padding: 5px;
 }
 
 .classCard {
-  height: 100px;
+  height: 150px;
   background-color: green;
   border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px;
 }
 
 .class1cards,
@@ -202,7 +213,7 @@ nav.menu ul li a {
 .class3cards {
   display: none;
   gap: 1rem;
-  grid-template-columns: repeat(3, 100px);
+  grid-template-columns: repeat(3, auto);
   justify-content: center;
   margin-bottom: 5%;
 }
@@ -360,10 +371,13 @@ nav.menu ul li a {
   margin: 2%;
   gap: 1rem;
 }
+#backToTeachers {
+  display: none;
+}
+
 #acceptReserve,
 #acceptCantine,
 #acceptTraining,
-#acceptClasses,
 #backToTeachers {
   border: none;
   padding: 20px;
@@ -377,7 +391,6 @@ nav.menu ul li a {
 #acceptReserve:hover,
 #acceptCantine:hover,
 #acceptTraining:hover,
-#acceptClasses:hover,
 #backToTeachers:hover {
   opacity: 0.8;
 }
@@ -466,7 +479,6 @@ nav.menu ul li a {
   #acceptReserve,
   #acceptCantine,
   #acceptTraining,
-  #acceptClasses,
   #backToTeachers {
     width: 80%;
   }

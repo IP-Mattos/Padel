@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const acceptReserve = document.getElementById("acceptReserve");
   const acceptCantine = document.getElementById("acceptCantine");
   const acceptTraining = document.getElementById("acceptTraining");
-  const acceptClasses = document.getElementById("acceptClasses");
 
   const courtCalendar = document.getElementById("court-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
@@ -65,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
-  acceptClasses.onclick = () => closeModal(clModal, ".clModal-content");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
@@ -274,6 +272,9 @@ document.addEventListener("DOMContentLoaded", () => {
       //show class container
       classContainer.style.display = "block";
 
+      //show back button
+      backBtn.style.display = "block";
+
       //hide all class cards and only show the selected one
       Object.entries(classSections).forEach(([key, section]) => {
         section.style.display = key === teacher ? "grid" : "none";
@@ -287,6 +288,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //hide class container
     classContainer.style.display = "none";
+
+    //hide back button
+    backBtn.style.display = "none";
 
     //hide all class card sections
     Object.values(classSections).forEach((section) => {

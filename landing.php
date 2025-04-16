@@ -99,27 +99,50 @@ if (isset($_SESSION['userId'])) {
         <span id="closeClasses" class="close">&times;</span>
         <h2>Seleccione profesor</h2>
         <div class="teachContainer">
-          <div class="teachCard" data-teacher="1"></div>
-          <div class="teachCard" data-teacher="2"></div>
-          <div class="teachCard" data-teacher="3"></div>
+          <div class="teachCard" data-teacher="1">
+            <h3>Fulano Mendez</h3>
+          </div>
+          <div class="teachCard" data-teacher="2">
+            <h3>Mengano Rodriguez</h3>
+          </div>
+          <div class="teachCard" data-teacher="3">
+            <h3>Gaitano Perez</h3>
+          </div>
         </div>
         <div class="classContainer">
           <div class="class1cards">
-            <div class="classCard"></div>
-            <div class="classCard"></div>
+            <div class="classCard">
+              <h3>Lu-Mi-Vi</h3>
+              <h3>18hs - 19hs</h3>
+            </div>
+            <div class="classCard">
+              <h3>Lu-Mi-Vi</h3>
+              <h3>20hs - 21hs</h3>
+            </div>
           </div>
           <div class="class2cards">
-            <div class="classCard"></div>
-            <div class="classCard"></div>
-            <div class="classCard"></div>
+            <div class="classCard">
+              <h3>Lu-Mi-Vi</h3>
+              <h3>18hs - 19hs</h3>
+            </div>
+            <div class="classCard">
+              <h3>Lu-Mi-Vi</h3>
+              <h3>18hs - 19hs</h3>
+            </div>
+            <div class="classCard">
+              <h3>Ma-Ju</h3>
+              <h3>17hs - 18hs</h3>
+            </div>
           </div>
           <div class="class3cards">
-            <div class="classCard"></div>
+            <div class="classCard">
+              <h3>Ma-Ju</h3>
+              <h3>17hs - 18hs</h3>
+            </div>
           </div>
         </div>
         <div class="buttons">
           <button id="backToTeachers">Volver</button>
-          <button id="acceptClasses">Confirmar</button>
         </div>
       </div>
     </div>
