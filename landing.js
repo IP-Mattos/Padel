@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const caModal = document.getElementById("cantineModal");
   const tModal = document.getElementById("trainingModal");
   const clModal = document.getElementById("classesModal");
+  const rModal = document.getElementById("rivalsModal");
 
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
@@ -21,19 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const openCantine = document.getElementById("openCantine");
   const openTraining = document.getElementById("openTraining");
   const openClasses = document.getElementById("openClasses");
+  const openRivals = document.getElementById("openRivals");
 
   const closeReserve = document.getElementById("closeReserve");
   const closeProfile = document.getElementById("closeProfile");
   const closeCantine = document.getElementById("closeCantine");
   const closeTraining = document.getElementById("closeTraining");
   const closeClasses = document.getElementById("closeClasses");
+  const closeRivals = document.getElementById("closeRivals");
   const acceptReserve = document.getElementById("acceptReserve");
   const acceptCantine = document.getElementById("acceptCantine");
   const acceptTraining = document.getElementById("acceptTraining");
+  const acceptRivals = document.getElementById("acceptRivals");
 
   const courtCalendar = document.getElementById("court-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
   const trainingCalendar = document.getElementById("training-calendar");
+  const rivalsCalendar = document.getElementById("rivals-calendar");
 
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
@@ -55,15 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
   openCantine.onclick = () => openModal(caModal, ".caModal-content");
   openTraining.onclick = () => openModal(tModal, ".tModal-content");
   openClasses.onclick = () => openModal(clModal, ".clModal-content");
+  openRivals.onclick = () => openModal(rModal, ".rModal-content");
 
   closeReserve.onclick = () => closeModal(cModal, ".cModal-content");
   closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
   closeCantine.onclick = () => closeModal(caModal, ".caModal-content");
   closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
   closeClasses.onclick = () => closeModal(clModal, ".clModal-content");
+  closeRivals.onclick = () => closeModal(rModal, ".rModal-content");
   acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
+  acceptRivals.onclick = () => closeModal(rModal, ".rModal-content");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
@@ -138,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const courtCalendarUtils = populateCalendarCards(courtCalendar);
   const cantineCalendarUtils = populateCalendarCards(cantineCalendar);
   const trainingCalendarUtils = populateCalendarCards(trainingCalendar);
+  const rivalsCalendarUtils = populateCalendarCards(rivalsCalendar);
 
   const selectedCards = []; // Array to track selected cards
 
@@ -206,10 +215,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const courths = document.getElementById("court-hs"); // First container
   const cantinehs = document.getElementById("cantine-hs");
   const traininghs = document.getElementById("training-hs");
+  const rivalshs = document.getElementById("rivals-hs");
 
   createHourCards(courths, new Date().getHours(), 9); // Current hour
   createHourCards(cantinehs, new Date().getHours(), 9);
   createHourCards(traininghs, new Date().getHours(), 9);
+  createHourCards(rivalshs, new Date().getHours(), 9);
 
   document.getElementById("editProfile").addEventListener("click", function () {
     const rows = document.querySelectorAll(".profile-detail .row");
@@ -270,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
       teachContainer.style.display = "none";
 
       //show class container
-      classContainer.style.display = "block";
+      classContainer.style.display = "grid";
 
       //show back button
       backBtn.style.display = "block";

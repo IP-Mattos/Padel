@@ -62,7 +62,7 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resEntrenar.png" alt="Imagen 3">
         </div>
         <h3>Entrenar</h3>
-        <div class="bento-item">
+        <div class="bento-item" id="openRivals">
           <img src="./img/resRivales.png" alt="Imagen 4">
         </div>
         <h3>Oponentes</h3>
@@ -157,6 +157,18 @@ if (isset($_SESSION['userId'])) {
           <button id="acceptTraining">Confirmar</button>
         </div>
       </div>
+    </div>
+    <div id="rivalsModal" class="rModal">
+      <h class="rModal-content">
+        <img src="./img/resRivales.png" alt="" class="service-ico">
+        <span id="closeRivals" class="close">&times;</span>
+        <h2>Crear partido</h2>
+        <div class="calendar" id="rivals-calendar"></div>
+        <div class="hs" id="rivals-hs"></div>
+        <div class="buttons">
+          <button id="acceptRivals">Confirmar</button>
+        </div>
+    </div>
     </div>
     <div id="cantineModal" class="caModal">
       <div class="caModal-content">

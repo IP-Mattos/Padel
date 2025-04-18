@@ -137,7 +137,8 @@ nav.menu ul li a {
 .pModal,
 .caModal,
 .tModal,
-.clModal {
+.clModal,
+.rModal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 1;
@@ -154,7 +155,8 @@ nav.menu ul li a {
 .pModal-content,
 .caModal-content,
 .tModal-content,
-.clModal-content {
+.clModal-content,
+.rModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -171,7 +173,8 @@ nav.menu ul li a {
 .cModal-content h2,
 .caModal-content h2,
 .tModal-content h2,
-.clModal-content h2 {
+.clModal-content h2,
+.rModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 5%;
@@ -179,8 +182,8 @@ nav.menu ul li a {
 
 .teachContainer {
   display: grid;
-  margin: auto auto 5%;
-  grid-template-columns: repeat(3, auto);
+  margin: auto auto;
+  grid-template-columns: repeat(3, 200px);
   gap: 1rem;
   justify-content: center;
 }
@@ -190,10 +193,10 @@ nav.menu ul li a {
   background-color: blue;
   border-radius: 5px;
   cursor: pointer;
-  text-align: center;
   display: flex;
   align-items: center;
   padding: 5px;
+  justify-content: center;
 }
 
 .classCard {
@@ -201,10 +204,10 @@ nav.menu ul li a {
   background-color: green;
   border-radius: 5px;
   cursor: pointer;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
   padding: 5px;
 }
 
@@ -213,9 +216,8 @@ nav.menu ul li a {
 .class3cards {
   display: none;
   gap: 1rem;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 200px);
   justify-content: center;
-  margin-bottom: 5%;
 }
 
 .Services {
@@ -378,6 +380,7 @@ nav.menu ul li a {
 #acceptReserve,
 #acceptCantine,
 #acceptTraining,
+#acceptRivals,
 #backToTeachers {
   border: none;
   padding: 20px;
@@ -391,6 +394,7 @@ nav.menu ul li a {
 #acceptReserve:hover,
 #acceptCantine:hover,
 #acceptTraining:hover,
+#acceptRivals:hover,
 #backToTeachers:hover {
   opacity: 0.8;
 }
@@ -458,7 +462,8 @@ nav.menu ul li a {
   .pModal-content,
   .caModal-content,
   .tModal-content,
-  .clModal-content {
+  .clModal-content,
+  .rModal-content {
     margin: auto auto;
   }
   .bento-grid {
@@ -479,12 +484,19 @@ nav.menu ul li a {
   #acceptReserve,
   #acceptCantine,
   #acceptTraining,
+  #acceptRivals,
   #backToTeachers {
     width: 80%;
   }
   .bento-item {
     height: 9rem;
     width: 9rem;
+  }
+  .teachContainer,
+  .class1cards,
+  .class2cards,
+  .class3cards {
+    grid-template-columns: repeat(auto-fill, 200px);
   }
 }
 @keyframes loading-bounce {
