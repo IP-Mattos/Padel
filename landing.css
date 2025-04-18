@@ -180,6 +180,10 @@ nav.menu ul li a {
   margin-bottom: 5%;
 }
 
+#selectClass {
+  display: none;
+}
+
 .teachContainer {
   display: grid;
   margin: auto auto;

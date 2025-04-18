@@ -260,6 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const teachCards = document.querySelectorAll(".teachCard");
   const teachContainer = document.querySelector(".teachContainer");
   const classContainer = document.querySelector(".classContainer");
+  const teachTitle = document.getElementById("selectTeach");
+  const classTitle = document.getElementById("selectClass");
   const classSections = {
     1: document.querySelector(".class1cards"),
     2: document.querySelector(".class2cards"),
@@ -283,6 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
       //show class container
       classContainer.style.display = "grid";
 
+      //show the class title
+      classTitle.style.display = "block";
+
+      //hide the teacher title
+      teachTitle.style.display = "none";
+
       //show back button
       backBtn.style.display = "block";
 
@@ -299,6 +307,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //hide class container
     classContainer.style.display = "none";
+
+    //hide class title
+    classTitle.style.display = "none";
+
+    //show teacher title
+    teachTitle.style.display = "block";
 
     //hide back button
     backBtn.style.display = "none";

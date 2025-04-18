@@ -97,7 +97,8 @@ if (isset($_SESSION['userId'])) {
       <div class="clModal-content">
         <img src="./img/resClases.png" alt="" class="service-ico">
         <span id="closeClasses" class="close">&times;</span>
-        <h2>Seleccione profesor</h2>
+        <h2 id="selectTeach">Seleccione profesor</h2>
+        <h2 id="selectClass">Seleccione horario</h2>
         <div class="teachContainer">
           <div class="teachCard" data-teacher="1">
             <h3>Fulano Mendez</h3>
