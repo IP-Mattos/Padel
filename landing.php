@@ -70,7 +70,7 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resChelada.png" alt="Imagen 5">
         </div>
         <h3>Cantina</h3>
-        <div class="bento-item">
+        <div class="bento-item" id="openMembers">
           <img src="./img/socios.png" alt="Imagen 6" />
         </div>
         <h3>Socios</h3>
@@ -180,6 +180,22 @@ if (isset($_SESSION['userId'])) {
         <div class="hs" id="cantine-hs"></div>
         <div class="buttons">
           <button id="acceptCantine">Confirmar</button>
+        </div>
+      </div>
+    </div>
+    <div id="membersModal" class="sModal">
+      <div class="sModal-content">
+        <img src="./img/socios.png" alt="" class="service-ico">
+        <span id="closeMembers" class="close">&times;</span>
+        <h2>Desea volverse socio?</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non velit neque molestiae eum quo officia rerum
+          veniam mollitia, sed perspiciatis cupiditate ducimus vitae modi dignissimos aperiam dolorem nemo temporibus
+          rem?
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid, iusto asperiores. Eaque accusamus est sunt,
+          eveniet quibusdam quia nostrum ex eius pariatur aspernatur ratione modi magnam culpa, provident dolorum in.
+        </p>
+        <div class="buttons">
+          <button id="acceptMembers">Confirmar</button>
         </div>
       </div>
     </div>

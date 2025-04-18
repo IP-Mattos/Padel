@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tModal = document.getElementById("trainingModal");
   const clModal = document.getElementById("classesModal");
   const rModal = document.getElementById("rivalsModal");
+  const sModal = document.getElementById("membersModal");
 
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openTraining = document.getElementById("openTraining");
   const openClasses = document.getElementById("openClasses");
   const openRivals = document.getElementById("openRivals");
+  const openMembers = document.getElementById("openMembers");
 
   const closeReserve = document.getElementById("closeReserve");
   const closeProfile = document.getElementById("closeProfile");
@@ -30,10 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeTraining = document.getElementById("closeTraining");
   const closeClasses = document.getElementById("closeClasses");
   const closeRivals = document.getElementById("closeRivals");
+  const closeMembers = document.getElementById("closeMembers");
   const acceptReserve = document.getElementById("acceptReserve");
   const acceptCantine = document.getElementById("acceptCantine");
   const acceptTraining = document.getElementById("acceptTraining");
   const acceptRivals = document.getElementById("acceptRivals");
+  const acceptMembers = document.getElementById("acceptMembers");
 
   const courtCalendar = document.getElementById("court-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
@@ -61,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   openTraining.onclick = () => openModal(tModal, ".tModal-content");
   openClasses.onclick = () => openModal(clModal, ".clModal-content");
   openRivals.onclick = () => openModal(rModal, ".rModal-content");
+  openMembers.onclick = () => openModal(sModal, ".sModal-content");
 
   closeReserve.onclick = () => closeModal(cModal, ".cModal-content");
   closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
@@ -68,10 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
   closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
   closeClasses.onclick = () => closeModal(clModal, ".clModal-content");
   closeRivals.onclick = () => closeModal(rModal, ".rModal-content");
+  closeMembers.onclick = () => closeModal(sModal, ".sModal-content");
   acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
   acceptRivals.onclick = () => closeModal(rModal, ".rModal-content");
+  acceptMembers.onclick = () => closeModal(sModal, ".sModal-content");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
