@@ -269,14 +269,14 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  //================================================>
-  //HOURS
-  //================================================>
-
   const courtCalendarUtils = populateCalendarCards(courtCalendar);
   const cantineCalendarUtils = populateCalendarCards(cantineCalendar);
   const trainingCalendarUtils = populateCalendarCards(trainingCalendar);
   const rivalsCalendarUtils = populateCalendarCards(rivalsCalendar);
+
+  //================================================>
+  //HOURS
+  //================================================>
 
   const selectedCards = []; // Array to track selected cards
 
