@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  //============================================>
+  //LOADER
+  //============================================>
   const cover = document.getElementById("cover");
   const loader = document.getElementById("loader");
   document.body.style.overflow = "hidden";
@@ -9,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "auto";
   };
 
+  //============================================>
+  //MODALS
+  //============================================>
   const cModal = document.getElementById("courtModal");
   const pModal = document.getElementById("profileModal");
   const caModal = document.getElementById("cantineModal");
@@ -38,11 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const acceptTraining = document.getElementById("acceptTraining");
   const acceptRivals = document.getElementById("acceptRivals");
   const acceptMembers = document.getElementById("acceptMembers");
-
-  const courtCalendar = document.getElementById("court-calendar");
-  const cantineCalendar = document.getElementById("cantine-calendar");
-  const trainingCalendar = document.getElementById("training-calendar");
-  const rivalsCalendar = document.getElementById("rivals-calendar");
 
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
@@ -79,6 +80,124 @@ document.addEventListener("DOMContentLoaded", () => {
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
   acceptRivals.onclick = () => closeModal(rModal, ".rModal-content");
   acceptMembers.onclick = () => closeModal(sModal, ".sModal-content");
+
+  //===================================>
+  //PROFILE MODAL
+  //===================================>
+
+  document.getElementById("editProfile").addEventListener("click", function () {
+    const rows = document.querySelectorAll(".profile-detail .row");
+
+    rows.forEach((row) => {
+      const span = row.querySelector("span");
+      const input = row.querySelector("input");
+
+      if (span && input) {
+        span.classList.add("hidden");
+        input.classList.remove("hidden");
+      }
+    });
+
+    document.getElementById("editProfile").classList.add("hidden");
+    document.getElementById("saveProfile").classList.remove("hidden");
+  });
+
+  document.getElementById("saveProfile").addEventListener("click", function () {
+    const rows = document.querySelectorAll(".profile-detail .row");
+
+    rows.forEach((row) => {
+      const span = row.querySelector("span");
+      const input = row.querySelector("input");
+
+      if (span && input) {
+        span.textContent = input.value;
+        span.classList.remove("hidden");
+        input.classList.add("hidden");
+      }
+    });
+
+    document.getElementById("editProfile").classList.remove("hidden");
+    document.getElementById("saveProfile").classList.add("hidden");
+  });
+
+  //==================================>
+  //CLASSES MODAL
+  //==================================>
+
+  const teachCards = document.querySelectorAll(".teachCard");
+  const teachContainer = document.querySelector(".teachContainer");
+  const classContainer = document.querySelector(".classContainer");
+  const teachTitle = document.getElementById("selectTeach");
+  const classTitle = document.getElementById("selectClass");
+  const classSections = {
+    1: document.querySelector(".class1cards"),
+    2: document.querySelector(".class2cards"),
+    3: document.querySelector(".class3cards"),
+  };
+  const backBtn = document.getElementById("backToTeachers");
+
+  //hide all class card sections initially
+  Object.values(classSections).forEach(
+    (section) => (section.style.display = "none")
+  );
+  classContainer.style.display = "none";
+
+  teachCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const teacher = card.getAttribute("data-teacher");
+
+      //hide teacher selection
+      teachContainer.style.display = "none";
+
+      //show class container
+      classContainer.style.display = "grid";
+
+      //show the class title
+      classTitle.style.display = "block";
+
+      //hide the teacher title
+      teachTitle.style.display = "none";
+
+      //show back button
+      backBtn.style.display = "block";
+
+      //hide all class cards and only show the selected one
+      Object.entries(classSections).forEach(([key, section]) => {
+        section.style.display = key === teacher ? "grid" : "none";
+      });
+    });
+  });
+
+  backBtn.addEventListener("click", () => {
+    //show teacher selection
+    teachContainer.style.display = "grid";
+
+    //hide class container
+    classContainer.style.display = "none";
+
+    //hide class title
+    classTitle.style.display = "none";
+
+    //show teacher title
+    teachTitle.style.display = "block";
+
+    //hide back button
+    backBtn.style.display = "none";
+
+    //hide all class card sections
+    Object.values(classSections).forEach((section) => {
+      section.style.display = "none";
+    });
+  });
+
+  //===================================================>
+  //CALENDARS
+  //===================================================>
+
+  const courtCalendar = document.getElementById("court-calendar");
+  const cantineCalendar = document.getElementById("cantine-calendar");
+  const trainingCalendar = document.getElementById("training-calendar");
+  const rivalsCalendar = document.getElementById("rivals-calendar");
 
   function populateCalendarCards(containerDiv) {
     const today = new Date();
@@ -149,6 +268,10 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleCardSelection,
     };
   }
+
+  //================================================>
+  //HOURS
+  //================================================>
 
   const courtCalendarUtils = populateCalendarCards(courtCalendar);
   const cantineCalendarUtils = populateCalendarCards(cantineCalendar);
@@ -228,105 +351,4 @@ document.addEventListener("DOMContentLoaded", () => {
   createHourCards(cantinehs, new Date().getHours(), 9);
   createHourCards(traininghs, new Date().getHours(), 9);
   createHourCards(rivalshs, new Date().getHours(), 9);
-
-  document.getElementById("editProfile").addEventListener("click", function () {
-    const rows = document.querySelectorAll(".profile-detail .row");
-
-    rows.forEach((row) => {
-      const span = row.querySelector("span");
-      const input = row.querySelector("input");
-
-      if (span && input) {
-        span.classList.add("hidden");
-        input.classList.remove("hidden");
-      }
-    });
-
-    document.getElementById("editProfile").classList.add("hidden");
-    document.getElementById("saveProfile").classList.remove("hidden");
-  });
-
-  document.getElementById("saveProfile").addEventListener("click", function () {
-    const rows = document.querySelectorAll(".profile-detail .row");
-
-    rows.forEach((row) => {
-      const span = row.querySelector("span");
-      const input = row.querySelector("input");
-
-      if (span && input) {
-        span.textContent = input.value;
-        span.classList.remove("hidden");
-        input.classList.add("hidden");
-      }
-    });
-
-    document.getElementById("editProfile").classList.remove("hidden");
-    document.getElementById("saveProfile").classList.add("hidden");
-  });
-
-  const teachCards = document.querySelectorAll(".teachCard");
-  const teachContainer = document.querySelector(".teachContainer");
-  const classContainer = document.querySelector(".classContainer");
-  const teachTitle = document.getElementById("selectTeach");
-  const classTitle = document.getElementById("selectClass");
-  const classSections = {
-    1: document.querySelector(".class1cards"),
-    2: document.querySelector(".class2cards"),
-    3: document.querySelector(".class3cards"),
-  };
-  const backBtn = document.getElementById("backToTeachers");
-
-  //hide all class card sections initially
-  Object.values(classSections).forEach(
-    (section) => (section.style.display = "none")
-  );
-  classContainer.style.display = "none";
-
-  teachCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const teacher = card.getAttribute("data-teacher");
-
-      //hide teacher selection
-      teachContainer.style.display = "none";
-
-      //show class container
-      classContainer.style.display = "grid";
-
-      //show the class title
-      classTitle.style.display = "block";
-
-      //hide the teacher title
-      teachTitle.style.display = "none";
-
-      //show back button
-      backBtn.style.display = "block";
-
-      //hide all class cards and only show the selected one
-      Object.entries(classSections).forEach(([key, section]) => {
-        section.style.display = key === teacher ? "grid" : "none";
-      });
-    });
-  });
-
-  backBtn.addEventListener("click", () => {
-    //show teacher selection
-    teachContainer.style.display = "grid";
-
-    //hide class container
-    classContainer.style.display = "none";
-
-    //hide class title
-    classTitle.style.display = "none";
-
-    //show teacher title
-    teachTitle.style.display = "block";
-
-    //hide back button
-    backBtn.style.display = "none";
-
-    //hide all class card sections
-    Object.values(classSections).forEach((section) => {
-      section.style.display = "none";
-    });
-  });
 });

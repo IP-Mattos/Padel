@@ -188,7 +188,8 @@ if (isset($_SESSION['userId'])) {
         <img src="./img/socios.png" alt="" class="service-ico">
         <span id="closeMembers" class="close">&times;</span>
         <h2>Desea volverse socio?</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non velit neque molestiae eum quo officia rerum
+        <p style="text-align:center;">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Non velit neque molestiae eum quo officia rerum
           veniam mollitia, sed perspiciatis cupiditate ducimus vitae modi dignissimos aperiam dolorem nemo temporibus
           rem?
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid, iusto asperiores. Eaque accusamus est sunt,

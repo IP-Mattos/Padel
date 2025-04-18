@@ -1,3 +1,6 @@
+//======================================>
+//DOM READY & PAGE LOAD HANDLING
+//======================================>
 document.addEventListener("DOMContentLoaded", () => {
   const cover = document.getElementById("cover");
   const loader = document.getElementById("loader");
@@ -9,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "auto";
   };
 
+  //=======================================>
+  //SLIDER SETUP & NAVIGATION
+  //=======================================>
   let items = document.querySelectorAll(".slider .list .item");
   let prevBtn = document.getElementById("prev");
   let nextBtn = document.getElementById("next");
@@ -16,6 +22,66 @@ document.addEventListener("DOMContentLoaded", () => {
   let firstPosition = 0;
   let active = 0;
   let intervalId;
+
+  const setSlider = () => {
+    let oldActive = document.querySelector(".slider .list .item.active");
+    if (oldActive) oldActive.classList.remove("active");
+    items[active].classList.add("active");
+    //
+    nextBtn.classList.remove("d-none");
+    prevBtn.classList.remove("d-none");
+    if (active === lastPosition) nextBtn.classList.add("d-none");
+    if (active === firstPosition) prevBtn.classList.add("d-none");
+  };
+
+  const startAutoSlide = () => {
+    intervalId = setInterval(() => {
+      active = (active + 1) % items.length;
+      setSlider();
+    }, 4000); // Cambia la imagen cada 5 segundos
+  };
+
+  const stopAutoSlide = () => {
+    clearInterval(intervalId);
+  };
+
+  nextBtn.onclick = () => {
+    stopAutoSlide();
+    active = active + 1;
+    if (active > lastPosition) active = firstPosition;
+    setSlider();
+    startAutoSlide();
+  };
+
+  prevBtn.onclick = () => {
+    stopAutoSlide();
+    active = active - 1;
+    if (active < firstPosition) active = lastPosition;
+    setSlider();
+    startAutoSlide();
+  };
+
+  setSlider();
+  startAutoSlide();
+
+  // set diameter
+  const setDiameter = () => {
+    let slider = document.querySelector(".slider");
+    let widthSlider = slider.offsetWidth;
+    let heightSlider = slider.offsetHeight;
+    let diameter = Math.sqrt(
+      Math.pow(widthSlider, 2) + Math.pow(heightSlider, 2)
+    );
+    document.documentElement.style.setProperty("--diameter", diameter + "px");
+  };
+  setDiameter();
+  window.addEventListener("resize", () => {
+    setDiameter();
+  });
+
+  //===========================================>
+  //MODAL & FORM SWITCHING HANDLING
+  //===========================================>
 
   // Get the modal
   const modal = document.getElementById("myModal");
@@ -94,6 +160,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 300);
     }
   };
+
+  //=====================================>
+  //HAMBURGER MENU TOGGLE
+  //=====================================>
+
   const menuToggle = document.getElementById("menu-toggle");
   const menu = document.querySelector(".menu");
 
@@ -113,6 +184,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  //==========================================>
+  //SANITIZE INPUT
+  //==========================================>
+
   const sanitizeInput = (id) => {
     const input = document.getElementById(id);
     input.addEventListener("input", function () {
@@ -123,46 +198,9 @@ document.addEventListener("DOMContentLoaded", () => {
     sanitizeInput
   );
 
-  const setSlider = () => {
-    let oldActive = document.querySelector(".slider .list .item.active");
-    if (oldActive) oldActive.classList.remove("active");
-    items[active].classList.add("active");
-    //
-    nextBtn.classList.remove("d-none");
-    prevBtn.classList.remove("d-none");
-    if (active === lastPosition) nextBtn.classList.add("d-none");
-    if (active === firstPosition) prevBtn.classList.add("d-none");
-  };
-
-  const startAutoSlide = () => {
-    intervalId = setInterval(() => {
-      active = (active + 1) % items.length;
-      setSlider();
-    }, 4000); // Cambia la imagen cada 5 segundos
-  };
-
-  const stopAutoSlide = () => {
-    clearInterval(intervalId);
-  };
-
-  nextBtn.onclick = () => {
-    stopAutoSlide();
-    active = active + 1;
-    if (active > lastPosition) active = firstPosition;
-    setSlider();
-    startAutoSlide();
-  };
-
-  prevBtn.onclick = () => {
-    stopAutoSlide();
-    active = active - 1;
-    if (active < firstPosition) active = lastPosition;
-    setSlider();
-    startAutoSlide();
-  };
-
-  setSlider();
-  startAutoSlide();
+  //=========================================>
+  //ACCORDION FUNCTIONALITY
+  //=========================================>
 
   document.querySelectorAll(".accordion").forEach((button) => {
     button.addEventListener("click", () => {
@@ -182,20 +220,10 @@ document.addEventListener("DOMContentLoaded", () => {
       icon.textContent = button.classList.contains("active") ? "−" : "+";
     });
   });
-  // set diameter
-  const setDiameter = () => {
-    let slider = document.querySelector(".slider");
-    let widthSlider = slider.offsetWidth;
-    let heightSlider = slider.offsetHeight;
-    let diameter = Math.sqrt(
-      Math.pow(widthSlider, 2) + Math.pow(heightSlider, 2)
-    );
-    document.documentElement.style.setProperty("--diameter", diameter + "px");
-  };
-  setDiameter();
-  window.addEventListener("resize", () => {
-    setDiameter();
-  });
+
+  //========================================>
+  //LOGIN FLOW
+  //========================================>
 
   const loginModal = document.getElementById("loginModal");
   const cancelLogin = document.getElementById("cancelLogin");
@@ -290,6 +318,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  //==========================================>
+  //REGISTRATION HANDLING
+  //==========================================>
+
   document
     .getElementById("registrationForm")
     .addEventListener("submit", function (event) {
@@ -352,6 +384,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+  //=======================================>
+  //PWA INSTALL PROMPT
+  //=======================================>
+
   let deferredPrompt; // Will hold the event to trigger the install prompt
 
   // Listen for the beforeinstallprompt event
@@ -400,6 +436,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  //=============================================>
+  //SERVICE WORKER REGISTRATION
+  //=============================================>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("sw.js")
