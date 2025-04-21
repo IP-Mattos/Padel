@@ -25,21 +25,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const openProfile = document.getElementById("openProfile");
   const openProfile2 = document.getElementById("openProfile2");
-  const openReserve = document.getElementById("openReserve");
+  // const openCourt = document.getElementById("openCourt");
   const openCantine = document.getElementById("openCantine");
   const openTraining = document.getElementById("openTraining");
   const openClasses = document.getElementById("openClasses");
   const openRivals = document.getElementById("openRivals");
   const openMembers = document.getElementById("openMembers");
 
-  const closeReserve = document.getElementById("closeReserve");
+  const closeCourt = document.getElementById("closeCourt");
   const closeProfile = document.getElementById("closeProfile");
   const closeCantine = document.getElementById("closeCantine");
   const closeTraining = document.getElementById("closeTraining");
   const closeClasses = document.getElementById("closeClasses");
   const closeRivals = document.getElementById("closeRivals");
   const closeMembers = document.getElementById("closeMembers");
-  const acceptReserve = document.getElementById("acceptReserve");
+  const acceptCourt = document.getElementById("acceptCourt");
   const acceptCantine = document.getElementById("acceptCantine");
   const acceptTraining = document.getElementById("acceptTraining");
   const acceptRivals = document.getElementById("acceptRivals");
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 350);
   }
 
-  openReserve.onclick = () => openModal(cModal, ".cModal-content");
+  // openCourt.onclick = () => openModal(cModal, ".cModal-content");
   openProfile.onclick = () => openModal(pModal, ".pModal-content");
   openProfile2.onclick = () => openModal(pModal, ".pModal-content");
   openCantine.onclick = () => openModal(caModal, ".caModal-content");
@@ -68,14 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
   openRivals.onclick = () => openModal(rModal, ".rModal-content");
   openMembers.onclick = () => openModal(sModal, ".sModal-content");
 
-  closeReserve.onclick = () => closeModal(cModal, ".cModal-content");
+  closeCourt.onclick = () => closeModal(cModal, ".cModal-content");
   closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
   closeCantine.onclick = () => closeModal(caModal, ".caModal-content");
   closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
   closeClasses.onclick = () => closeModal(clModal, ".clModal-content");
   closeRivals.onclick = () => closeModal(rModal, ".rModal-content");
   closeMembers.onclick = () => closeModal(sModal, ".sModal-content");
-  acceptReserve.onclick = () => closeModal(cModal, ".cModal-content");
+  acceptCourt.onclick = () => closeModal(cModal, ".cModal-content");
   acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
   acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
   acceptRivals.onclick = () => closeModal(rModal, ".rModal-content");
@@ -199,54 +199,149 @@ document.addEventListener("DOMContentLoaded", () => {
   const trainingCalendar = document.getElementById("training-calendar");
   const rivalsCalendar = document.getElementById("rivals-calendar");
 
-  function populateCalendarCards(containerDiv) {
-    const today = new Date();
-    let selectedCard = null; // Track the currently selected card
-    let selectedCardData = null;
+  const shortDays = {
+    lunes: "lun",
+    martes: "mar",
+    miercoles: "mié",
+    jueves: "jue",
+    viernes: "vie",
+    sabado: "sáb",
+    domingo: "dom",
+  };
 
-    // Create a document fragment to minimize reflows
-    const fragment = document.createDocumentFragment();
+  const serviceModalMap = {
+    court: {
+      modal: cModal,
+      content: ".cModal-content",
+      servicio: 1,
+      profe: 0,
+      container: courtCalendar,
+    },
+  };
 
-    // Loop to create cards for the next 12 days
-    for (let i = 0; i < 12; i++) {
-      const nextDay = new Date(today);
-      nextDay.setDate(today.getDate() + i);
+  const calendarUtils = {};
 
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  Object.entries(serviceModalMap).forEach(
+    ([key, { modal, content, servicio, profe, container }]) => {
+      document.getElementById(`open${capitalize(key)}`).onclick = async () => {
+        openModal(modal, content);
+        container.innerHTML = "<p>Cargando...</p>";
+
+        try {
+          //Create the URL-encoded payload
+          const formData = new URLSearchParams();
+          formData.append("servicio", servicio);
+          formData.append("profe", profe);
+
+          const res = await fetch("./accion/getDias.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: formData.toString(),
+          });
+          const json = await res.json();
+          container.innerHTML = "";
+
+          console.log("Respuesta:", json);
+
+          if (json.consultaResponse.codigoError === "0") {
+            const datos = json.consultaResponse.datos;
+            calendarUtils[key] = populateCalendarCards(container, datos);
+          } else {
+            container.innerHTML = "<p>Error al cargar los días</p>";
+          }
+        } catch (err) {
+          container.innerHTML = "<p>Error de conexión</p>";
+          console.error(err);
+        }
+      };
+    }
+  );
+
+  function populateCalendarCards(containerDiv, calendarData) {
+    console.log("Calendar data:", calendarData);
+
+    const today = new Date(); // Get the current date to use as a base for date calculations
+    let selectedCard = null; // Will store the currently selected card (if any)
+    let selectedCardData = null; // Will store metadata about the selected card
+
+    const fragment = document.createDocumentFragment(); // Optimize performance with fragment
+
+    // Loop over each day received from the backend
+    calendarData.forEach((dayInfo, index) => {
+      console.log(`Day: ${dayInfo.dia}, Estado: ${dayInfo.estado}`);
+
+      const { dia, estado } = dayInfo;
+
+      // Calculate the actual date based on today's date + current index
+      const actualDate = new Date(today);
+      actualDate.setDate(today.getDate() + index);
+
+      // Extract date and month in readable format
+      const dayNumber = actualDate.getDate();
+      const monthName = actualDate.toLocaleDateString("es-ES", {
+        month: "short",
+      });
+
+      // Create a card element to represent the day
       const dayCard = document.createElement("div");
       dayCard.className = "card";
 
-      const dayName = nextDay.toLocaleDateString("es-ES", { weekday: "short" });
-      const dayNumber = nextDay.getDate();
-      const monthName = nextDay.toLocaleDateString("es-ES", { month: "short" });
-
+      // Set the inner HTML with weekday, date, and month
       dayCard.innerHTML = `
-        <span class="day">${dayName}</span>
+        <span class="day">${shortDays[dia]}</span>
         <span class="date">${dayNumber}</span>
         <span class="month">${monthName}</span>
       `;
 
-      // If today, style it specially
-      if (i === 0) {
-        styleSelectedCard(dayCard);
-        selectedCard = dayCard;
-        selectedCardData = { day: dayName, date: dayNumber, month: monthName };
+      // Check if the day is blocked (estado === 1)
+      if (estado === 1) {
+        // Visually mark as unavailable
+        dayCard.style.backgroundColor = "red";
+        dayCard.style.opacity = "0.6";
+        dayCard.style.pointerEvents = "none"; // Prevent clicks
+      } else {
+        // Make it selectable
+        dayCard.addEventListener("click", () => {
+          if (selectedCard) resetCardStyle(selectedCard); // Unselect previous
+          styleSelectedCard(dayCard); // Apply selected styling
+          selectedCard = dayCard;
+
+          // Store full data about the selected day
+          selectedCardData = {
+            ...dayInfo,
+            dayNumber,
+            monthName,
+            date: actualDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
+          };
+        });
+
+        // Auto-select the first available day
+        if (!selectedCard) {
+          styleSelectedCard(dayCard);
+          selectedCard = dayCard;
+          selectedCardData = {
+            ...dayInfo,
+            dayNumber,
+            monthName,
+            date: actualDate.toISOString().split("T")[0],
+          };
+        }
       }
 
-      // Add click listener to handle selection
-      dayCard.addEventListener("click", () => {
-        if (selectedCard) resetCardStyle(selectedCard);
-
-        styleSelectedCard(dayCard);
-        selectedCard = dayCard;
-        selectedCardData = { day: dayName, date: dayNumber, month: monthName };
-      });
-
+      // Add the card to the document fragment
       fragment.appendChild(dayCard);
-    }
+    });
 
+    // Inject all generated cards into the calendar container
     containerDiv.appendChild(fragment);
 
-    // Utility: Apply selected styles
+    // === Helper functions for styling ===
+
+    // Apply selected styles to a card
     function styleSelectedCard(card) {
       card.style.backgroundColor = "var(--primary-color)";
       card.querySelector(".day").style.textShadow = "1px 0 0 black";
@@ -254,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.color = "black";
     }
 
-    // Utility: Reset selected styles
+    // Reset card styles back to default
     function resetCardStyle(card) {
       card.style.backgroundColor = "";
       card.querySelector(".day").style.textShadow = "";
@@ -262,17 +357,11 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.color = "";
     }
 
-    // Return selected card data and toggle function if needed
+    // Return a way to access the selected card’s data
     return {
       getSelectedCardData: () => selectedCardData,
-      toggleCardSelection,
     };
   }
-
-  const courtCalendarUtils = populateCalendarCards(courtCalendar);
-  const cantineCalendarUtils = populateCalendarCards(cantineCalendar);
-  const trainingCalendarUtils = populateCalendarCards(trainingCalendar);
-  const rivalsCalendarUtils = populateCalendarCards(rivalsCalendar);
 
   //================================================>
   //HOURS

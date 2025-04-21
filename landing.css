@@ -384,7 +384,7 @@ nav.menu ul li a {
   display: none;
 }
 
-#acceptReserve,
+#acceptCourt,
 #acceptCantine,
 #acceptTraining,
 #acceptRivals,
@@ -399,7 +399,7 @@ nav.menu ul li a {
   font-size: 20px;
   font-weight: bold;
 }
-#acceptReserve:hover,
+#acceptCourt:hover,
 #acceptCantine:hover,
 #acceptTraining:hover,
 #acceptRivals:hover,
@@ -491,7 +491,7 @@ nav.menu ul li a {
     grid-template-columns: auto auto auto;
     row-gap: 1rem;
   }
-  #acceptReserve,
+  #acceptCourt,
   #acceptCantine,
   #acceptTraining,
   #acceptRivals,
@@ -510,6 +510,13 @@ nav.menu ul li a {
     grid-template-columns: repeat(auto-fill, 200px);
   }
 }
+
+@media (min-width: 540px) {
+  .calendar {
+    justify-content: center;
+  }
+}
+
 @keyframes loading-bounce {
   0% {
     transform: scale(1, 0.7);

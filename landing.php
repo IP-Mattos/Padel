@@ -50,7 +50,7 @@ if (isset($_SESSION['userId'])) {
   <main>
     <section class="Services" id="home">
       <div class="bento-grid">
-        <div class="bento-item" id="openReserve">
+        <div class="bento-item" id="openCourt">
           <img src="./img/resCancha.png" alt="Imagen 1" />
         </div>
         <h3>Canchas</h3>
@@ -84,12 +84,12 @@ if (isset($_SESSION['userId'])) {
     <div id="courtModal" class="cModal">
       <div class="cModal-content">
         <img src="./img/resCancha.png" alt="" class="service-ico">
-        <span id="closeReserve" class="close">&times;</span>
+        <span id="closeCourt" class="close">&times;</span>
         <h2>Reservando cancha</h2>
         <div class="calendar" id="court-calendar"></div>
         <div class="hs" id="court-hs"></div>
         <div class="buttons">
-          <button id="acceptReserve">Confirmar</button>
+          <button id="acceptCourt">Confirmar</button>
         </div>
       </div>
     </div>
