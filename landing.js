@@ -199,6 +199,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const trainingCalendar = document.getElementById("training-calendar");
   const rivalsCalendar = document.getElementById("rivals-calendar");
 
+  const courths = document.getElementById("court-hs"); // First container
+  const cantinehs = document.getElementById("cantine-hs");
+  const traininghs = document.getElementById("training-hs");
+  const rivalshs = document.getElementById("rivals-hs");
+
   const shortDays = {
     lunes: "lun",
     martes: "mar",
@@ -216,20 +221,23 @@ document.addEventListener("DOMContentLoaded", () => {
       servicio: 1,
       profe: 0,
       container: courtCalendar,
+      hoursContainer: courths,
     },
   };
-
-  const calendarUtils = {};
 
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  const calendarUtils = {};
+  const selectedCards = []; // Array to track selected cards
+
   Object.entries(serviceModalMap).forEach(
-    ([key, { modal, content, servicio, profe, container }]) => {
+    ([key, { modal, content, servicio, profe, container, hoursContainer }]) => {
       document.getElementById(`open${capitalize(key)}`).onclick = async () => {
         openModal(modal, content);
         container.innerHTML = "<p>Cargando...</p>";
+        hoursContainer.innerHTML = "";
 
         try {
           //Create the URL-encoded payload
@@ -242,14 +250,26 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: formData.toString(),
           });
+
           const json = await res.json();
           container.innerHTML = "";
 
-          console.log("Respuesta:", json);
-
           if (json.consultaResponse.codigoError === "0") {
             const datos = json.consultaResponse.datos;
-            calendarUtils[key] = populateCalendarCards(container, datos);
+            calendarUtils[key] = populateCalendarCards(
+              container,
+              datos,
+              (selectedDay) => {
+                fetchHours(
+                  {
+                    ...selectedDay,
+                    servicio,
+                    profe,
+                  },
+                  hoursContainer
+                );
+              }
+            );
           } else {
             container.innerHTML = "<p>Error al cargar los días</p>";
           }
@@ -261,9 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  function populateCalendarCards(containerDiv, calendarData) {
-    console.log("Calendar data:", calendarData);
-
+  function populateCalendarCards(containerDiv, calendarData, onDaySelected) {
     const today = new Date(); // Get the current date to use as a base for date calculations
     let selectedCard = null; // Will store the currently selected card (if any)
     let selectedCardData = null; // Will store metadata about the selected card
@@ -272,8 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Loop over each day received from the backend
     calendarData.forEach((dayInfo, index) => {
-      console.log(`Day: ${dayInfo.dia}, Estado: ${dayInfo.estado}`);
-
       const { dia, estado } = dayInfo;
 
       // Calculate the actual date based on today's date + current index
@@ -317,6 +333,10 @@ document.addEventListener("DOMContentLoaded", () => {
             monthName,
             date: actualDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
           };
+          onDaySelected({
+            ...dayInfo,
+            fecha: actualDate.toISOString().split("T")[0],
+          });
         });
 
         // Auto-select the first available day
@@ -329,6 +349,10 @@ document.addEventListener("DOMContentLoaded", () => {
             monthName,
             date: actualDate.toISOString().split("T")[0],
           };
+          onDaySelected({
+            ...dayInfo,
+            fecha: actualDate.toISOString().split("T")[0],
+          });
         }
       }
 
@@ -367,55 +391,69 @@ document.addEventListener("DOMContentLoaded", () => {
   //HOURS
   //================================================>
 
-  const selectedCards = []; // Array to track selected cards
+  async function fetchHours({ servicio, profe, fecha }, container) {
+    container.innerHTML = "<p>Cargando horarios...</p>";
 
-  function toggleCardSelection(card, hour) {
+    try {
+      const formData = new URLSearchParams();
+      formData.append("servicio", servicio);
+      formData.append("profe", profe);
+      formData.append("fecha", fecha);
+
+      const res = await fetch("./accion/getHorarios.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      const json = await res.json();
+      container.innerHTML = "";
+
+      if (json.consultaResponse.codigoError === "0") {
+        const datos = json.consultaResponse.datos;
+        generateHourCards(container, datos);
+      } else {
+        container.innerHTML = "<p>Error al cargar horarios</p>";
+      }
+    } catch (err) {
+      console.error("Error fetching hours:", err);
+      container.innerHTML = "<p>Error de conexión</p>";
+    }
+  }
+
+  function generateHourCards(container, hourData) {
+    container.innerHTML = "";
+
+    hourData.forEach(({ hora, estado }) => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `<span class="hour">${hora}</span>`;
+
+      if (estado === 1) {
+        card.style.backgroundColor = "red";
+        card.style.opacity = "0.6";
+        card.style.pointerEvents = "none";
+      } else {
+        card.addEventListener("click", () => toggleCardSelection(card));
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleCardSelection(card);
+          }
+        });
+      }
+      container.appendChild(card);
+    });
+  }
+
+  function toggleCardSelection(card) {
     if (selectedCards.includes(card)) {
       card.classList.remove("selected");
       selectedCards.splice(selectedCards.indexOf(card), 1);
     } else {
       card.classList.add("selected");
       selectedCards.push(card);
-    }
-  }
-
-  function createHourCards(container, startHour, numHours) {
-    const now = new Date();
-    now.setHours(startHour); // Set the starting hour
-
-    for (let i = 0; i < numHours; i++) {
-      const nextHour = new Date(now);
-      nextHour.setHours(startHour + i); // Increment hour
-
-      const hourCard = document.createElement("div");
-      hourCard.className = "card";
-      hourCard.tabIndex = 0; // Make the card focusable
-
-      // Format the hour period as HH - HH
-      const hourString = `${nextHour
-        .getHours()
-        .toString()
-        .padStart(2, "0")} - ${nextHour.getHours() + 1}`.padStart(2, "0");
-
-      // Set the content
-      hourCard.innerHTML = `
-            <span class="hour">${hourString}</span>
-        `;
-
-      // Add click event listener
-      hourCard.addEventListener("click", () => {
-        toggleCardSelection(hourCard, hourString);
-      });
-
-      // Optionally, handle keyboard events for accessibility
-      hourCard.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault(); // Prevent scrolling for space key
-          toggleCardSelection(hourCard, hourString);
-        }
-      });
-
-      container.appendChild(hourCard);
     }
   }
 
@@ -431,13 +469,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }`;
 
   document.head.appendChild(style);
-  const courths = document.getElementById("court-hs"); // First container
-  const cantinehs = document.getElementById("cantine-hs");
-  const traininghs = document.getElementById("training-hs");
-  const rivalshs = document.getElementById("rivals-hs");
-
-  createHourCards(courths, new Date().getHours(), 9); // Current hour
-  createHourCards(cantinehs, new Date().getHours(), 9);
-  createHourCards(traininghs, new Date().getHours(), 9);
-  createHourCards(rivalshs, new Date().getHours(), 9);
 });
