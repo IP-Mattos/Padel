@@ -23,27 +23,75 @@ document.addEventListener("DOMContentLoaded", () => {
   const rModal = document.getElementById("rivalsModal");
   const sModal = document.getElementById("membersModal");
 
-  const openProfile = document.getElementById("openProfile");
-  const openProfile2 = document.getElementById("openProfile2");
-  // const openCourt = document.getElementById("openCourt");
-  const openCantine = document.getElementById("openCantine");
-  const openTraining = document.getElementById("openTraining");
-  const openClasses = document.getElementById("openClasses");
-  const openRivals = document.getElementById("openRivals");
-  const openMembers = document.getElementById("openMembers");
+  const modalConfigs = [
+    {
+      name: "court",
+      modal: cModal,
+      contentClass: ".cModal-content",
+      openButtons: [],
+      closeButtons: ["closeCourt", "acceptCourt"],
+    },
+    {
+      name: "profile",
+      modal: pModal,
+      contentClass: ".pModal-content",
+      openButtons: ["openProfile", "openProfile2"],
+      closeButtons: ["closeProfile"],
+    },
+    {
+      name: "cantine",
+      modal: caModal,
+      contentClass: ".caModal-content",
+      openButtons: ["openCantine"],
+      closeButtons: ["closeCantine", "acceptCantine"],
+    },
+    {
+      name: "training",
+      modal: tModal,
+      contentClass: ".tModal-content",
+      openButtons: ["openTraining"],
+      closeButtons: ["closeTraining", "acceptTraining"],
+    },
+    {
+      name: "classes",
+      modal: clModal,
+      contentClass: ".clModal-content",
+      openButtons: ["openClasses"],
+      closeButtons: ["closeClasses"],
+    },
+    {
+      name: "rivals",
+      modal: rModal,
+      contentClass: ".rModal-content",
+      openButtons: ["openRivals"],
+      closeButtons: ["closeRivals", "acceptRivals"],
+    },
+    {
+      name: "members",
+      modal: sModal,
+      contentClass: ".sModal-content",
+      openButtons: ["openMembers"],
+      closeButtons: ["closeMembers", "acceptMembers"],
+    },
+  ];
 
-  const closeCourt = document.getElementById("closeCourt");
-  const closeProfile = document.getElementById("closeProfile");
-  const closeCantine = document.getElementById("closeCantine");
-  const closeTraining = document.getElementById("closeTraining");
-  const closeClasses = document.getElementById("closeClasses");
-  const closeRivals = document.getElementById("closeRivals");
-  const closeMembers = document.getElementById("closeMembers");
-  const acceptCourt = document.getElementById("acceptCourt");
-  const acceptCantine = document.getElementById("acceptCantine");
-  const acceptTraining = document.getElementById("acceptTraining");
-  const acceptRivals = document.getElementById("acceptRivals");
-  const acceptMembers = document.getElementById("acceptMembers");
+  modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
+    //Openers
+    openButtons.forEach((btnId) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.onclick = () => openModal(modal, contentClass);
+      }
+    });
+
+    //Closers
+    closeButtons.forEach((btnId) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.onclick = () => closeModal(modal, contentClass);
+      }
+    });
+  });
 
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
@@ -58,28 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.style.display = "none";
     }, 350);
   }
-
-  // openCourt.onclick = () => openModal(cModal, ".cModal-content");
-  openProfile.onclick = () => openModal(pModal, ".pModal-content");
-  openProfile2.onclick = () => openModal(pModal, ".pModal-content");
-  openCantine.onclick = () => openModal(caModal, ".caModal-content");
-  openTraining.onclick = () => openModal(tModal, ".tModal-content");
-  openClasses.onclick = () => openModal(clModal, ".clModal-content");
-  openRivals.onclick = () => openModal(rModal, ".rModal-content");
-  openMembers.onclick = () => openModal(sModal, ".sModal-content");
-
-  closeCourt.onclick = () => closeModal(cModal, ".cModal-content");
-  closeProfile.onclick = () => closeModal(pModal, ".pModal-content");
-  closeCantine.onclick = () => closeModal(caModal, ".caModal-content");
-  closeTraining.onclick = () => closeModal(tModal, ".tModal-content");
-  closeClasses.onclick = () => closeModal(clModal, ".clModal-content");
-  closeRivals.onclick = () => closeModal(rModal, ".rModal-content");
-  closeMembers.onclick = () => closeModal(sModal, ".sModal-content");
-  acceptCourt.onclick = () => closeModal(cModal, ".cModal-content");
-  acceptCantine.onclick = () => closeModal(caModal, ".caModal-content");
-  acceptTraining.onclick = () => closeModal(tModal, ".tModal-content");
-  acceptRivals.onclick = () => closeModal(rModal, ".rModal-content");
-  acceptMembers.onclick = () => closeModal(sModal, ".sModal-content");
 
   //===================================>
   //PROFILE MODAL
