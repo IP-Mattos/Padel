@@ -111,39 +111,125 @@ document.addEventListener("DOMContentLoaded", () => {
   //PROFILE MODAL
   //===================================>
 
-  document.getElementById("editProfile").addEventListener("click", function () {
-    const rows = document.querySelectorAll(".profile-detail .row");
+  const editProfile = document.getElementById("editProfile");
+  const profileDetail = document.getElementById("profileDetail");
+  const updateProfile = document.getElementById("updateProfile");
+  const cancelUpdate = document.getElementById("cancelUpdate");
 
-    rows.forEach((row) => {
-      const span = row.querySelector("span");
-      const input = row.querySelector("input");
-
-      if (span && input) {
-        span.classList.add("hidden");
-        input.classList.remove("hidden");
-      }
-    });
-
-    document.getElementById("editProfile").classList.add("hidden");
-    document.getElementById("saveProfile").classList.remove("hidden");
+  editProfile.addEventListener("click", () => {
+    profileDetail.classList.add("hidden");
+    updateProfile.style.display = "flex";
   });
 
-  document.getElementById("saveProfile").addEventListener("click", function () {
-    const rows = document.querySelectorAll(".profile-detail .row");
+  cancelUpdate.addEventListener("click", (e) => {
+    e.preventDefault();
+    updateProfile.style.display = "none";
+    profileDetail.classList.remove("hidden");
+  });
 
-    rows.forEach((row) => {
-      const span = row.querySelector("span");
-      const input = row.querySelector("input");
+  updateProfile.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      if (span && input) {
-        span.textContent = input.value;
-        span.classList.remove("hidden");
-        input.classList.add("hidden");
-      }
-    });
+    const form = e.target;
+    const formData = new FormData(form);
 
-    document.getElementById("editProfile").classList.remove("hidden");
-    document.getElementById("saveProfile").classList.add("hidden");
+    fetch("./accion/savePerfil.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.consultaResponse.codigoError === "0") {
+          Swal.fire({
+            title: "Éxito!",
+            text: data.consultaResponse.detalleError,
+            icon: "success",
+          });
+
+          // OPTIONAL: Update the visible profile data with the new values
+          document.getElementById("profileNombre").innerText =
+            formData.get("nombre");
+          document.getElementById("profileNick").innerText =
+            formData.get("usuario");
+          document.getElementById("profileMail").innerText =
+            formData.get("mail");
+          document.getElementById("profileCategory").innerText =
+            formData.get("categoria");
+          document.getElementById("profileBirth").innerText =
+            formData.get("fechnac");
+          document.getElementById("profileFrase").innerText =
+            formData.get("frase");
+
+          // For the radio option (categorías)
+          const masCategoriasValue = formData.get("mascategorias");
+          const masCategoriasText =
+            masCategoriasValue === "0"
+              ? "Misma categoría"
+              : masCategoriasValue === "1"
+              ? "Categorías contiguas"
+              : "Todas las categorías";
+          document.getElementById("profileMasCat").innerText =
+            masCategoriasText;
+
+          // Optionally hide form and show updated profile
+          updateProfile.style.display = "none";
+          profileDetail.classList.remove("hidden");
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: data.consultaResponse.detalleError,
+            icon: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire("Oops", "Algo salió mal en el servidor", "error");
+      });
+  });
+
+  const profileImgInput = document.getElementById("profileImgInput");
+  const profileImg = document.getElementById("profileImg");
+
+  profileImgInput.addEventListener("change", () => {
+    const file = profileImgInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("imgPerfilUser", file); // Sending the image file
+    formData.append("idUser", userId); // Sending the user ID from the PHP session
+
+    fetch("./accion/saveImgPerfil.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (
+          data.consultaResponse &&
+          data.consultaResponse.codigoError === "0"
+        ) {
+          const timestamp = new Date().getTime();
+          const newImg = data.consultaResponse.newImg;
+          profileImg.src = `./accion/imgPerfilUser/${newImg}?t=${timestamp}`;
+
+          Swal.fire(
+            "Imagen actualizada",
+            "Tu nueva foto de perfil se ha subido",
+            "success"
+          );
+        } else {
+          Swal.fire(
+            "Error",
+            data.consultaResponse?.detalleError || "No se pudo subir la imagen",
+            "error"
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        Swal.fire("Oops", "Error al subir la imagen", "error");
+      });
   });
 
   //==================================>
@@ -248,6 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       profe: 0,
       container: courtCalendar,
       hoursContainer: courths,
+      confirmButtonId: "acceptCourt",
     },
   };
 
@@ -256,7 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const calendarUtils = {};
-  const selectedCards = []; // Array to track selected cards
 
   Object.entries(serviceModalMap).forEach(
     ([key, { modal, content, servicio, profe, container, hoursContainer }]) => {
@@ -417,6 +503,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //HOURS
   //================================================>
 
+  let selectedCard = null; // To store the selected card
+
   async function fetchHours({ servicio, profe, fecha }, container) {
     container.innerHTML = "<p>Cargando horarios...</p>";
 
@@ -474,25 +562,82 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function toggleCardSelection(card) {
-    if (selectedCards.includes(card)) {
-      card.classList.remove("selected");
-      selectedCards.splice(selectedCards.indexOf(card), 1);
-    } else {
-      card.classList.add("selected");
-      selectedCards.push(card);
+    if (selectedCard) {
+      // Deselect the currently selected card
+      selectedCard.classList.remove("selected");
     }
+
+    // Select the new card
+    card.classList.add("selected");
+    selectedCard = card; // Store the new selected card
   }
 
   const style = document.createElement("style");
 
   style.textContent = `
-    .card.selected {
+      .card.selected {
         background-color: var(--primary-color); /* Change to your desired color */
         color: black;
-    }
-    .card.selected .hour {
+      }
+      .card.selected .hour {
         text-shadow: 1px 0 0 black; /* Increase font weight */
-    }`;
+      }`;
 
   document.head.appendChild(style);
+
+  //====================================>
+  //RESERVING
+  //====================================>
+
+  Object.entries(serviceModalMap).forEach(([key, config]) => {
+    const { confirmButtonId, servicio, profe } = config;
+
+    const confirmBtn = document.getElementById(confirmButtonId);
+    if (!confirmBtn) return;
+
+    confirmBtn.addEventListener("click", async () => {
+      const selectedDay = calendarUtils[key]?.getSelectedCardData();
+      if (!selectedDay) {
+        Swal.fire("Error", "Por favor seleccione un día", "error");
+        return;
+      }
+
+      if (!selectedCard) {
+        Swal.fire("Error", "Por favor selecciona una hora.", "error");
+        return;
+      }
+
+      const selectedHour = selectedCard.querySelector(".hour").textContent;
+
+      const formData = new URLSearchParams();
+
+      formData.append("fecha", selectedDay.date); // format YYYY-MM-DD
+      formData.append("servicio", servicio);
+      formData.append("profe", profe);
+      formData.append("usuario", userId);
+      formData.append("hora", selectedHour);
+
+      try {
+        const res = await fetch("../accion/putReserv.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString(),
+        });
+
+        const json = await res.json();
+
+        if (json.consultaResponse?.codigoError === "0") {
+          Swal.fire("Éxito", "Reserva realizada con éxito ✅", "success");
+        } else {
+          Swal.fire("Error", "Error al realizar la reserva ❌", "error");
+          console.error("Respuesta del servidor:", json);
+        }
+      } catch (err) {
+        console.error("Error al enviar reserva:", err);
+        Swal.fire("Error", "Error de conexión al enviar la reserva.", "error");
+      }
+    });
+  });
 });

@@ -272,9 +272,13 @@ nav.menu ul li a {
   align-items: center;
   flex-wrap: wrap;
 }
-.profile img {
+.img {
   width: 200px;
+  height: 200px;
   border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 .profile-detail {
   display: flex;
@@ -287,11 +291,20 @@ nav.menu ul li a {
   flex-direction: column;
 }
 
-.profile-detail .row h3 {
+#updateProfile {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-detail .row h3,
+#updateProfile h3 {
   color: var(--primary-color);
 }
 
-.profile-detail button {
+.profile-detail button,
+#updateButton,
+#cancelUpdate {
   border: none;
   border-radius: 5px;
   padding: 10px;
@@ -299,7 +312,7 @@ nav.menu ul li a {
   margin: auto;
   cursor: pointer;
 }
-.profile-detail input {
+#updateProfile input {
   background: none;
   color: var(--text-color);
   border: solid 1px;
@@ -314,6 +327,10 @@ nav.menu ul li a {
   margin-bottom: 1rem;
   border: 0;
   border-top: 1px solid;
+}
+
+.radio-list {
+  list-style: none;
 }
 
 .service-ico {
