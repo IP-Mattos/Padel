@@ -102,53 +102,11 @@ if (isset($_SESSION['userId'])) {
       <div class="clModal-content">
         <img src="./img/resClases.png" alt="" class="service-ico">
         <span id="closeClasses" class="close">&times;</span>
-        <h2 id="selectTeach">Seleccione profesor</h2>
-        <h2 id="selectClass">Seleccione horario</h2>
-        <div class="teachContainer">
-          <div class="teachCard" data-teacher="1">
-            <h3>Fulano Mendez</h3>
-          </div>
-          <div class="teachCard" data-teacher="2">
-            <h3>Mengano Rodriguez</h3>
-          </div>
-          <div class="teachCard" data-teacher="3">
-            <h3>Gaitano Perez</h3>
-          </div>
-        </div>
-        <div class="classContainer">
-          <div class="class1cards">
-            <div class="classCard">
-              <h3>Lu-Mi-Vi</h3>
-              <h3>18hs - 19hs</h3>
-            </div>
-            <div class="classCard">
-              <h3>Lu-Mi-Vi</h3>
-              <h3>20hs - 21hs</h3>
-            </div>
-          </div>
-          <div class="class2cards">
-            <div class="classCard">
-              <h3>Lu-Mi-Vi</h3>
-              <h3>18hs - 19hs</h3>
-            </div>
-            <div class="classCard">
-              <h3>Lu-Mi-Vi</h3>
-              <h3>18hs - 19hs</h3>
-            </div>
-            <div class="classCard">
-              <h3>Ma-Ju</h3>
-              <h3>17hs - 18hs</h3>
-            </div>
-          </div>
-          <div class="class3cards">
-            <div class="classCard">
-              <h3>Ma-Ju</h3>
-              <h3>17hs - 18hs</h3>
-            </div>
-          </div>
-        </div>
+        <div class="teachContainer" id="profList"></div>
+        <div class="calendar" id="classes-calendar"></div>
+        <div class="hs" id="class-hs"></div>
         <div class="buttons">
-          <button id="backToTeachers">Volver</button>
+          <button id="acceptClasses">Confirmar</button>
         </div>
       </div>
     </div>

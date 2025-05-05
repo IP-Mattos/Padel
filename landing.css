@@ -183,48 +183,48 @@ nav.menu ul li a {
   margin-bottom: 20px;
 }
 
-#selectClass {
-  display: none;
-}
-
-.teachContainer {
-  display: grid;
-  margin: auto auto;
-  grid-template-columns: repeat(3, 200px);
+#profList {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
+  padding: 1rem 0;
 }
 
-.teachCard {
-  height: 150px;
-  background-color: blue;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  justify-content: center;
-}
-
-.classCard {
-  height: 150px;
-  background-color: green;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.profCard {
+  width: 120px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  padding: 5px;
+  padding: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
-.class1cards,
-.class2cards,
-.class3cards {
-  display: none;
-  gap: 1rem;
-  grid-template-columns: repeat(3, 200px);
-  justify-content: center;
+.profCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.profCard img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.profCard h3 {
+  font-size: 0.9rem;
+  margin: 0;
+  word-break: break-word;
+}
+
+.profCard.selected-teacher {
+  background-color: green;
+  color: white;
+  border: 2px solid darkgreen;
 }
 
 .Services {
@@ -397,16 +397,13 @@ nav.menu ul li a {
   margin: 2%;
   gap: 1rem;
 }
-#backToTeachers {
-  display: none;
-}
 
 #acceptCourt,
 #acceptCantine,
 #acceptTraining,
 #acceptRivals,
 #acceptMembers,
-#backToTeachers {
+#acceptClasses {
   border: none;
   padding: 20px;
   border-radius: 5px;
@@ -421,7 +418,7 @@ nav.menu ul li a {
 #acceptTraining:hover,
 #acceptRivals:hover,
 #acceptMembers:hover,
-#backToTeachers:hover {
+#acceptClasses:hover {
   opacity: 0.8;
 }
 
@@ -516,19 +513,12 @@ nav.menu ul li a {
   #acceptCantine,
   #acceptTraining,
   #acceptRivals,
-  #acceptMembers,
-  #backToTeachers {
+  #acceptMembers {
     width: 80%;
   }
   .bento-item {
     height: 9rem;
     width: 9rem;
-  }
-  .teachContainer,
-  .class1cards,
-  .class2cards,
-  .class3cards {
-    grid-template-columns: repeat(auto-fill, 200px);
   }
 }
 

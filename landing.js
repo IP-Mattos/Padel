@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modal: cModal,
       contentClass: ".cModal-content",
       openButtons: [],
-      closeButtons: ["closeCourt", "acceptCourt"],
+      closeButtons: ["closeCourt"],
     },
     {
       name: "profile",
@@ -43,14 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
       modal: caModal,
       contentClass: ".caModal-content",
       openButtons: ["openCantine"],
-      closeButtons: ["closeCantine", "acceptCantine"],
+      closeButtons: ["closeCantine"],
     },
     {
       name: "training",
       modal: tModal,
       contentClass: ".tModal-content",
       openButtons: ["openTraining"],
-      closeButtons: ["closeTraining", "acceptTraining"],
+      closeButtons: ["closeTraining"],
     },
     {
       name: "classes",
@@ -64,14 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
       modal: rModal,
       contentClass: ".rModal-content",
       openButtons: ["openRivals"],
-      closeButtons: ["closeRivals", "acceptRivals"],
+      closeButtons: ["closeRivals"],
     },
     {
       name: "members",
       modal: sModal,
       contentClass: ".sModal-content",
       openButtons: ["openMembers"],
-      closeButtons: ["closeMembers", "acceptMembers"],
+      closeButtons: ["closeMembers"],
     },
   ];
 
@@ -236,82 +236,126 @@ document.addEventListener("DOMContentLoaded", () => {
   //CLASSES MODAL
   //==================================>
 
-  const teachCards = document.querySelectorAll(".teachCard");
-  const teachContainer = document.querySelector(".teachContainer");
-  const classContainer = document.querySelector(".classContainer");
-  const teachTitle = document.getElementById("selectTeach");
-  const classTitle = document.getElementById("selectClass");
-  const classSections = {
-    1: document.querySelector(".class1cards"),
-    2: document.querySelector(".class2cards"),
-    3: document.querySelector(".class3cards"),
-  };
-  const backBtn = document.getElementById("backToTeachers");
+  document.getElementById("teachContainer");
 
-  //hide all class card sections initially
-  Object.values(classSections).forEach(
-    (section) => (section.style.display = "none")
-  );
-  classContainer.style.display = "none";
+  let selectedProfCard = null;
 
-  teachCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const teacher = card.getAttribute("data-teacher");
+  document.getElementById("openClasses").addEventListener("click", async () => {
+    const config = serviceModalMap.classes;
 
-      //hide teacher selection
-      teachContainer.style.display = "none";
+    profListContainer.innerHTML = "<p>Cargando profesores...</p>";
 
-      //show class container
-      classContainer.style.display = "grid";
+    try {
+      const res = await fetch("./accion/getProfesores.php");
+      const data = await res.json();
 
-      //show the class title
-      classTitle.style.display = "block";
+      if (data.consultaResponse.codigoError !== "0") {
+        profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
+        return;
+      }
 
-      //hide the teacher title
-      teachTitle.style.display = "none";
+      const profesores = data.consultaResponse.datos;
+      profListContainer.innerHTML = "";
 
-      //show back button
-      backBtn.style.display = "block";
+      profesores.forEach((prof) => {
+        const card = document.createElement("div");
+        card.className = "profCard";
+        card.innerHTML = `<img src="./accion/imgPerfilUser/${prof.imgperfil}" alt="${prof.nombre}" />
+                          <h3>${prof.nombre}</h3>`;
 
-      //hide all class cards and only show the selected one
-      Object.entries(classSections).forEach(([key, section]) => {
-        section.style.display = key === teacher ? "grid" : "none";
+        let isFetchingClassData = false;
+
+        card.addEventListener("click", async () => {
+          if (isFetchingClassData) return;
+
+          isFetchingClassData = true;
+
+          if (selectedProfCard) {
+            selectedProfCard.classList.remove("selected-teacher");
+          }
+          card.classList.add("selected-teacher");
+          selectedProfCard = card;
+
+          try {
+            await handleProfessorSelection(prof.id, {
+              ...serviceModalMap.classes,
+              container: classCalendar,
+              hoursContainer: classhs,
+            });
+          } finally {
+            isFetchingClassData = false;
+          }
+        });
+
+        profListContainer.appendChild(card);
       });
-    });
+    } catch (err) {
+      console.error("Error al cargar profesores", err);
+      profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
+    }
   });
 
-  backBtn.addEventListener("click", () => {
-    //show teacher selection
-    teachContainer.style.display = "grid";
+  async function handleProfessorSelection(profeId, config) {
+    const { servicio, container, hoursContainer } = config;
 
-    //hide class container
-    classContainer.style.display = "none";
+    container.innerHTML = "<p>Cargando días</p>";
+    hoursContainer.innerHTML = "";
 
-    //hide class title
-    classTitle.style.display = "none";
+    const formData = new URLSearchParams();
+    formData.append("servicio", servicio);
+    formData.append("profe", profeId);
 
-    //show teacher title
-    teachTitle.style.display = "block";
+    try {
+      const res = await fetch("./accion/getDias.php", {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
 
-    //hide back button
-    backBtn.style.display = "none";
+      const json = await res.json();
+      container.innerHTML = "";
 
-    //hide all class card sections
-    Object.values(classSections).forEach((section) => {
-      section.style.display = "none";
-    });
-  });
+      if (json.consultaResponse.codigoError === "0") {
+        const datos = json.consultaResponse.datos;
+
+        calendarUtils.classes = populateCalendarCards(
+          container,
+          datos,
+          (selectedDay) => {
+            fetchHours(
+              {
+                ...selectedDay,
+                servicio,
+                profe: profeId,
+              },
+              hoursContainer
+            );
+          }
+        );
+      } else {
+        container.innerHTML = "<p>Error al cargar los días</p>";
+        console.error(json.consultaResponse.detalleError);
+      }
+    } catch (err) {
+      container.innerHTML = "<p>Error de conexión";
+      console.error("Error en handleProfessorSelection:", err);
+    }
+  }
 
   //===================================================>
   //CALENDARS
   //===================================================>
 
   const courtCalendar = document.getElementById("court-calendar");
+  const classCalendar = document.getElementById("classes-calendar");
   const cantineCalendar = document.getElementById("cantine-calendar");
   const trainingCalendar = document.getElementById("training-calendar");
   const rivalsCalendar = document.getElementById("rivals-calendar");
 
+  const profListContainer = document.getElementById("profList");
+
   const courths = document.getElementById("court-hs"); // First container
+  const classhs = document.getElementById("class-hs");
   const cantinehs = document.getElementById("cantine-hs");
   const traininghs = document.getElementById("training-hs");
   const rivalshs = document.getElementById("rivals-hs");
@@ -335,6 +379,15 @@ document.addEventListener("DOMContentLoaded", () => {
       container: courtCalendar,
       hoursContainer: courths,
       confirmButtonId: "acceptCourt",
+    },
+    classes: {
+      modal: clModal,
+      content: ".clModal-content",
+      servicio: 2,
+      profe: null,
+      container: classCalendar,
+      hoursContainer: classhs,
+      confirmButtonId: "acceptClasses",
     },
   };
 
@@ -607,6 +660,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Show confirmation modal
+      const confirmation = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: `¿Deseas reservar para el ${selectedDay.date} a las ${
+          selectedCard.querySelector(".hour").textContent
+        }?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, reservar",
+        cancelButtonText: "Cancelar",
+      });
+
+      // If user cancels
+      if (!confirmation.isConfirmed) {
+        return;
+      }
+
       const selectedHour = selectedCard.querySelector(".hour").textContent;
 
       const formData = new URLSearchParams();
@@ -629,9 +699,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const json = await res.json();
 
         if (json.consultaResponse?.codigoError === "0") {
-          Swal.fire("Éxito", "Reserva realizada con éxito ✅", "success");
+          Swal.fire("Éxito", "Reserva realizada con éxito", "success");
+          closeModal(config.modal, config.content);
         } else {
-          Swal.fire("Error", "Error al realizar la reserva ❌", "error");
+          Swal.fire("Error", "Error al realizar la reserva", "error");
           console.error("Respuesta del servidor:", json);
         }
       } catch (err) {
