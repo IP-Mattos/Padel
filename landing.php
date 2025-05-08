@@ -39,6 +39,7 @@ if (isset($_SESSION['userId'])) {
 
     <nav class="menu">
       <ul>
+        <li><a id="openHours">Horas</a></li>
         <li><a href="#profile" id="openProfile2"><svg width="23" height="23" viewBox="0 0 24 24" stroke="#03ff03"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
               <circle cx="12" cy="8" r="5" />
@@ -86,6 +87,13 @@ if (isset($_SESSION['userId'])) {
         <!-- Add more bento items as needed -->
       </div>
     </section>
+    <div id="hoursModal" class="hModal">
+      <div class="hModal-content">
+        <h2>Tus reservas</h2>
+        <span id="closeHours" class="close">&times;</span>
+        <div class="reserve-card" id="reserveContainer"></div>
+      </div>
+    </div>
     <div id="courtModal" class="cModal">
       <div class="cModal-content">
         <img src="./img/resCancha.png" alt="" class="service-ico">

@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clModal = document.getElementById("classesModal");
   const rModal = document.getElementById("rivalsModal");
   const sModal = document.getElementById("membersModal");
+  const hModal = document.getElementById("hoursModal");
 
   const modalConfigs = [
     {
@@ -73,6 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
       openButtons: ["openMembers"],
       closeButtons: ["closeMembers"],
     },
+    {
+      name: "hours",
+      modal: hModal,
+      contentClass: ".hModal-content",
+      openButtons: ["openHours"],
+      closeButtons: ["closeHours"],
+    },
   ];
 
   modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
@@ -104,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.querySelector(contentClass).classList.remove("show");
     setTimeout(() => {
       modal.style.display = "none";
+      selectedCard = null;
     }, 350);
   }
 
@@ -256,8 +265,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const profesores = data.consultaResponse.datos;
       profListContainer.innerHTML = "";
+      let firstCard = null;
 
-      profesores.forEach((prof) => {
+      profesores.forEach((prof, index) => {
         const card = document.createElement("div");
         card.className = "profCard";
         card.innerHTML = `<img src="./accion/imgPerfilUser/${prof.imgperfil}" alt="${prof.nombre}" />
@@ -288,7 +298,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         profListContainer.appendChild(card);
+
+        if (index === 0) {
+          firstCard = card;
+        }
       });
+      if (firstCard) {
+        firstCard.click();
+      }
     } catch (err) {
       console.error("Error al cargar profesores", err);
       profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
@@ -578,7 +595,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (json.consultaResponse.codigoError === "0") {
         const datos = json.consultaResponse.datos;
-        generateHourCards(container, datos);
+        generateHourCards(container, datos, {
+          servicio,
+          profe,
+          fecha,
+          container,
+        });
       } else {
         container.innerHTML = "<p>Error al cargar horarios</p>";
       }
@@ -588,19 +610,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function generateHourCards(container, hourData) {
+  function generateHourCards(container, hourData, fetchParams) {
     container.innerHTML = "";
 
-    hourData.forEach(({ hora, estado }) => {
+    hourData.forEach(({ hora, estado, idUsuario, timeEstado, idReserva }) => {
       const card = document.createElement("div");
       card.className = "card";
-
       card.innerHTML = `<span class="hour">${hora}</span>`;
+
+      const isReservedByUser = idUsuario && idUsuario === userId;
+      const isCancelable = isReservedByUser && isWithinLastHour(timeEstado);
 
       if (estado === 1) {
         card.style.backgroundColor = "red";
-        card.style.opacity = "0.6";
-        card.style.pointerEvents = "none";
+        if (isCancelable) {
+          card.style.opacity = "1";
+          card.style.pointerEvents = "auto";
+        } else {
+          card.style.opacity = "0.6";
+          card.style.pointerEvents = "none";
+        }
       } else {
         card.addEventListener("click", () => toggleCardSelection(card));
         card.addEventListener("keydown", (event) => {
@@ -610,8 +639,77 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       }
+
+      if (isCancelable) {
+        const cancelBtn = document.createElement("span");
+        cancelBtn.className = "cancel-btn";
+        cancelBtn.innerText = "✖";
+        cancelBtn.title = "Cancelar reserva";
+        cancelBtn.style.marginLeft = "3px";
+        cancelBtn.style.cursor = "pointer";
+        cancelBtn.style.color = "darkred";
+        cancelBtn.onclick = async (e) => {
+          e.stopPropagation();
+          const confirm = await Swal.fire({
+            title: "Cancelar reserva?",
+            text: `Deseas cancelar tu reserva de las ${hora}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si, cancelar",
+            cancelButtonText: "No",
+          });
+          if (!confirm.isConfirmed) return;
+
+          try {
+            const formData = new URLSearchParams();
+            formData.append("idReserv", idReserva);
+
+            const res = await fetch("./accion/putReservCancel.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: formData.toString(),
+            });
+
+            const json = await res.json();
+
+            if (json.consultaResponse?.codigoError === "0") {
+              Swal.fire(
+                "Cancelada",
+                "Tu reserva fue cancelada",
+                "success"
+              ).then(() => {
+                fetchHours(fetchParams, fetchParams.container); // re-fetch updated hours
+              });
+            } else {
+              Swal.fire("Error", "No se pudo cancelar tu reserva", "error");
+            }
+          } catch (err) {
+            console.error("Error cancelando reserva:", err);
+            Swal.fire("Error", "Problema al conectar con el servidor", "error");
+          }
+        };
+        card.appendChild(cancelBtn);
+      }
       container.appendChild(card);
     });
+  }
+
+  function isWithinLastHour(fechaString) {
+    if (!fechaString || typeof fechaString !== "string") return false;
+
+    try {
+      // Convert from "YYYY-MM-DD HH:mm:ss" to a valid ISO string
+      const isoString = fechaString.replace(" ", "T");
+      const fechaReserva = new Date(isoString);
+
+      const now = new Date();
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+
+      return fechaReserva >= oneHourAgo && fechaReserva <= now;
+    } catch (e) {
+      console.error("Error parsing fechaString:", fechaString, e);
+      return false;
+    }
   }
 
   function toggleCardSelection(card) {
@@ -711,4 +809,44 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+  //================================================================>
+  //USER HOURS
+  //================================================================>
+
+  // document.getElementById("openHours").addEventListener("click", (e) => {
+  //   let now = new Date();
+
+  //   let sevenDays = new Date(now);
+  //   sevenDays.setDate(now.getDate() + 7);
+
+  //   let fifteenDays = new Date(now);
+  //   fifteenDays.setDate(now.getDate() - 15);
+
+  //   function formatDate(date) {
+  //     const year = date.getFullYear();
+  //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  //     const day = String(date.getDate()).padStart(2, "0");
+  //     return `${year}/${month}/${day}`;
+  //   }
+
+  //   fechaHasta = formatDate(sevenDays);
+  //   fechaDesde = formatDate(fifteenDays);
+
+  //   const formData = new URLSearchParams();
+  //   formData.append("fechaDesde", fechaHasta);
+  //   formData.append("fechaHasta", fechaDesde);
+  //   formData.append("idUser", userId);
+
+  //   fetch("./accion/getHorasUser.php", {
+  //     method: "POST",
+  //     headers: {"content-type": "application/x-www-form-urlencoded"},
+  //     body: formData.toString(),
+  //   })
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     if(data.consultaResponse.codigoError === "0"){
+
+  //     }
+  //   })
+  // });
 });

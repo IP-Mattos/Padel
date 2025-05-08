@@ -1,11 +1,13 @@
 @import url("https://fonts.cdnfonts.com/css/poppins");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 @font-face {
   font-family: "BlippoBlack";
   src: url("font/BlippoBlack.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
+
 #cover {
   position: fixed;
   height: 100%;
@@ -15,6 +17,7 @@
   background: #061425;
   z-index: 9998;
 }
+
 .loader {
   position: relative;
   width: 120px;
@@ -70,15 +73,19 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed; /* Make the navbar fixed */
+  position: fixed;
+  /* Make the navbar fixed */
   top: 0;
   left: 0;
   right: 0;
   z-index: 1;
   padding: 0 40px;
-  background: var(--navbar-color); /* Semi-transparent background */
-  backdrop-filter: blur(10px); /* Glassmorphism effect */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
+  background: var(--navbar-color);
+  /* Semi-transparent background */
+  backdrop-filter: blur(10px);
+  /* Glassmorphism effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Optional: add a slight shadow */
 }
 
 .logo a {
@@ -86,23 +93,29 @@ header {
   align-items: center;
   text-decoration: none;
 }
+
 .logo-image {
   width: 50px;
   height: 50px;
   margin-right: 10px;
 }
+
 .logo h1 {
   color: white;
   font-family: var(--title-font), sans-serif;
   font-size: 24px;
 }
+
 :root {
-  --primary-color: #03ff03; /* Verde brillante del logo */
-  --secondary-color: #f0f0f; /* Blanco */
+  --primary-color: #03ff03;
+  /* Verde brillante del logo */
+  --secondary-color: #f0f0f;
+  /* Blanco */
   --text-color: #edf2fa;
   --navbar-color: #394b6ad7;
   --width-default: min(1200px, 90vw);
-  --diameter: 1432px; /* Gris oscuro para texto */
+  --diameter: 1432px;
+  /* Gris oscuro para texto */
   --title-font: "Roboto";
 }
 
@@ -139,8 +152,10 @@ nav.menu ul li a {
 .tModal,
 .clModal,
 .rModal,
-.sModal {
-  display: none; /* Hidden by default */
+.sModal,
+.hModal {
+  display: none;
+  /* Hidden by default */
   position: fixed;
   z-index: 1;
   left: 0;
@@ -148,17 +163,20 @@ nav.menu ul li a {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
   backdrop-filter: blur(10px);
   scrollbar-width: none;
 }
+
 .cModal-content,
 .pModal-content,
 .caModal-content,
 .tModal-content,
 .clModal-content,
 .rModal-content,
-.sModal-content {
+.sModal-content,
+.hModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -168,16 +186,20 @@ nav.menu ul li a {
   height: max-content;
   position: relative;
   font-family: "Poppins";
-  transform: translateY(100%); /* Start off-screen */
-  transition: transform 0.3s ease; /* Sliding effect */
+  transform: translateY(100%);
+  /* Start off-screen */
+  transition: transform 0.3s ease;
+  /* Sliding effect */
   overflow-y: auto;
 }
+
 .cModal-content h2,
 .caModal-content h2,
 .tModal-content h2,
 .clModal-content h2,
 .rModal-content h2,
-.sModal-content h2 {
+.sModal-content h2,
+.hModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 20px;
@@ -193,7 +215,7 @@ nav.menu ul li a {
 
 .profCard {
   width: 120px;
-  background-color: #fff;
+  background-color: #061470;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -222,9 +244,8 @@ nav.menu ul li a {
 }
 
 .profCard.selected-teacher {
-  background-color: green;
-  color: white;
-  border: 2px solid darkgreen;
+  background-color: var(--primary-color);
+  color: black;
 }
 
 .Services {
@@ -232,6 +253,7 @@ nav.menu ul li a {
   padding: 3rem 1rem;
   margin: 50px auto;
 }
+
 .bento-grid {
   display: grid;
   grid-template-columns: auto auto auto;
@@ -239,6 +261,7 @@ nav.menu ul li a {
   align-items: center;
   justify-content: center;
 }
+
 .bento-item {
   background: #143e74;
   border-radius: 50%;
@@ -249,6 +272,7 @@ nav.menu ul li a {
   height: 20rem;
   cursor: pointer;
 }
+
 .bento-grid h3 {
   color: var(--primary-color);
   font-family: "Poppins";
@@ -259,11 +283,13 @@ nav.menu ul li a {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
+
 .bento-item img {
   width: 100%;
   height: 100%;
   display: block;
 }
+
 .profile {
   display: flex;
   margin: 2% auto;
@@ -272,6 +298,7 @@ nav.menu ul li a {
   align-items: center;
   flex-wrap: wrap;
 }
+
 .img {
   width: 200px;
   height: 200px;
@@ -280,11 +307,13 @@ nav.menu ul li a {
   display: flex;
   justify-content: center;
 }
+
 .profile-detail {
   display: flex;
   margin: 10px auto;
   flex-direction: column;
 }
+
 .profile-detail .row {
   display: flex;
   flex-wrap: wrap;
@@ -312,6 +341,7 @@ nav.menu ul li a {
   margin: auto;
   cursor: pointer;
 }
+
 #updateProfile input {
   background: none;
   color: var(--text-color);
@@ -319,9 +349,11 @@ nav.menu ul li a {
   border-radius: 5px;
   padding: 5px;
 }
+
 .profile-detail button:hover {
   opacity: 0.8;
 }
+
 .profile-detail hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -340,19 +372,24 @@ nav.menu ul li a {
 }
 
 .calendar {
-  display: flex; /* Change to flex for horizontal alignment */
-  overflow-x: auto; /* Enable horizontal scrolling */
+  display: flex;
+  /* Change to flex for horizontal alignment */
+  overflow-x: auto;
+  /* Enable horizontal scrolling */
   overflow-y: visible;
-  white-space: nowrap; /* Prevent line breaks */
+  white-space: nowrap;
+  /* Prevent line breaks */
   color: black;
   width: 80%;
   margin: auto auto 20px;
   max-width: 600px;
-  scrollbar-width: none; /* For Firefox */
+  scrollbar-width: none;
+  /* For Firefox */
 }
 
 .calendar::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Edge */
+  display: none;
+  /* For Chrome, Safari, and Edge */
 }
 
 .calendar .card {
@@ -369,27 +406,32 @@ nav.menu ul li a {
 }
 
 .card:last-child {
-  margin-right: 0; /* Remove margin on the last card */
+  margin-right: 0;
+  /* Remove margin on the last card */
 }
 
 .day {
   display: block;
-  font-family: "Poppins"; /* Change to your preferred font */
+  font-family: "Poppins";
+  /* Change to your preferred font */
   font-size: 16px;
 }
 
 .date {
   display: block;
-  font-family: "Poppins"; /* Change to your preferred font */
+  font-family: "Poppins";
+  /* Change to your preferred font */
   font-size: 20px;
   font-weight: bold;
 }
 
 .month {
   display: block;
-  font-family: "Poppins"; /* Change to your preferred font */
+  font-family: "Poppins";
+  /* Change to your preferred font */
   font-size: 16px;
 }
+
 .buttons {
   display: flex;
   align-items: center;
@@ -413,6 +455,7 @@ nav.menu ul li a {
   font-size: 20px;
   font-weight: bold;
 }
+
 #acceptCourt:hover,
 #acceptCantine:hover,
 #acceptTraining:hover,
@@ -423,8 +466,10 @@ nav.menu ul li a {
 }
 
 .hs {
-  display: grid; /* Change to flex for horizontal alignment */
-  white-space: nowrap; /* Prevent line breaks */
+  display: grid;
+  /* Change to flex for horizontal alignment */
+  white-space: nowrap;
+  /* Prevent line breaks */
   margin: auto auto 20px;
   grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
   row-gap: 1rem;
@@ -442,9 +487,10 @@ nav.menu ul li a {
   text-align: center;
   transition: transform 0.2s;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
+
 .close {
   color: white;
   float: right;
@@ -462,8 +508,10 @@ nav.menu ul li a {
 }
 
 .show {
-  transform: translateY(0); /* Slide into view */
+  transform: translateY(0);
+  /* Slide into view */
 }
+
 .hidden {
   display: none;
 }
@@ -472,36 +520,45 @@ nav.menu ul li a {
   .loader {
     margin: 50% auto;
   }
+
   .logo {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+
   .logo h1 {
     display: none;
   }
+
   nav.menu ul li a {
     font-size: 13px;
   }
+
   .cModal-content,
   .pModal-content,
   .caModal-content,
   .tModal-content,
   .clModal-content,
   .rModal-content,
-  .sModal-content {
+  .sModal-content,
+  .hModal-content {
     margin: auto auto;
   }
+
   .bento-grid {
     grid-template-columns: auto auto;
   }
+
   .bento-grid h3 {
     display: block;
   }
+
   .service-ico {
     display: block;
   }
+
   .hs {
     width: 80%;
     display: grid;
@@ -509,6 +566,7 @@ nav.menu ul li a {
     row-gap: 1rem;
     padding: 0;
   }
+
   #acceptCourt,
   #acceptCantine,
   #acceptTraining,
@@ -516,6 +574,7 @@ nav.menu ul li a {
   #acceptMembers {
     width: 80%;
   }
+
   .bento-item {
     height: 9rem;
     width: 9rem;
