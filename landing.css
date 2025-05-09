@@ -205,6 +205,30 @@ nav.menu ul li a {
   margin-bottom: 20px;
 }
 
+.reserve-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+  justify-content: center;
+  align-items: center;
+}
+
+.rCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+
+.rCard img {
+  width: 100px;
+}
+
 #profList {
   display: flex;
   flex-wrap: wrap;

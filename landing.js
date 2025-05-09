@@ -813,40 +813,88 @@ document.addEventListener("DOMContentLoaded", () => {
   //USER HOURS
   //================================================================>
 
-  // document.getElementById("openHours").addEventListener("click", (e) => {
-  //   let now = new Date();
+  const container = document.getElementById("reserveContainer");
+  const serviceImages = {
+    1: "./img/resCancha.png",
+    2: "./img/resClases.png",
+    // Add more services as needed
+  };
 
-  //   let sevenDays = new Date(now);
-  //   sevenDays.setDate(now.getDate() + 7);
+  document.getElementById("openHours").addEventListener("click", async (e) => {
+    container.innerHTML = "<p>Cargando tus reservas...</p>";
 
-  //   let fifteenDays = new Date(now);
-  //   fifteenDays.setDate(now.getDate() - 15);
+    let now = new Date();
 
-  //   function formatDate(date) {
-  //     const year = date.getFullYear();
-  //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-  //     const day = String(date.getDate()).padStart(2, "0");
-  //     return `${year}/${month}/${day}`;
-  //   }
+    let sevenDays = new Date(now);
+    sevenDays.setDate(now.getDate() + 7);
 
-  //   fechaHasta = formatDate(sevenDays);
-  //   fechaDesde = formatDate(fifteenDays);
+    let fifteenDays = new Date(now);
+    fifteenDays.setDate(now.getDate() - 15);
 
-  //   const formData = new URLSearchParams();
-  //   formData.append("fechaDesde", fechaHasta);
-  //   formData.append("fechaHasta", fechaDesde);
-  //   formData.append("idUser", userId);
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}/${month}/${day}`;
+    }
 
-  //   fetch("./accion/getHorasUser.php", {
-  //     method: "POST",
-  //     headers: {"content-type": "application/x-www-form-urlencoded"},
-  //     body: formData.toString(),
-  //   })
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     if(data.consultaResponse.codigoError === "0"){
+    fechaHasta = formatDate(sevenDays);
+    fechaDesde = formatDate(fifteenDays);
 
-  //     }
-  //   })
-  // });
+    const formData = new URLSearchParams();
+    formData.append("fechaDesde", fechaDesde);
+    formData.append("fechaHasta", fechaHasta);
+    formData.append("idUser", userId);
+
+    try {
+      const res = await fetch("./accion/getHorasUser.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      const json = await res.json();
+
+      if (json.consultaResponse?.codigoError === "0") {
+        const datos = json.consultaResponse.datos;
+        container.innerHTML = "";
+
+        datos.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "rCard";
+
+          // Parse the date properly in local time
+          const [year, month, day] = item.fecha.split("-").map(Number);
+          const itemDate = new Date(year, month - 1, day); // Local time
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          if (itemDate < today) {
+            card.style.backgroundColor = "#e0e0e0";
+            card.style.color = "black";
+          } else if (itemDate.getTime() === today.getTime()) {
+            card.style.backgroundColor = "#003266";
+            card.style.color = "var(--primary-color)";
+          } else {
+            card.style.backgroundColor = "#003266";
+          }
+
+          const imageUrl = serviceImages[item.servicio] || "images/default.png";
+
+          card.innerHTML = `
+          <img src="${imageUrl}" alt="Servicio ${item.servicio}" class="service-icon" />
+          <p><strong>Fecha:</strong>${item.fecha}</p>
+          <p><strong>Hora:</strong>${item.hora}</p>
+          `;
+
+          container.appendChild(card);
+        });
+      } else {
+        container.innerHTML = "<p>Hubo un error al cargar las horas</p>";
+      }
+    } catch (error) {
+      console.error("Error de conexion:", error);
+    }
+  });
 });

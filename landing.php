@@ -91,7 +91,7 @@ if (isset($_SESSION['userId'])) {
       <div class="hModal-content">
         <h2>Tus reservas</h2>
         <span id="closeHours" class="close">&times;</span>
-        <div class="reserve-card" id="reserveContainer"></div>
+        <div class="reserve-cards" id="reserveContainer"></div>
       </div>
     </div>
     <div id="courtModal" class="cModal">
