@@ -39,7 +39,7 @@ if (isset($_SESSION['userId'])) {
 
     <nav class="menu">
       <ul>
-        <li><a id="openHours">Horas</a></li>
+        <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
         <li><a href="#profile" id="openProfile2"><svg width="23" height="23" viewBox="0 0 24 24" stroke="#03ff03"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
               <circle cx="12" cy="8" r="5" />

@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           try {
             await handleProfessorSelection(prof.id, {
-              ...serviceModalMap.classes,
+              ...config,
               container: classCalendar,
               hoursContainer: classhs,
             });
@@ -406,6 +406,33 @@ document.addEventListener("DOMContentLoaded", () => {
       hoursContainer: classhs,
       confirmButtonId: "acceptClasses",
     },
+    training: {
+      modal: tModal,
+      content: ".tModal-content",
+      servicio: 3,
+      profe: 0,
+      container: trainingCalendar,
+      hoursContainer: traininghs,
+      confirmButtonId: "acceptTraining",
+    },
+    rivals: {
+      modal: rModal,
+      content: ".rModal-content",
+      servicio: 4,
+      profe: 0,
+      container: rivalsCalendar,
+      hoursContainer: rivalshs,
+      confirmButtonId: "acceptRivals",
+    },
+    cantine: {
+      modal: caModal,
+      content: ".caModal-content",
+      servicio: 5,
+      profe: 0,
+      container: cantineCalendar,
+      hoursContainer: cantinehs,
+      confirmButtonId: "acceptCantine",
+    },
   };
 
   function capitalize(str) {
@@ -418,6 +445,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ([key, { modal, content, servicio, profe, container, hoursContainer }]) => {
       document.getElementById(`open${capitalize(key)}`).onclick = async () => {
         openModal(modal, content);
+
+        if (key === "classes") return;
+
         container.innerHTML = "<p>Cargando...</p>";
         hoursContainer.innerHTML = "";
 
@@ -817,6 +847,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const serviceImages = {
     1: "./img/resCancha.png",
     2: "./img/resClases.png",
+    3: "./img/resEntrenar.png",
+    4: "./img/resRivales.png",
+    5: "./img/resChelada.png",
     // Add more services as needed
   };
 
@@ -828,8 +861,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let sevenDays = new Date(now);
     sevenDays.setDate(now.getDate() + 7);
 
-    let fifteenDays = new Date(now);
-    fifteenDays.setDate(now.getDate() - 15);
+    let sevenDaysBack = new Date(now);
+    sevenDaysBack.setDate(now.getDate() - 7);
 
     function formatDate(date) {
       const year = date.getFullYear();
@@ -839,7 +872,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     fechaHasta = formatDate(sevenDays);
-    fechaDesde = formatDate(fifteenDays);
+    fechaDesde = formatDate(sevenDaysBack);
 
     const formData = new URLSearchParams();
     formData.append("fechaDesde", fechaDesde);
@@ -857,6 +890,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (json.consultaResponse?.codigoError === "0") {
         const datos = json.consultaResponse.datos;
+        datos.reverse();
         container.innerHTML = "";
 
         datos.forEach((item) => {
@@ -882,10 +916,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const imageUrl = serviceImages[item.servicio] || "images/default.png";
 
-          card.innerHTML = `
-          <img src="${imageUrl}" alt="Servicio ${item.servicio}" class="service-icon" />
-          <p><strong>Fecha:</strong>${item.fecha}</p>
-          <p><strong>Hora:</strong>${item.hora}</p>
+          function formatDateName(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate();
+            const month = date.toLocaleString("es-ES", { month: "long" });
+            return `${day} de ${month}`;
+          }
+
+          const formattedDate = formatDateName(item.fecha);
+
+          card.innerHTML = `          
+          <p><strong>${formattedDate}</strong></p>
+          <img src="${imageUrl}" alt="Servicio ${
+            item.servicio
+          }" class="service-icon" />
+          <p><strong>${item.hora.split(":").slice(0, 2).join(":")}</strong></p>
           `;
 
           container.appendChild(card);

@@ -256,7 +256,8 @@ input[type="password"] {
   width: 100%;
 }
 
-#installButton {
+#installButton,
+#installIphone {
   padding: 10px 20px;
   background-color: var(--primary-color);
   color: black;
@@ -264,9 +265,11 @@ input[type="password"] {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  font-family: "Poppins";
 }
 
-#installButton:hover {
+#installButton:hover,
+#installIphone:hover {
   background-color: #00cf00;
 }
 
@@ -295,6 +298,7 @@ input[type="password"] {
   transition: transform 0.3s ease;
   align-items: center;
   gap: 1rem;
+  font-family: "Poppins";
 }
 
 * {
@@ -833,7 +837,8 @@ footer {
     margin: auto;
   }
   input[type="text"],
-  input[type="password"] {
+  input[type="password"],
+  input[type="tel"] {
     padding: 6px 10px;
     font-size: 20px;
   }

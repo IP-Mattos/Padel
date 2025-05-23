@@ -388,28 +388,23 @@ document.addEventListener("DOMContentLoaded", () => {
   //PWA INSTALL PROMPT
   //=======================================>
 
-  let deferredPrompt; // Will hold the event to trigger the install prompt
+  // Show the install button
+  const installButton = document.getElementById("installButton");
+  const installModal = document.getElementById("installModal");
+  const closeInstall = document.getElementById("closeInstall");
+  const modalContent = installModal.querySelector(".imodal-content");
 
-  // Listen for the beforeinstallprompt event
-  window.addEventListener("beforeinstallprompt", (e) => {
-    // Prevent the default install prompt
-    e.preventDefault();
+  const isiOS = /iphone|ipod|ipad/i.test(navigator.userAgent);
+  const isInStandaloneMode = window.navigator.standalone === true;
 
-    // Save the event so it can be triggered later
-    deferredPrompt = e;
-
-    // Show the install button
-    const installButton = document.getElementById("installButton");
-    const installModal = document.getElementById("installModal");
-    const closeInstall = document.getElementById("closeInstall");
-
+  if (isiOS && !isInStandaloneMode) {
     installModal.style.display = "flex";
     setTimeout(() => {
-      installModal.querySelector(".imodal-content").classList.add("show");
+      modalContent.classList.add("show");
     }, 10);
 
     function closeModal() {
-      installModal.querySelector(".imodal-content").classList.remove("show");
+      modalContent.classList.remove("show");
       setTimeout(() => {
         installModal.style.display = "none";
       }, 350);
@@ -417,24 +412,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
     closeInstall.onclick = closeModal;
 
-    // Add an event listener to the install button
-    installButton.addEventListener("click", () => {
-      // Show the install prompt when the button is clicked
-      deferredPrompt.prompt();
+    modalContent.innerHTML = "";
 
-      // Wait for the user to respond to the prompt
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the install prompt");
-        } else {
-          console.log("User dismissed the install prompt");
-          closeModal();
-        }
-        // Reset the deferredPrompt variable, as the prompt has been shown
-        deferredPrompt = null;
+    modalContent.innerHTML = "<p>Instalá la APP aquí:</p>";
+
+    let button = document.createElement("button");
+    let closeButton = closeInstall;
+
+    button.textContent = "Como instalar";
+    button.id = "installIphone";
+
+    modalContent.appendChild(button);
+    modalContent.appendChild(closeButton);
+
+    button.addEventListener("click", function () {
+      modalContent.innerHTML = "";
+      modalContent.style.alignItems = "flex-start";
+      modalContent.innerHTML = `<h2>COMO INSTALAR LA APP EN TU TELÉFONO</h2>
+      <p>Al agregar el acceso directo en el inicio de su teléfono,
+      podrá acceder al servicio como cualquier otra aplicación.</p>
+      <p>1 - Toque en <strong>Menú</strong><img src="./img/instructivo_descarga-1.png"></p>
+      <p>2 - Selecione <strong>Agregar a inicio</strong><img src="./img/instructivo_descarga-2.png"></p>
+      <p>3 - En el inicio se creará un ícono con el acceso a la Aplicación</p>`;
+
+      let closeButton = closeInstall;
+      modalContent.appendChild(closeButton);
+    });
+  } else {
+    let deferredPrompt; // Will hold the event to trigger the install prompt
+
+    // Listen for the beforeinstallprompt event
+    window.addEventListener("beforeinstallprompt", (e) => {
+      // Prevent the default install prompt
+      e.preventDefault();
+
+      // Save the event so it can be triggered later
+      deferredPrompt = e;
+
+      installModal.style.display = "flex";
+      setTimeout(() => {
+        modalContent.classList.add("show");
+      }, 10);
+
+      function closeModal() {
+        modalContent.classList.remove("show");
+        setTimeout(() => {
+          installModal.style.display = "none";
+        }, 350);
+      }
+
+      closeInstall.onclick = closeModal;
+
+      // Add an event listener to the install button
+      installButton.addEventListener("click", () => {
+        // Show the install prompt when the button is clicked
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("User accepted the install prompt");
+          } else {
+            console.log("User dismissed the install prompt");
+            closeModal();
+          }
+          // Reset the deferredPrompt variable, as the prompt has been shown
+          deferredPrompt = null;
+        });
       });
     });
-  });
+  }
 
   //=============================================>
   //SERVICE WORKER REGISTRATION
