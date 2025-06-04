@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const rModal = document.getElementById("rivalsModal");
   const sModal = document.getElementById("membersModal");
   const hModal = document.getElementById("hoursModal");
+  const vModal = document.getElementById("versusModal");
 
   const modalConfigs = [
     {
@@ -80,6 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
       contentClass: ".hModal-content",
       openButtons: ["openHours"],
       closeButtons: ["closeHours"],
+    },
+    {
+      name: "versus",
+      modal: vModal,
+      contentClass: ".vModal-content",
+      openButtons: ["openVersus"],
+      closeButtons: ["closeVersus"],
     },
   ];
 
@@ -643,85 +651,95 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateHourCards(container, hourData, fetchParams) {
     container.innerHTML = "";
 
-    hourData.forEach(({ hora, estado, idUsuario, timeEstado, idReserva }) => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `<span class="hour">${hora}</span>`;
+    hourData.forEach(
+      ({ hora, estado, idUsuario, timeEstado, idReserva, servicio }) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<span class="hour">${hora}</span>`;
 
-      const isReservedByUser = idUsuario && idUsuario === userId;
-      const isCancelable = isReservedByUser && isWithinLastHour(timeEstado);
+        const isReservedByUser = idUsuario && idUsuario === userId;
+        const isCorrectService = fetchParams.servicio === servicio;
+        const isCancelable =
+          isReservedByUser && isCorrectService && isWithinLastHour(timeEstado);
 
-      if (estado === 1) {
-        card.style.backgroundColor = "red";
-        if (isCancelable) {
-          card.style.opacity = "1";
-          card.style.pointerEvents = "auto";
+        if (estado === 1) {
+          card.style.backgroundColor = "red";
+          if (isCancelable) {
+            card.style.opacity = "1";
+            card.style.pointerEvents = "auto";
+          } else {
+            card.style.opacity = "0.6";
+            card.style.pointerEvents = "none";
+          }
         } else {
-          card.style.opacity = "0.6";
-          card.style.pointerEvents = "none";
-        }
-      } else {
-        card.addEventListener("click", () => toggleCardSelection(card));
-        card.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            toggleCardSelection(card);
-          }
-        });
-      }
-
-      if (isCancelable) {
-        const cancelBtn = document.createElement("span");
-        cancelBtn.className = "cancel-btn";
-        cancelBtn.innerText = "✖";
-        cancelBtn.title = "Cancelar reserva";
-        cancelBtn.style.marginLeft = "3px";
-        cancelBtn.style.cursor = "pointer";
-        cancelBtn.style.color = "darkred";
-        cancelBtn.onclick = async (e) => {
-          e.stopPropagation();
-          const confirm = await Swal.fire({
-            title: "Cancelar reserva?",
-            text: `Deseas cancelar tu reserva de las ${hora}?`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Si, cancelar",
-            cancelButtonText: "No",
-          });
-          if (!confirm.isConfirmed) return;
-
-          try {
-            const formData = new URLSearchParams();
-            formData.append("idReserv", idReserva);
-
-            const res = await fetch("./accion/putReservCancel.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: formData.toString(),
-            });
-
-            const json = await res.json();
-
-            if (json.consultaResponse?.codigoError === "0") {
-              Swal.fire(
-                "Cancelada",
-                "Tu reserva fue cancelada",
-                "success"
-              ).then(() => {
-                fetchHours(fetchParams, fetchParams.container); // re-fetch updated hours
-              });
-            } else {
-              Swal.fire("Error", "No se pudo cancelar tu reserva", "error");
+          card.addEventListener("click", () => toggleCardSelection(card));
+          card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              toggleCardSelection(card);
             }
-          } catch (err) {
-            console.error("Error cancelando reserva:", err);
-            Swal.fire("Error", "Problema al conectar con el servidor", "error");
-          }
-        };
-        card.appendChild(cancelBtn);
+          });
+        }
+
+        if (isCancelable) {
+          const cancelBtn = document.createElement("span");
+          cancelBtn.className = "cancel-btn";
+          cancelBtn.innerText = "✖";
+          cancelBtn.title = "Cancelar reserva";
+          cancelBtn.style.marginLeft = "3px";
+          cancelBtn.style.cursor = "pointer";
+          cancelBtn.style.color = "darkred";
+          cancelBtn.onclick = async (e) => {
+            e.stopPropagation();
+            const confirm = await Swal.fire({
+              title: "Cancelar reserva?",
+              text: `Deseas cancelar tu reserva de las ${hora}?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Si, cancelar",
+              cancelButtonText: "No",
+            });
+            if (!confirm.isConfirmed) return;
+
+            try {
+              const formData = new URLSearchParams();
+              formData.append("idReserv", idReserva);
+
+              const res = await fetch("./accion/putReservCancel.php", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+              });
+
+              const json = await res.json();
+
+              if (json.consultaResponse?.codigoError === "0") {
+                Swal.fire(
+                  "Cancelada",
+                  "Tu reserva fue cancelada",
+                  "success"
+                ).then(() => {
+                  fetchHours(fetchParams, fetchParams.container); // re-fetch updated hours
+                });
+              } else {
+                Swal.fire("Error", "No se pudo cancelar tu reserva", "error");
+              }
+            } catch (err) {
+              console.error("Error cancelando reserva:", err);
+              Swal.fire(
+                "Error",
+                "Problema al conectar con el servidor",
+                "error"
+              );
+            }
+          };
+          card.appendChild(cancelBtn);
+        }
+        container.appendChild(card);
       }
-      container.appendChild(card);
-    });
+    );
   }
 
   function isWithinLastHour(fechaString) {
@@ -940,6 +958,204 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (error) {
       console.error("Error de conexion:", error);
+    }
+  });
+
+  //================================================================>
+  //VERSUS MODAL
+  //================================================================>
+
+  const versusContainer = document.getElementById("match-container");
+
+  function checkDate(fechaStr) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [year, month, day] = fechaStr.split("-");
+    const fecha = new Date(year, month - 1, day);
+
+    return fecha >= today;
+  }
+
+  const versusData = new URLSearchParams();
+  versusData.append("idUser", userId);
+  versusData.append("estado", 1);
+
+  fetch("./accion/getHsVs.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: versusData.toString(),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const datos = data.consultaResponse?.datos || [];
+
+      const checkFuture = datos.some((item) => checkDate(item.fecha));
+
+      if (checkFuture) {
+        document.getElementById("versusIcon").src = "./img/vs-ex.png";
+      }
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+    });
+
+  document.getElementById("openVersus").addEventListener("click", async (e) => {
+    const formData = new URLSearchParams();
+    formData.append("idUser", userId);
+    formData.append("estado", 1);
+
+    try {
+      const res = await fetch("./accion/getHsVs.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      const json = await res.json();
+
+      if (json.consultaResponse?.codigoError === "0") {
+        const datos = json.consultaResponse.datos;
+        versusContainer.innerHTML = "";
+
+        for (const item of datos) {
+          const { idUsuario, fecha, hora, idReserva } = item;
+
+          // Fetch user profile
+          const perfilData = new URLSearchParams();
+          perfilData.append("idPerfil", idUsuario);
+
+          const perfilRes = await fetch("./accion/getPerfil.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: perfilData.toString(),
+          });
+
+          const perfilJson = await perfilRes.json();
+          console.log("Perfil Response:", perfilJson); // <- Add this line
+          console.log("idUsuario:", idUsuario, "userId:", userId);
+          const perfil = perfilJson.consultaResponse;
+
+          // Create card
+          const card = document.createElement("div");
+          card.className = "vCard";
+
+          function formatDateName(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate();
+            const month = date.toLocaleString("es-ES", { month: "long" });
+            return `${day} de ${month}`;
+          }
+
+          const fechaSimple = formatDateName(fecha);
+
+          card.innerHTML = `
+          <div class="user-info">
+            <img src="./accion/imgPerfilUser/${perfil.imgperfil}" alt="${
+            perfil.nombre
+          }" class="profile-img" />
+            <div>
+              <p><strong>${perfil.nombre}</strong></p>
+              <p>${fechaSimple} - ${hora.split(":").slice(0, 2).join(":")}</p>
+            </div>
+          </div>
+        `;
+
+          const button = document.createElement("button");
+
+          if (String(idUsuario) === String(userId)) {
+            // Cancel button
+            button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
+            button.className = "cancel-btn";
+            button.style.background = "none";
+            button.style.border = "none";
+            button.style.cursor = "pointer";
+            button.addEventListener("click", async () => {
+              const confirm = await Swal.fire({
+                title: "¿Cancelar reserva?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, cancelar",
+                cancelButtonText: "No",
+              });
+
+              if (confirm.isConfirmed) {
+                const cancelData = new URLSearchParams();
+                cancelData.append("idReserv", idReserva);
+
+                await fetch("./accion/putReservCancel.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  body: cancelData.toString(),
+                });
+
+                Swal.fire(
+                  "Cancelado",
+                  "La reserva ha sido cancelada.",
+                  "success"
+                );
+                card.remove(); // Remove card from UI
+                closeModal(vModal, ".vModal-content");
+              }
+            });
+          } else {
+            // Confirm button
+            button.innerHTML = `<img src="./img/confirmar.png" alt="Cancelar" class="btn-icon" />`;
+            button.className = "confirm-btn";
+            button.style.background = "none";
+            button.style.border = "none";
+            button.style.cursor = "pointer";
+            button.addEventListener("click", async () => {
+              const { value: message } = await Swal.fire({
+                title: "¿Confirmar participación?",
+                input: "text",
+                inputLabel: "Escribe un mensaje (opcional)",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+              });
+
+              if (message !== undefined) {
+                const confirmData = new URLSearchParams();
+                confirmData.append("idReserva", idReserva);
+                confirmData.append("idRival", userId);
+                confirmData.append("mensaje", message);
+
+                await fetch("./accion/putConfirmVS.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  body: confirmData.toString(),
+                });
+
+                Swal.fire(
+                  "Confirmado",
+                  "Tu participación ha sido confirmada.",
+                  "success"
+                );
+                card.remove(); // Optionally remove or update card
+                closeModal(vModal, ".vModal-content");
+              }
+            });
+          }
+
+          card.appendChild(button);
+          versusContainer.appendChild(card);
+        }
+      } else {
+        versusContainer.innerHTML = "No hay partidos disponibles.";
+      }
+    } catch (error) {
+      console.error("Error fetching versus data:", error);
+      Swal.fire(
+        "Error",
+        "Ocurrió un error al conectar con el servidor.",
+        "error"
+      );
     }
   });
 });

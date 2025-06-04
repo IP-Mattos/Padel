@@ -331,6 +331,20 @@ header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
 }
 
+.more-text {
+  display: none;
+}
+
+.read-more-btn {
+  color: var(--primary-color);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+}
+
 .logo a:nth-child(1) {
   display: flex;
   align-items: center;
@@ -531,6 +545,7 @@ nav.menu ul li a {
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1rem;
 }
 .bento-item:hover {
   transform: translateY(-5px);
@@ -540,14 +555,12 @@ nav.menu ul li a {
   width: 100%;
   height: auto;
   display: block;
-}
-.bento-item .content {
-  padding: 1rem;
+  margin-bottom: 10px;
 }
 .bento-item .content h3 {
   font-family: var(--title-font);
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin: 0;
 }
 .bento-item .content p {
@@ -562,7 +575,7 @@ nav.menu ul li a {
   max-width: var(--width-default);
   width: 100%;
   padding: 3rem 1rem;
-  margin: 1% auto;
+  margin: 3rem auto;
   background-color: #143e74;
   color: var(--text-color);
   border-radius: 8px;
@@ -582,13 +595,13 @@ nav.menu ul li a {
 }
 .about_us {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 100px;
 }
 .about_us p {
   font-family: "Poppins", sans-serif;
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin-bottom: 20px;
 }
 .about_us img {
@@ -923,10 +936,6 @@ footer {
 
   .slider .list .item .content img {
     width: 10rem;
-  }
-
-  .about_us {
-    flex-direction: column;
   }
   .facility-item {
     width: 90%;

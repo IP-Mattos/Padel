@@ -32,7 +32,7 @@ if (isset($_SESSION['userId'])) {
       <div class="logo">
         <a href="/">
           <img src="img/logo.jpg" alt="Padel Pro-Florida Logo" class="logo-image" />
-          <h1>Padel Pro-Florida</h1>
+          <h1>INICIO</h1>
         </a>
       </div>
     </div>
@@ -87,6 +87,13 @@ if (isset($_SESSION['userId'])) {
         <!-- Add more bento items as needed -->
       </div>
     </section>
+    <div id="versusModal" class="vModal">
+      <div class="vModal-content">
+        <span id="closeVersus" class="close">&times;</span>
+        <h2>En busca de rivales</h2>
+        <div id="match-container" class="match-container"></div>
+      </div>
+    </div>
     <div id="hoursModal" class="hModal">
       <div class="hModal-content">
         <h2>Tus reservas</h2>
@@ -94,6 +101,7 @@ if (isset($_SESSION['userId'])) {
         <div class="reserve-cards" id="reserveContainer"></div>
       </div>
     </div>
+    <button id="openVersus" class="float-vs"><img id="versusIcon" src="./img/vs.png" alt="VS"></button>
     <div id="courtModal" class="cModal">
       <div class="cModal-content">
         <img src="./img/resCancha.png" alt="" class="service-ico">

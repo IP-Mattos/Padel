@@ -31,7 +31,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <div class="logo">
         <a href="#home">
           <img src="img/logo.jpg" alt="Padel Pro-Florida Logo" class="logo-image" />
-          <h1>Padel Pro-Florida</h1>
+          <h1>BIENVENIDO A GO PADEL</h1>
         </a>
       </div>
       <label for="menu-toggle" class="menu-icon">
@@ -177,74 +177,94 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
         </div>
       </div>
 
-      <section class="Services" id="services">
-        <h2>Nuestro Servicio</h2>
-        <div class="bento-grid">
-          <div class="bento-item">
-            <img src="./img/image-5.jpg" alt="Imagen 1" />
-            <div class="content">
-              <h3>Alquiler de canchas</h3>
-              <p>
-                Disfrutá y divertite en nuestras canchas con amigos y familia!
-              </p>
-            </div>
-          </div>
-          <div class="bento-item">
-            <img src="./img/image-7.jpg" alt="Imagen 2" />
-            <div class="content">
-              <h3>Clases particulares</h3>
-              <p>
-                Aprende de este hermoso deporte de la mano de nuestros
-                profesores!
-              </p>
-            </div>
-          </div>
-          <div class="bento-item">
-            <img src="./img/image-6.jpg" alt="Imagen 3" />
-            <div class="content">
-              <h3>Escuela y escuelita</h3>
-              <p>
-                Para los peques tambien hay lugar! Clases pensadas para chicos
-                de hasta 12 años y para adolescentes de 13 a 18
-              </p>
-            </div>
-          </div>
-          <div class="bento-item">
-            <img src="./img/image-5.jpg" alt="Imagen 4" />
-            <div class="content">
-              <h3>La chelada</h3>
-              <p>
-                Contamos con un espacio de cantina ideal para descansar y
-                compartir con familia y amigos, con buena música y una cerveza
-                bien fría para alentar a tu equipo!
-              </p>
-            </div>
-          </div>
-          <div class="bento-item">
-            <img src="./img/image-4.jpg" alt="Imagen 5" />
-            <div class="content">
-              <h3>Familia GO Padel</h3>
-              <p>
-                Unite a nuestra familia y disfruta de beneficios y descuentos
-                unicos!
-              </p>
-            </div>
-          </div>
-          <!-- Add more bento items as needed -->
-        </div>
-      </section>
-
       <section class="about" id="about">
         <h2>Sobre Nosotros</h2>
         <div class="about_us">
           <img src="img/Padel.svg" alt="Svg de Padel" />
           <p>
-            Go Padel Florida impulsa la práctica del padel desde un ambiente
-            familiar y ameno. Nuestra misión es promover este emocionante
-            deporte, atendiendo a los ritmos y evolución de cada jugador,
-            alcanzando su máximo potencial y asegurando un espacio de disfrute
-            para toda la familia, incluso para los más chiquitos!
+            Imagina un rincón especial donde la adrenalina del deporte se mezcla con la tranquilidad de un entorno natural. Este lugar cuenta con modernas canchas de pádel rodeadas de árboles frondosos, creando un ambiente fresco y relajante para practicar tu deporte favorito al aire libre. Aquí, cada golpe se siente diferente.
           </p>
+          <br>
+          <p>
+            Después de un emocionante juego, puedes dirigirte al área social, un espacio para la convivencia y la relajación. Bajo una iluminación cálida que cuelga entre ramas, se encuentran mesas de madera rústica donde amigos, familia y amantes del deporte se reúnen para compartir momentos únicos. 
+            La experiencia no sería completa sin la música. Sesiones de música llenan el ambiente de energía y emoción, creando el escenario ideal para relajarte después del deporte o simplemente disfrutar de una velada bajo las estrellas.
+          </p>
+          <br>
+          <p>
+            Este lugar no es solo para deportistas, sino para toda persona que busque desconectar, conectar y celebrar. Es un refugio donde el esfuerzo físico se transforma en camaradería, y donde cada noche termina con risas, brindis y buenos recuerdos. Ven a nuestro oasis de bienestar y diversión. ¡Ven y descubre la magia de practicar pádel mientras compartes la vida con quienes más importan!
+          </p>
+        </div>
+      </section>
+
+      <section class="Services" id="services">
+        <h2>Nuestro Servicio</h2>
+        <div class="bento-grid">
+          <div class="bento-item">
+            <img src="./img/reserva.png" alt="Imagen 1" />
+            <div class="content">
+              <h3>Alquiler de cancha / Reservas de horas</h3>
+              <p>
+                ¡Únete a nuestro grupo selecto de amantes del pádel y disfruta de beneficios exclusivos!
+                <span class="more-text">
+                  Regístrate ahora para reservar tus horas en nuestras canchas y accede a promociones especiales, eventos privados y la oportunidad de compartir tu pasión por el deporte con una comunidad vibrante. No pierdas la oportunidad de asegurar tu lugar y vivir una experiencia única. ¡La competencia y diversión te esperan!
+                </span>
+                <button class="read-more-btn">Leer más</button>
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/practica.png" alt="Imagen 2" />
+            <div class="content">
+              <h3>Clases y prácticas</h3>
+              <p>
+                Clases personalizadas o grupales de pádel son ideales para quienes buscan mejorar su técnica de manera específica y efectiva. 
+                <span class="more-text">
+                En sesiones individuales, el entrenador se concentra en las necesidades particulares de cada persona, ajustando los ejercicios a su nivel y objetivos. Por otro lado, las clases grupales no solo permiten trabajar habilidades en conjunto, sino que también fomentan la camaradería y la competencia amistosa. Cada sesión está diseñada para abordar aspectos cruciales del juego, desde el saque hasta las estrategias defensivas y ofensivas, permitiendo que cada participante alcance su máximo potencial mientras disfruta del aprendizaje en compañía.
+                </span>
+                <button class="read-more-btn">Leer más</button>
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/clases.png" alt="Imagen 3" />
+            <div class="content">
+              <h3>Escuela</h3>
+              <p>
+                Para niñas y niños mayores de 10 años, nuestra escuelita de pádel ofrece un espacio dinámico donde aprender y divertirse mientras desarrollan habilidades deportivas. 
+                <span class="more-text">
+                Con entrenadores dedicados, los estudiantes perfeccionan su técnica en un ambiente seguro y amigable, fomentando trabajo en equipo, disciplina y amor por el deporte.
+                </span>
+                <button class="read-more-btn">Leer más</button>
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/chelada.png" alt="Imagen 4" />
+            <div class="content">
+              <h3>Chelada</h3>
+              <p>
+                Diseñado para ofrecer una experiencia sensorial inolvidable, combina naturaleza y sabor en un entorno mágico.
+                <span class="more-text"> 
+                Rodeado de árboles frondosos y flores coloridas, cuenta con mesas rústicas de madera dispuestas bajo luces cálidas que cuelgan entre las ramas. Aquí se sirven cervezas artesanales elaboradas localmente, cada una con una historia y un toque especial que invita a la exploración. Además, el espacio se complementa con música en vivo, áreas para juegos al aire libre y opciones gastronómicas que maridan perfectamente con una buena cerveza. Este oasis es un lugar para conectar, relajarse y celebrar la vida con brindis bajo las estrellas.
+                </span>
+                <button class="read-more-btn">Leer más</button>
+              </p>
+            </div>
+          </div>
+          <div class="bento-item">
+            <img src="./img/familia.png" alt="Imagen 5" />
+            <div class="content">
+              <h3>Familia GO Padel</h3>
+              <p>
+                En nuestra casa, el espíritu deportivo no solo se vive, sino que se respira en cada rincón. 
+                <span class="more-text">
+                Este espacio está diseñado para ser mucho más que un lugar de práctica; es un refugio para quienes comparten una pasión auténtica por el pádel y buscan un entorno donde la competencia se transforme en camaradería y el esfuerzo en celebración. Aquí, cada socio encuentra una comunidad que inspira, que conecta y que hace que cada momento sea especial.
+                </span>
+                <button class="read-more-btn">Leer más</button>
+              </p>
+            </div>
+          </div>
+          <!-- Add more bento items as needed -->
         </div>
       </section>
 

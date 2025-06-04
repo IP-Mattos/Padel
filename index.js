@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "auto";
   };
 
+  document.querySelectorAll(".read-more-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const moreText = this.previousElementSibling;
+      const isHidden =
+        moreText.style.display === "none" || !moreText.style.display;
+
+      moreText.style.display = isHidden ? "inline" : "none";
+      this.textContent = isHidden ? "Leer menos" : "Leer más";
+    });
+  });
+
   //=======================================>
   //SLIDER SETUP & NAVIGATION
   //=======================================>

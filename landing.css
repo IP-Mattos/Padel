@@ -88,6 +88,21 @@ header {
   /* Optional: add a slight shadow */
 }
 
+.float-vs {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 50%;
+  width: 70px;
+}
+
+.float-vs img {
+  width: 50px;
+}
+
 .logo a {
   display: flex;
   align-items: center;
@@ -153,7 +168,8 @@ nav.menu ul li a {
 .clModal,
 .rModal,
 .sModal,
-.hModal {
+.hModal,
+.vModal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -176,7 +192,8 @@ nav.menu ul li a {
 .clModal-content,
 .rModal-content,
 .sModal-content,
-.hModal-content {
+.hModal-content,
+.vModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -199,10 +216,41 @@ nav.menu ul li a {
 .clModal-content h2,
 .rModal-content h2,
 .sModal-content h2,
-.hModal-content h2 {
+.hModal-content h2,
+.vModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 20px;
+}
+
+.match-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.vCard {
+  display: flex;
+  background-color: rgb(0, 50, 102);
+  border-radius: 8px;
+  padding: 10px;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.user-info img {
+  width: 100px;
+  border-radius: 50%;
 }
 
 .reserve-cards {
@@ -568,7 +616,8 @@ nav.menu ul li a {
   .clModal-content,
   .rModal-content,
   .sModal-content,
-  .hModal-content {
+  .hModal-content,
+  .vModal-content {
     margin: auto auto;
   }
 
@@ -603,6 +652,12 @@ nav.menu ul li a {
   .bento-item {
     height: 9rem;
     width: 9rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .vCard {
+    flex-direction: column;
   }
 }
 
