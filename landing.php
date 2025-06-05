@@ -155,25 +155,83 @@ if (isset($_SESSION['userId'])) {
         <img src="./img/resChelada.png" alt="" class="service-ico">
         <span id="closeCantine" class="close">&times;</span>
         <h2>Reservando cantina</h2>
-        <div class="calendar" id="cantine-calendar"></div>
+        <div class="calendar" id="cantine-calendar"><p style="color: white;">Próximamente</p></div>
         <div class="hs" id="cantine-hs"></div>
-        <div class="buttons">
+        <!-- <div class="buttons">
           <button id="acceptCantine">Confirmar</button>
-        </div>
+        </div> -->
       </div>
     </div>
     <div id="membersModal" class="sModal">
       <div class="sModal-content">
         <img src="./img/socios.png" alt="" class="service-ico">
         <span id="closeMembers" class="close">&times;</span>
-        <h2>Desea volverse socio?</h2>
-        <p style="text-align:center;">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Non velit neque molestiae eum quo officia rerum
-          veniam mollitia, sed perspiciatis cupiditate ducimus vitae modi dignissimos aperiam dolorem nemo temporibus
-          rem?
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid, iusto asperiores. Eaque accusamus est sunt,
-          eveniet quibusdam quia nostrum ex eius pariatur aspernatur ratione modi magnam culpa, provident dolorum in.
-        </p>
+        <h1>¡Hazte socio y vive la experiencia!</h1>
+
+  <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos que transforman cada partida en una experiencia única. Descubre por qué unirte es la mejor elección:</p>
+
+  <h2>Ventajas de ser socio</h2>
+  <ul>
+    <li>Más juego, menos costo: Socios FULL disfrutan pádel sin costo de 7:00 a 17:00 y tarifas reducidas en otros horarios. Socios Amigo también obtienen descuentos significativos.</li>
+    <li>Duchas gratuitas: Relájate después de jugar. Socios FULL disfrutan de este beneficio sin costo.</li>
+    <li>Descuentos en productos: Pelotas, greps y más con hasta un 20% de descuento.</li>
+    <li>Clases a precios especiales: Aprende y mejora con tarifas exclusivas para socios.</li>
+  </ul>
+
+  <h2>Comparativa de beneficios</h2>
+  <table>
+    <tr>
+      <th>Beneficio</th>
+      <th>Socio FULL</th>
+      <th>Socio Amigo</th>
+      <th>No socios</th>
+    </tr>
+    <tr>
+      <td>Pádel 7:00 - 17:00</td>
+      <td>Sin Costo</td>
+      <td>$200</td>
+      <td>$250</td>
+    </tr>
+    <tr>
+      <td>Pádel 17:00 - 21:00</td>
+      <td>$150</td>
+      <td>$200</td>
+      <td>$250</td>
+    </tr>
+    <tr>
+      <td>Pádel 22:00 - 24:00</td>
+      <td>$150</td>
+      <td>$200</td>
+      <td>$250</td>
+    </tr>
+    <tr>
+      <td>Duchas</td>
+      <td>Sin Costo</td>
+      <td>$50</td>
+      <td>$50</td>
+    </tr>
+    <tr>
+      <td>Clases Principiante</td>
+      <td>$100</td>
+      <td>$150</td>
+      <td>$200</td>
+    </tr>
+    <tr>
+      <td>Clases Particulares</td>
+      <td>$200</td>
+      <td>$300</td>
+      <td>$350</td>
+    </tr>
+    <tr>
+      <td>Productos</td>
+      <td>20% OFF</td>
+      <td>10% OFF</td>
+      <td>0% OFF</td>
+    </tr>
+  </table>
+
+  <h2>Únete hoy</h2>
+  <p>Ser socio te conecta con la magia del deporte, la naturaleza y una comunidad vibrante. Relájate bajo las estrellas, disfruta de música en vivo y crea recuerdos únicos. ¡Hazte parte de Familia Go Padel y vive la diferencia!</p>           
         <div class="buttons">
           <button id="acceptMembers">Confirmar</button>
         </div>

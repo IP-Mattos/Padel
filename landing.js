@@ -355,7 +355,8 @@ document.addEventListener("DOMContentLoaded", () => {
               },
               hoursContainer
             );
-          }
+          },
+          servicio
         );
       } else {
         container.innerHTML = "<p>Error al cargar los días</p>";
@@ -432,15 +433,15 @@ document.addEventListener("DOMContentLoaded", () => {
       hoursContainer: rivalshs,
       confirmButtonId: "acceptRivals",
     },
-    cantine: {
-      modal: caModal,
-      content: ".caModal-content",
-      servicio: 5,
-      profe: 0,
-      container: cantineCalendar,
-      hoursContainer: cantinehs,
-      confirmButtonId: "acceptCantine",
-    },
+    // cantine: {
+    //   modal: caModal,
+    //   content: ".caModal-content",
+    //   servicio: 5,
+    //   profe: 0,
+    //   container: cantineCalendar,
+    //   hoursContainer: cantinehs,
+    //   confirmButtonId: "acceptCantine",
+    // },
   };
 
   function capitalize(str) {
@@ -488,7 +489,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   },
                   hoursContainer
                 );
-              }
+              },
+              servicio
             );
           } else {
             container.innerHTML = "<p>Error al cargar los días</p>";
@@ -501,7 +503,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  function populateCalendarCards(containerDiv, calendarData, onDaySelected) {
+  function populateCalendarCards(
+    containerDiv,
+    calendarData,
+    onDaySelected,
+    servicio
+  ) {
     const today = new Date(); // Get the current date to use as a base for date calculations
     let selectedCard = null; // Will store the currently selected card (if any)
     let selectedCardData = null; // Will store metadata about the selected card
@@ -510,11 +517,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Loop over each day received from the backend
     calendarData.forEach((dayInfo, index) => {
-      const { dia, estado } = dayInfo;
+      var { dia, estado } = dayInfo;
 
       // Calculate the actual date based on today's date + current index
       const actualDate = new Date(today);
       actualDate.setDate(today.getDate() + index);
+
+      if (Number(servicio) === 4) {
+        const todayString = today.toISOString().split("T")[0];
+        const actualDateString = actualDate.toISOString().split("T")[0];
+        if (todayString === actualDateString) {
+          estado = 1;
+        }
+      }
 
       // Extract date and month in readable format
       const dayNumber = actualDate.getDate();
@@ -657,8 +672,10 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className = "card";
         card.innerHTML = `<span class="hour">${hora}</span>`;
 
-        const isReservedByUser = idUsuario && idUsuario === userId;
-        const isCorrectService = fetchParams.servicio === servicio;
+        const isReservedByUser =
+          idUsuario && toString(idUsuario) === toString(userId);
+        const isCorrectService =
+          String(fetchParams.servicio) === String(servicio);
         const isCancelable =
           isReservedByUser && isCorrectService && isWithinLastHour(timeEstado);
 
@@ -724,7 +741,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   fetchHours(fetchParams, fetchParams.container); // re-fetch updated hours
                 });
               } else {
-                Swal.fire("Error", "No se pudo cancelar tu reserva", "error");
+                Swal.fire(
+                  "Error",
+                  `${json.consultaResponse.detalleError}`,
+                  "error"
+                );
               }
             } catch (err) {
               console.error("Error cancelando reserva:", err);
@@ -880,7 +901,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sevenDays.setDate(now.getDate() + 7);
 
     let sevenDaysBack = new Date(now);
-    sevenDaysBack.setDate(now.getDate() - 7);
+    sevenDaysBack.setDate(now.getDate()); //ya no son 7 días atras, es el día actual
 
     function formatDate(date) {
       const year = date.getFullYear();
@@ -908,7 +929,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (json.consultaResponse?.codigoError === "0") {
         const datos = json.consultaResponse.datos;
-        datos.reverse();
         container.innerHTML = "";
 
         datos.forEach((item) => {
@@ -935,10 +955,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const imageUrl = serviceImages[item.servicio] || "images/default.png";
 
           function formatDateName(dateStr) {
-            const date = new Date(dateStr);
-            const day = date.getDate();
-            const month = date.toLocaleString("es-ES", { month: "long" });
-            return `${day} de ${month}`;
+            const [year, month, day] = dateStr.split("-").map(Number);
+            const date = new Date(year, month - 1, day); // Local time
+
+            const dayNum = date.getDate();
+            const monthName = date.toLocaleString("es-ES", { month: "long" });
+
+            return `${dayNum} de ${monthName}`;
           }
 
           const formattedDate = formatDateName(item.fecha);
@@ -981,24 +1004,35 @@ document.addEventListener("DOMContentLoaded", () => {
   versusData.append("idUser", userId);
   versusData.append("estado", 1);
 
-  fetch("./accion/getHsVs.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: versusData.toString(),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const datos = data.consultaResponse?.datos || [];
-
-      const checkFuture = datos.some((item) => checkDate(item.fecha));
-
-      if (checkFuture) {
-        document.getElementById("versusIcon").src = "./img/vs-ex.png";
-      }
+  function fetchVersusData() {
+    fetch("./accion/getHsVs.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: versusData.toString(),
     })
-    .catch((err) => {
-      console.error("Fetch error:", err);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        const datos = data.consultaResponse?.datos || [];
+
+        const checkFuture = datos.some((item) => checkDate(item.fecha));
+        const icon = document.getElementById("versusIcon");
+
+        if (checkFuture) {
+          icon.src = "./img/vs-ex.png";
+        } else {
+          icon.src = "./img/vs.png"; // reset to default if nothing matches
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
+  }
+
+  // Call it immediately once
+  fetchVersusData();
+
+  // Set interval to call it every 30 seconds
+  setInterval(fetchVersusData, 5000); // 30000 milliseconds = 30 seconds
 
   document.getElementById("openVersus").addEventListener("click", async (e) => {
     const formData = new URLSearchParams();
@@ -1032,8 +1066,6 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
           const perfilJson = await perfilRes.json();
-          console.log("Perfil Response:", perfilJson); // <- Add this line
-          console.log("idUsuario:", idUsuario, "userId:", userId);
           const perfil = perfilJson.consultaResponse;
 
           // Create card
@@ -1041,10 +1073,13 @@ document.addEventListener("DOMContentLoaded", () => {
           card.className = "vCard";
 
           function formatDateName(dateStr) {
-            const date = new Date(dateStr);
-            const day = date.getDate();
-            const month = date.toLocaleString("es-ES", { month: "long" });
-            return `${day} de ${month}`;
+            const [year, month, day] = dateStr.split("-").map(Number);
+            const date = new Date(year, month - 1, day); // Local time
+
+            const dayNum = date.getDate();
+            const monthName = date.toLocaleString("es-ES", { month: "long" });
+
+            return `${dayNum} de ${monthName}`;
           }
 
           const fechaSimple = formatDateName(fecha);
@@ -1084,7 +1119,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cancelData = new URLSearchParams();
                 cancelData.append("idReserv", idReserva);
 
-                await fetch("./accion/putReservCancel.php", {
+                const res = await fetch("./accion/putReservCancel.php", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -1092,13 +1127,23 @@ document.addEventListener("DOMContentLoaded", () => {
                   body: cancelData.toString(),
                 });
 
-                Swal.fire(
-                  "Cancelado",
-                  "La reserva ha sido cancelada.",
-                  "success"
-                );
-                card.remove(); // Remove card from UI
-                closeModal(vModal, ".vModal-content");
+                const json = await res.json();
+
+                if (json.consultaResponse?.codigoError === "0") {
+                  Swal.fire(
+                    "Cancelado",
+                    "La reserva ha sido cancelada.",
+                    "success"
+                  );
+                  card.remove(); // Remove card from UI
+                  closeModal(vModal, ".vModal-content");
+                } else {
+                  Swal.fire(
+                    "Error",
+                    `${json.consultaResponse.detalleError}`,
+                    "error"
+                  );
+                }
               }
             });
           } else {

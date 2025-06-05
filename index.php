@@ -335,6 +335,13 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="index.js"></script>
+    <script>
+      const loggedIn = <?php if($loggedIn){
+        echo $loggedIn;
+      }else{
+        echo 0;
+      }; ?>
+    </script>
   </body>
 
   </html>
