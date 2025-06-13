@@ -869,7 +869,7 @@ document.addEventListener("DOMContentLoaded", () => {
           Swal.fire("Éxito", "Reserva realizada con éxito", "success");
           closeModal(config.modal, config.content);
         } else {
-          Swal.fire("Error", "Error al realizar la reserva", "error");
+          Swal.fire("Error", `${json.consultaResponse.detalleError}`, "error");
           console.error("Respuesta del servidor:", json);
         }
       } catch (err) {

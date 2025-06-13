@@ -38,7 +38,10 @@ if (isset($_SESSION['userId'])) {
     </div>
 
     <nav class="menu">
-      <ul>
+      <ul>        
+        <?php if($_SESSION['isAdmin'] === "1"){ ?>
+        <li><a href="admin.php"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
+        <?php } ?>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
         <li><a href="#profile" id="openProfile2"><svg width="23" height="23" viewBox="0 0 24 24" stroke="#03ff03"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
