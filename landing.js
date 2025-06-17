@@ -821,26 +821,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  document.getElementById("openHours").addEventListener("click", async (e) => {
+  async function loadUserReservations() {
     container.innerHTML = "<p>Cargando tus reservas...</p>";
 
     let now = new Date();
-
     let sevenDays = new Date(now);
     sevenDays.setDate(now.getDate() + 7);
 
     let sevenDaysBack = new Date(now);
-    sevenDaysBack.setDate(now.getDate()); //ya no son 7 días atras, es el día actual
+    sevenDaysBack.setDate(now.getDate());
 
     function formatDate(date) {
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}/${month}/${day}`;
     }
 
-    fechaHasta = formatDate(sevenDays);
-    fechaDesde = formatDate(sevenDaysBack);
+    const fechaHasta = formatDate(sevenDays);
+    const fechaDesde = formatDate(sevenDaysBack);
 
     const formData = new URLSearchParams();
     formData.append("fechaDesde", fechaDesde);
@@ -860,11 +859,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const datos = json.consultaResponse.datos;
         container.innerHTML = "";
 
-        datos.forEach(async (item) => {
+        for (const item of datos) {
           const card = document.createElement("div");
           card.className = "rCard";
 
-          // Set card colors
           const [year, month, day] = item.fecha.split("-").map(Number);
           const itemDate = new Date(year, month - 1, day);
           const today = new Date();
@@ -901,7 +899,6 @@ document.addEventListener("DOMContentLoaded", () => {
             displayImage = serviceImages[item.servicio] || "images/default.png";
           }
 
-          // Format date
           function formatDateName(dateStr) {
             const [year, month, day] = dateStr.split("-").map(Number);
             const date = new Date(year, month - 1, day);
@@ -911,9 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           const formattedDate = formatDateName(item.fecha);
-          const imageUrl = serviceImages[item.servicio] || "images/default.png";
 
-          // Build content
           const dateP = document.createElement("p");
           dateP.innerHTML = `<strong>${formattedDate}</strong>`;
 
@@ -923,16 +918,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .slice(0, 2)
             .join(":")}</strong>`;
 
-          // Create wrapper div for images
           const imageWrapper = document.createElement("div");
           imageWrapper.className = "image-wrapper";
-
-          // Main image
-          const img = document.createElement("img");
-          img.src = displayImage;
-          img.alt = displayName || `Servicio ${item.servicio}`;
-          img.className = "service-icon";
-          imageWrapper.appendChild(img);
 
           if (secondaryImage) {
             const img2 = document.createElement("img");
@@ -942,18 +929,24 @@ document.addEventListener("DOMContentLoaded", () => {
             imageWrapper.appendChild(img2);
           }
 
-          // Append everything to the card in your chosen order
+          const img = document.createElement("img");
+          img.src = displayImage;
+          img.alt = displayName || `Servicio ${item.servicio}`;
+          img.className = "service-icon";
+          imageWrapper.appendChild(img);
+
           card.appendChild(dateP);
-          card.appendChild(imageWrapper); // ✅ now both images are added together
+          card.appendChild(imageWrapper);
+
           if (displayName) {
             const nameP = document.createElement("p");
             nameP.textContent = displayName;
             nameP.className = "rival-name";
             card.appendChild(nameP);
           }
+
           card.appendChild(hourP);
 
-          // Check for cancel eligibility
           if (item.timeEstado) {
             const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
             const now = new Date();
@@ -1000,9 +993,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const result = await res.json();
 
                     if (result.consultaResponse?.codigoError === "0") {
-                      cancelButton.textContent = "Cancelado";
-                      cancelButton.disabled = true;
-
                       Swal.fire({
                         title: "Cancelado",
                         text: "Tu reserva ha sido cancelada.",
@@ -1010,6 +1000,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         timer: 2000,
                         showConfirmButton: false,
                       });
+
+                      // ✅ Refetch reservations
+                      await loadUserReservations();
                     } else {
                       Swal.fire(
                         "Error",
@@ -1028,18 +1021,24 @@ document.addEventListener("DOMContentLoaded", () => {
                   }
                 }
               });
+
               card.appendChild(cancelButton);
             }
           }
 
           container.appendChild(card);
-        });
+        }
       } else {
         container.innerHTML = "<p>Hubo un error al cargar las horas</p>";
       }
     } catch (error) {
       console.error("Error de conexion:", error);
     }
+  }
+
+  // 🔁 Attach the handler
+  document.getElementById("openHours").addEventListener("click", () => {
+    loadUserReservations();
   });
 
   //================================================================>
@@ -1047,6 +1046,16 @@ document.addEventListener("DOMContentLoaded", () => {
   //================================================================>
 
   const versusContainer = document.getElementById("match-container");
+
+  function isCancelable(timeEstado) {
+    if (!timeEstado) return false;
+
+    const estadoDate = new Date(timeEstado.replace(" ", "T"));
+    const now = new Date();
+    const oneHourAfter = new Date(estadoDate.getTime() + 60 * 60 * 1000);
+
+    return now >= estadoDate && now <= oneHourAfter;
+  }
 
   function checkDate(fechaStr) {
     const today = new Date();
@@ -1156,7 +1165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const button = document.createElement("button");
 
-          if (String(idUsuario) === String(userId)) {
+          if (
+            String(idUsuario) === String(userId) &&
+            isCancelable(item.timeEstado)
+          ) {
             // Cancel button
             button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
             button.className = "cancel-btn";

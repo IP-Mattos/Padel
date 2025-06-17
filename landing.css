@@ -287,16 +287,20 @@ nav.menu ul li a {
   gap: 10px;
 }
 
-.versus-icon{
+.versus-icon {
   width: 40px;
 }
-
 
 .service-icon {
   width: 70px;
   border-radius: 50%;
 }
 
+.image-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
 #profList {
   display: flex;

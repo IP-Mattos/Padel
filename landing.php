@@ -42,6 +42,17 @@ if (isset($_SESSION['userId'])) {
         <?php if($_SESSION['isAdmin'] === "1"){ ?>
         <li><a href="admin.php"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
         <?php } ?>
+        <li>
+          <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
+          <img style="width: 50px;" src="./img/1star.png" alt="1">
+          <?php } ?>
+          <?php if($_SESSION['misEstrellas'] === "2"){ ?> 
+          <img style="width: 50px;" src="./img/2stars.png" alt="2">
+          <?php } ?>
+          <?php if($_SESSION['misEstrellas'] === "3"){ ?> 
+          <img style="width: 50px;" src="./img/3stars.png" alt="3">
+          <?php } ?>
+        </li>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
         <li><a href="#profile" id="openProfile2"><img style="width: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
       </ul>
@@ -241,6 +252,15 @@ if (isset($_SESSION['userId'])) {
             </div>
           </label>
           <input type="file" id="profileImgInput" style="display: none" accept="image/*">
+          <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
+          <img style="width: 100px; margin-top:10px;" src="./img/1star.png" alt="1">
+          <?php } ?>
+          <?php if($_SESSION['misEstrellas'] === "2"){ ?> 
+          <img style="width: 100px; margin-top:10px;" src="./img/2stars.png" alt="2">
+          <?php } ?>
+          <?php if($_SESSION['misEstrellas'] === "3"){ ?> 
+          <img style="width: 100px; margin-top:10px;" src="./img/3stars.png" alt="3">
+          <?php } ?>
         </div>
         <div class="profile-detail" id="profileDetail">
           <div class="row">
