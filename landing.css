@@ -287,9 +287,16 @@ nav.menu ul li a {
   gap: 10px;
 }
 
-.rCard img {
-  width: 70px;
+.versus-icon{
+  width: 40px;
 }
+
+
+.service-icon {
+  width: 70px;
+  border-radius: 50%;
+}
+
 
 #profList {
   display: flex;

@@ -672,22 +672,10 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className = "card";
         card.innerHTML = `<span class="hour">${hora}</span>`;
 
-        const isReservedByUser =
-          idUsuario && toString(idUsuario) === toString(userId);
-        const isCorrectService =
-          String(fetchParams.servicio) === String(servicio);
-        const isCancelable =
-          isReservedByUser && isCorrectService && isWithinLastHour(timeEstado);
-
         if (estado === 1) {
           card.style.backgroundColor = "red";
-          if (isCancelable) {
-            card.style.opacity = "1";
-            card.style.pointerEvents = "auto";
-          } else {
-            card.style.opacity = "0.6";
-            card.style.pointerEvents = "none";
-          }
+          card.style.opacity = "0.6";
+          card.style.pointerEvents = "none";
         } else {
           card.addEventListener("click", () => toggleCardSelection(card));
           card.addEventListener("keydown", (event) => {
@@ -697,88 +685,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           });
         }
-
-        if (isCancelable) {
-          const cancelBtn = document.createElement("span");
-          cancelBtn.className = "cancel-btn";
-          cancelBtn.innerText = "✖";
-          cancelBtn.title = "Cancelar reserva";
-          cancelBtn.style.marginLeft = "3px";
-          cancelBtn.style.cursor = "pointer";
-          cancelBtn.style.color = "darkred";
-          cancelBtn.onclick = async (e) => {
-            e.stopPropagation();
-            const confirm = await Swal.fire({
-              title: "Cancelar reserva?",
-              text: `Deseas cancelar tu reserva de las ${hora}?`,
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonText: "Si, cancelar",
-              cancelButtonText: "No",
-            });
-            if (!confirm.isConfirmed) return;
-
-            try {
-              const formData = new URLSearchParams();
-              formData.append("idReserv", idReserva);
-
-              const res = await fetch("./accion/putReservCancel.php", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData.toString(),
-              });
-
-              const json = await res.json();
-
-              if (json.consultaResponse?.codigoError === "0") {
-                Swal.fire(
-                  "Cancelada",
-                  "Tu reserva fue cancelada",
-                  "success"
-                ).then(() => {
-                  fetchHours(fetchParams, fetchParams.container); // re-fetch updated hours
-                });
-              } else {
-                Swal.fire(
-                  "Error",
-                  `${json.consultaResponse.detalleError}`,
-                  "error"
-                );
-              }
-            } catch (err) {
-              console.error("Error cancelando reserva:", err);
-              Swal.fire(
-                "Error",
-                "Problema al conectar con el servidor",
-                "error"
-              );
-            }
-          };
-          card.appendChild(cancelBtn);
-        }
         container.appendChild(card);
       }
     );
-  }
-
-  function isWithinLastHour(fechaString) {
-    if (!fechaString || typeof fechaString !== "string") return false;
-
-    try {
-      // Convert from "YYYY-MM-DD HH:mm:ss" to a valid ISO string
-      const isoString = fechaString.replace(" ", "T");
-      const fechaReserva = new Date(isoString);
-
-      const now = new Date();
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-
-      return fechaReserva >= oneHourAgo && fechaReserva <= now;
-    } catch (e) {
-      console.error("Error parsing fechaString:", fechaString, e);
-      return false;
-    }
   }
 
   function toggleCardSelection(card) {
@@ -892,6 +801,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add more services as needed
   };
 
+  async function fetchProfile(userIdToFetch) {
+    const PD = new URLSearchParams();
+    PD.append("idPerfil", userIdToFetch);
+    const res = await fetch("./accion/getPerfil.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: PD.toString(),
+    });
+    const js = await res.json();
+    if (js.consultaResponse?.codigoError === "0") {
+      return {
+        name: js.consultaResponse.nombre,
+        img: `./accion/imgPerfilUser/${js.consultaResponse.imgperfil}`,
+      };
+    } else {
+      console.error("Perfil error", js);
+      return null;
+    }
+  }
+
   document.getElementById("openHours").addEventListener("click", async (e) => {
     container.innerHTML = "<p>Cargando tus reservas...</p>";
 
@@ -931,14 +860,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const datos = json.consultaResponse.datos;
         container.innerHTML = "";
 
-        datos.forEach((item) => {
+        datos.forEach(async (item) => {
           const card = document.createElement("div");
           card.className = "rCard";
 
-          // Parse the date properly in local time
+          // Set card colors
           const [year, month, day] = item.fecha.split("-").map(Number);
-          const itemDate = new Date(year, month - 1, day); // Local time
-
+          const itemDate = new Date(year, month - 1, day);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
 
@@ -952,27 +880,157 @@ document.addEventListener("DOMContentLoaded", () => {
             card.style.backgroundColor = "#003266";
           }
 
-          const imageUrl = serviceImages[item.servicio] || "images/default.png";
+          let displayName = "";
+          let displayImage, secondaryImage;
 
+          if (item.servicio == 4) {
+            if (item.idUserRival != 0 && item.idUserRival != userId) {
+              const profile = await fetchProfile(item.idUserRival);
+              displayName = profile?.name || "";
+              displayImage = profile?.img || serviceImages[4];
+              secondaryImage = "./img/vs.png";
+            } else if (item.idUserRival == userId) {
+              const profile = await fetchProfile(item.idUsuario);
+              displayName = profile?.name || "";
+              displayImage = profile?.img || serviceImages[4];
+              secondaryImage = "./img/vs.png";
+            } else {
+              displayImage = serviceImages[4];
+            }
+          } else {
+            displayImage = serviceImages[item.servicio] || "images/default.png";
+          }
+
+          // Format date
           function formatDateName(dateStr) {
             const [year, month, day] = dateStr.split("-").map(Number);
-            const date = new Date(year, month - 1, day); // Local time
-
+            const date = new Date(year, month - 1, day);
             const dayNum = date.getDate();
             const monthName = date.toLocaleString("es-ES", { month: "long" });
-
             return `${dayNum} de ${monthName}`;
           }
 
           const formattedDate = formatDateName(item.fecha);
+          const imageUrl = serviceImages[item.servicio] || "images/default.png";
 
-          card.innerHTML = `          
-          <p><strong>${formattedDate}</strong></p>
-          <img src="${imageUrl}" alt="Servicio ${
-            item.servicio
-          }" class="service-icon" />
-          <p><strong>${item.hora.split(":").slice(0, 2).join(":")}</strong></p>
-          `;
+          // Build content
+          const dateP = document.createElement("p");
+          dateP.innerHTML = `<strong>${formattedDate}</strong>`;
+
+          const hourP = document.createElement("p");
+          hourP.innerHTML = `<strong>${item.hora
+            .split(":")
+            .slice(0, 2)
+            .join(":")}</strong>`;
+
+          // Create wrapper div for images
+          const imageWrapper = document.createElement("div");
+          imageWrapper.className = "image-wrapper";
+
+          // Main image
+          const img = document.createElement("img");
+          img.src = displayImage;
+          img.alt = displayName || `Servicio ${item.servicio}`;
+          img.className = "service-icon";
+          imageWrapper.appendChild(img);
+
+          if (secondaryImage) {
+            const img2 = document.createElement("img");
+            img2.src = secondaryImage;
+            img2.alt = "Versus";
+            img2.className = "versus-icon";
+            imageWrapper.appendChild(img2);
+          }
+
+          // Append everything to the card in your chosen order
+          card.appendChild(dateP);
+          card.appendChild(imageWrapper); // ✅ now both images are added together
+          if (displayName) {
+            const nameP = document.createElement("p");
+            nameP.textContent = displayName;
+            nameP.className = "rival-name";
+            card.appendChild(nameP);
+          }
+          card.appendChild(hourP);
+
+          // Check for cancel eligibility
+          if (item.timeEstado) {
+            const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
+            const now = new Date();
+            const oneHourAfter = new Date(
+              estadoDate.getTime() + 60 * 60 * 1000
+            );
+
+            if (now >= estadoDate && now <= oneHourAfter) {
+              const cancelButton = document.createElement("button");
+              cancelButton.className = "cancel-button";
+              cancelButton.dataset.id = item.id;
+              cancelButton.innerHTML =
+                "<img style='width: 25px;' src='./img/cancelar.png'>";
+              cancelButton.style.background = "none";
+              cancelButton.style.border = "none";
+              cancelButton.style.cursor = "pointer";
+
+              cancelButton.addEventListener("click", async () => {
+                const id = cancelButton.dataset.id;
+
+                const confirm = await Swal.fire({
+                  title: "¿Cancelar reserva?",
+                  text: "Esta acción no se puede deshacer.",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Sí, cancelar",
+                  cancelButtonText: "No, volver",
+                  reverseButtons: true,
+                });
+
+                if (confirm.isConfirmed) {
+                  const cancelData = new URLSearchParams();
+                  cancelData.append("idReserv", id);
+
+                  try {
+                    const res = await fetch("./accion/putReservCancel.php", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                      },
+                      body: cancelData.toString(),
+                    });
+
+                    const result = await res.json();
+
+                    if (result.consultaResponse?.codigoError === "0") {
+                      cancelButton.textContent = "Cancelado";
+                      cancelButton.disabled = true;
+
+                      Swal.fire({
+                        title: "Cancelado",
+                        text: "Tu reserva ha sido cancelada.",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false,
+                      });
+                    } else {
+                      Swal.fire(
+                        "Error",
+                        result.consultaResponse.detalleError,
+                        "error"
+                      );
+                      console.error("Respuesta del servidor:", result);
+                    }
+                  } catch (err) {
+                    console.error("Error al cancelar:", err);
+                    Swal.fire(
+                      "Error",
+                      "Hubo un problema al conectar con el servidor.",
+                      "error"
+                    );
+                  }
+                }
+              });
+              card.appendChild(cancelButton);
+            }
+          }
 
           container.appendChild(card);
         });

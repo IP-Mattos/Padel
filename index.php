@@ -54,11 +54,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <a id="landing" href="/landing.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
-        <svg width="19" height="23" viewBox="0 0 24 24" stroke="#03ff03" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" fill="none">
-          <circle cx="12" cy="8" r="5" />
-          <path d="M3,21 h18 C 21,12 3,12 3,21" />
-        </svg>
+        <img style="width: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="">
       </a>
     </div>
 
@@ -68,13 +64,19 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <ul>
         <li><a href="#home">Inicio</a></li>
         <li><a href="#services">Servicios</a></li>
-        <li><a href="#about">Sobre Nosotros</a></li>
+        <!-- <li><a href="#about">Sobre Nosotros</a></li> -->
         <li><a href="#contact">Contactos</a></li>
         <li class="reservas <?php if (!$loggedIn)
           echo 'hidden' ?>"><a href="/landing.php">Reservas</a></li>
           <li class="ingresar <?php if ($loggedIn)
           echo 'hidden' ?>"><a href="#login" id="openModal2">Ingresar</a></li>
-
+          <?php if($loggedIn){ ?>
+          <li>
+            <form style="text-align: center;" action="logout.php" method="POST">
+              <button type="submit" name="logout" id="logout">Salir</button>
+            </form>
+          </li>
+            <?php }?>
         </ul>
       </nav>
     </header>
@@ -177,7 +179,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
         </div>
       </div>
 
-      <section class="about" id="about">
+      <!-- <section class="about" id="about">
         <h2>Sobre Nosotros</h2>
         <div class="about_us">
           <img src="img/Padel.svg" alt="Svg de Padel" />
@@ -194,7 +196,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             Este lugar no es solo para deportistas, sino para toda persona que busque desconectar, conectar y celebrar. Es un refugio donde el esfuerzo físico se transforma en camaradería, y donde cada noche termina con risas, brindis y buenos recuerdos. Ven a nuestro oasis de bienestar y diversión. ¡Ven y descubre la magia de practicar pádel mientras compartes la vida con quienes más importan!
           </p>
         </div>
-      </section>
+      </section> -->
 
       <section class="Services" id="services">
         <h2>Nuestro Servicio</h2>

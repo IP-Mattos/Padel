@@ -117,9 +117,26 @@ header {
   border-radius: 50%;
 }
 
+.profile p {
+  text-align: center;
+}
+
 .actions {
   display: flex;
   align-items: center;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-image {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
 }
 
 @media (max-width: 436px) {
@@ -128,5 +145,8 @@ header {
   }
   .profile {
     flex-direction: column;
+  }
+  .actions{
+    gap: 2rem;
   }
 }

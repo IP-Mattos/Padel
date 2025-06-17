@@ -22,6 +22,11 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
 </head>
 <body>
     <header>
+      <div class="logo">
+        <a href="landing.php">
+          <img src="img/return.png" alt="volver" class="logo-image" />
+        </a>
+      </div>
         <button id="prevDay"><img src="./img/izquierda.png" alt=""></button>
         <p id="currentDate" style="background-color: var(--primary-color); color: black; padding:10px 20px; border-radius: 8px;"><strong>Hoy</strong></p>
         <input type="text" id="datePicker" />

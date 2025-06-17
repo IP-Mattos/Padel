@@ -388,6 +388,15 @@ nav.menu ul li a {
   font-size: 18px;
 }
 
+#logout{
+  background: none;
+  border: none;
+  font-family: "Poppins";
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+
 .slider {
   color: var(--text-color);
   width: 100vw;
@@ -900,6 +909,10 @@ footer {
     text-decoration: none;
     text-align: center;
     transition: background 0.3s;
+  }
+
+  #logout{
+    color: black;
   }
 
   nav.menu ul li a:hover {

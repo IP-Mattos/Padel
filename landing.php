@@ -43,16 +43,7 @@ if (isset($_SESSION['userId'])) {
         <li><a href="admin.php"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
         <?php } ?>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
-        <li><a href="#profile" id="openProfile2"><svg width="23" height="23" viewBox="0 0 24 24" stroke="#03ff03"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <circle cx="12" cy="8" r="5" />
-              <path d="M3,21 h18 C 21,12 3,12 3,21" />
-            </svg></a></li>
-        <li>
-          <form action="logout.php" method="POST">
-            <button type="submit" name="logout" id="logout"><img src="./img/logout.png" alt="Logout"></button>
-          </form>
-        </li>
+        <li><a href="#profile" id="openProfile2"><img style="width: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
       </ul>
     </nav>
   </header>
