@@ -106,6 +106,26 @@ if (isset($_SESSION['userId'])) {
         <div class="reserve-cards" id="reserveContainer"></div>
       </div>
     </div>
+    <div id="inviteModal" style="display: none;" class="iModal">
+      <div class="iModal-content">
+        <span id="closeInvite" class="close">&times;</span>
+        <h2>Invitar usuarios</h2>
+        <div class="searchContent">
+          <input
+            type="text"
+            id="inviteSearch"
+            placeholder="Buscar usuario..."
+            autocomplete="off"
+          />
+          <select id="inviteDropdown"></select>
+          <button id="addInviteBtn">Agregar</button>
+          <div id="inviteList">
+            <h4>Invitados</h4>
+            <ul id="inviteListUl"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <button id="openVersus" class="float-vs"><img id="versusIcon" src="./img/vs.png" alt="VS"></button>
     <div id="courtModal" class="cModal">
       <div class="cModal-content">

@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sModal = document.getElementById("membersModal");
   const hModal = document.getElementById("hoursModal");
   const vModal = document.getElementById("versusModal");
+  const iModal = document.getElementById("inviteModal");
 
   const modalConfigs = [
     {
@@ -88,6 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
       contentClass: ".vModal-content",
       openButtons: ["openVersus"],
       closeButtons: ["closeVersus"],
+    },
+    {
+      name: "invite",
+      modal: iModal,
+      contentClass: ".iModal-content",
+      openButtons: [], // manually opened
+      closeButtons: ["closeInvite"],
     },
   ];
 
@@ -857,6 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (json.consultaResponse?.codigoError === "0") {
         const datos = json.consultaResponse.datos;
+        allReservations = datos; // Save all reservations
         container.innerHTML = "";
 
         for (const item of datos) {
@@ -874,6 +883,7 @@ document.addEventListener("DOMContentLoaded", () => {
           } else if (itemDate.getTime() === today.getTime()) {
             card.style.backgroundColor = "#003266";
             card.style.color = "var(--primary-color)";
+            card.style.boxShadow = "0 0 20px var(--primary-color)";
           } else {
             card.style.backgroundColor = "#003266";
           }
@@ -947,6 +957,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
           card.appendChild(hourP);
 
+          const invitedIds = [
+            item.invitado1,
+            item.invitado2,
+            item.invitado3,
+          ].filter((id) => id !== "0" && id !== "");
+
+          // Always include the reserving user
+          const totalPlayers = 1 + invitedIds.length;
+
+          const playerImg = document.createElement("img");
+          playerImg.src = `./img/${totalPlayers}players.png`;
+          playerImg.className = "players";
+          card.appendChild(playerImg);
+
           if (item.timeEstado) {
             const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
             const now = new Date();
@@ -960,9 +984,6 @@ document.addEventListener("DOMContentLoaded", () => {
               cancelButton.dataset.id = item.id;
               cancelButton.innerHTML =
                 "<img style='width: 25px;' src='./img/cancelar.png'>";
-              cancelButton.style.background = "none";
-              cancelButton.style.border = "none";
-              cancelButton.style.cursor = "pointer";
 
               cancelButton.addEventListener("click", async () => {
                 const id = cancelButton.dataset.id;
@@ -1027,6 +1048,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           container.appendChild(card);
+          card.addEventListener("click", (e) => {
+            // Prevent clicks on cancel button from triggering modal
+            if (e.target.closest(".cancel-button")) return;
+
+            openInviteModal(item);
+          });
         }
       } else {
         container.innerHTML = "<p>Hubo un error al cargar las horas</p>";
@@ -1034,6 +1061,139 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error de conexion:", error);
     }
+  }
+
+  let allReservations = []; // Store full reservation data
+  let selectedReservationId = null;
+
+  async function fetchInvitedProfiles(ids) {
+    const profiles = [];
+    for (let id of ids) {
+      if (id && id !== "0" && id !== userId.toString()) {
+        const profile = await fetchProfile(id);
+        if (profile) profiles.push(profile);
+      }
+    }
+    return profiles;
+  }
+
+  function debounce(fn, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  async function updateDropdownOptions(input, invitedIds) {
+    const searchData = new URLSearchParams();
+    searchData.append("filtroPerfil", input);
+
+    const res = await fetch("./accion/getPerfiles.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: searchData.toString(),
+    });
+
+    const data = await res.json();
+
+    const dropdown = document.getElementById("inviteDropdown");
+    dropdown.innerHTML = "";
+
+    if (data.consultaResponse?.codigoError === "0") {
+      const options = data.consultaResponse.registros;
+      options
+        .filter((p) => !invitedIds.includes(p.id) && p.id !== userId.toString())
+        .forEach((p) => {
+          const opt = document.createElement("option");
+          opt.value = p.id;
+          opt.textContent = `${p.nombre} (${p.usuario})`;
+          dropdown.appendChild(opt);
+        });
+    }
+  }
+
+  async function openInviteModal(reservation) {
+    selectedReservationId = reservation.id;
+
+    // 🟦 Get current invited IDs
+    const invitedIds = [
+      reservation.invitado1,
+      reservation.invitado2,
+      reservation.invitado3,
+    ].filter((id) => id !== "0");
+
+    // 🟩 Load and show invited user profiles
+    const inviteListUl = document.getElementById("inviteListUl");
+    inviteListUl.innerHTML = "";
+
+    const profiles = await fetchInvitedProfiles(invitedIds);
+    for (let profile of profiles) {
+      console.log(profile);
+      const li = document.createElement("li");
+      li.className = "invite-list-item";
+
+      const img = document.createElement("img");
+      img.src = profile.img || "./img/defaultProfile.png"; // fallback if no image
+      img.alt = "□";
+      img.className = "invite-profile-img";
+
+      const span = document.createElement("span");
+      span.textContent = profile.name;
+
+      li.appendChild(img);
+      li.appendChild(span);
+      inviteListUl.appendChild(li);
+    }
+
+    // 🟦 Setup search handler
+    const searchInput = document.getElementById("inviteSearch");
+    const dropdown = document.getElementById("inviteDropdown");
+    const debouncedSearch = debounce((e) => {
+      updateDropdownOptions(e.target.value, invitedIds);
+    }, 400);
+    searchInput.addEventListener("input", debouncedSearch);
+    updateDropdownOptions("", invitedIds);
+
+    // 🟩 Add invite button
+    const addBtn = document.getElementById("addInviteBtn");
+    addBtn.onclick = async () => {
+      const selectedId = dropdown.value;
+      if (!selectedId) return;
+
+      const payload = new URLSearchParams();
+      payload.append("idReserva", selectedReservationId);
+      payload.append("idInvitado", selectedId);
+
+      const res = await fetch("./accion/putConfirmInvitados.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
+
+      const result = await res.json();
+
+      if (result.consultaResponse?.codigoError === "0") {
+        Swal.fire({
+          title: "Invitado agregado",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // 🟩 Refresh reservations and reopen modal
+        await loadUserReservations();
+        const updated = allReservations.find(
+          (r) => r.id === selectedReservationId
+        );
+        openInviteModal(updated);
+      } else {
+        Swal.fire("Error", result.consultaResponse.detalleError, "error");
+      }
+    };
+
+    // 🟨 Finally, open the modal
+    openModal(document.getElementById("inviteModal"), ".iModal-content");
   }
 
   // 🔁 Attach the handler
@@ -1164,60 +1324,62 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
           const button = document.createElement("button");
+          button.style.display = "none";
 
-          if (
-            String(idUsuario) === String(userId) &&
-            isCancelable(item.timeEstado)
-          ) {
-            // Cancel button
-            button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
-            button.className = "cancel-btn";
-            button.style.background = "none";
-            button.style.border = "none";
-            button.style.cursor = "pointer";
-            button.addEventListener("click", async () => {
-              const confirm = await Swal.fire({
-                title: "¿Cancelar reserva?",
-                text: "Esta acción no se puede deshacer.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, cancelar",
-                cancelButtonText: "No",
-              });
-
-              if (confirm.isConfirmed) {
-                const cancelData = new URLSearchParams();
-                cancelData.append("idReserv", idReserva);
-
-                const res = await fetch("./accion/putReservCancel.php", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                  },
-                  body: cancelData.toString(),
+          if (String(idUsuario) === String(userId)) {
+            if (isCancelable(item.timeEstado)) {
+              // Cancel button
+              button.style.display = "block";
+              button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
+              button.className = "cancel-btn";
+              button.style.background = "none";
+              button.style.border = "none";
+              button.style.cursor = "pointer";
+              button.addEventListener("click", async () => {
+                const confirm = await Swal.fire({
+                  title: "¿Cancelar reserva?",
+                  text: "Esta acción no se puede deshacer.",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Sí, cancelar",
+                  cancelButtonText: "No",
                 });
 
-                const json = await res.json();
+                if (confirm.isConfirmed) {
+                  const cancelData = new URLSearchParams();
+                  cancelData.append("idReserv", idReserva);
 
-                if (json.consultaResponse?.codigoError === "0") {
-                  Swal.fire(
-                    "Cancelado",
-                    "La reserva ha sido cancelada.",
-                    "success"
-                  );
-                  card.remove(); // Remove card from UI
-                  closeModal(vModal, ".vModal-content");
-                } else {
-                  Swal.fire(
-                    "Error",
-                    `${json.consultaResponse.detalleError}`,
-                    "error"
-                  );
+                  const res = await fetch("./accion/putReservCancel.php", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: cancelData.toString(),
+                  });
+
+                  const json = await res.json();
+
+                  if (json.consultaResponse?.codigoError === "0") {
+                    Swal.fire(
+                      "Cancelado",
+                      "La reserva ha sido cancelada.",
+                      "success"
+                    );
+                    card.remove(); // Remove card from UI
+                    closeModal(vModal, ".vModal-content");
+                  } else {
+                    Swal.fire(
+                      "Error",
+                      `${json.consultaResponse.detalleError}`,
+                      "error"
+                    );
+                  }
                 }
-              }
-            });
+              });
+            }
           } else {
             // Confirm button
+            button.style.display = "block";
             button.innerHTML = `<img src="./img/confirmar.png" alt="Cancelar" class="btn-icon" />`;
             button.className = "confirm-btn";
             button.style.background = "none";
