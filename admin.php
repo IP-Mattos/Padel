@@ -1,14 +1,14 @@
 <?php
-session_start();
+// session_start();
 
-if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
-  $userId = $_SESSION['userId'];
-  $isadmin = $_SESSION['isAdmin'];
-} else {
-  // Redirect to login page if no token is found
-  header("Location: landing.php");
-  exit();
-}
+// if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
+//   $userId = $_SESSION['userId'];
+//   $isadmin = $_SESSION['isAdmin'];
+// } else {
+//   // Redirect to login page if no token is found
+//   header("Location: landing.php");
+//   exit();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="es">

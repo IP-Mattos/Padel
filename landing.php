@@ -7,6 +7,7 @@ $formattedDate = date('Y-m-d', strtotime($dateFromSession));
 
 if (isset($_SESSION['userId'])) {
   $userId = $_SESSION['userId'];
+  $userStars = $_SESSION['misEstrellas'];
 } else {
   // Redirect to login page if no token is found
   header("Location: index.php");
@@ -44,13 +45,13 @@ if (isset($_SESSION['userId'])) {
         <?php } ?>
         <li>
           <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
-          <img style="width: 50px;" src="./img/1star.png" alt="1">
+          <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
           <?php } ?>
           <?php if($_SESSION['misEstrellas'] === "2"){ ?> 
-          <img style="width: 50px;" src="./img/2stars.png" alt="2">
+          <img id="stars" style="width: 50px;" src="./img/2stars.png" alt="2">
           <?php } ?>
           <?php if($_SESSION['misEstrellas'] === "3"){ ?> 
-          <img style="width: 50px;" src="./img/3stars.png" alt="3">
+          <img id="stars" style="width: 50px;" src="./img/3stars.png" alt="3">
           <?php } ?>
         </li>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
@@ -393,6 +394,7 @@ if (isset($_SESSION['userId'])) {
   <script src="landing.js"></script>
   <script>
     const userId = <?php echo $_SESSION['userId']; ?>;
+    const userStars = <?php echo $_SESSION['misEstrellas']; ?>
 </script>
 
 </html>

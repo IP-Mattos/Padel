@@ -110,10 +110,12 @@ header {
   align-items: center;
   justify-content: center;
   gap: 5px;
+  align-self: flex-start;
 }
 
 .profile-img {
   width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 
@@ -121,9 +123,18 @@ header {
   text-align: center;
 }
 
+.profiles-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .actions {
   display: flex;
   align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .logo a {
@@ -143,10 +154,8 @@ header {
   .card {
     flex-direction: column;
   }
-  .profile {
-    flex-direction: column;
-  }
   .actions{
     gap: 2rem;
+    flex-direction: row;
   }
 }

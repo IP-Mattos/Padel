@@ -57,37 +57,57 @@ async function loadSlots() {
     for (const slot of slots) {
       const div = document.createElement("div");
       div.className = "card";
-      const horaSinSegundos = slot.hora.slice(0, 5); // "14:30:00" → "14:30"
+      const horaSinSegundos = slot.hora.slice(0, 5);
 
       if ((slot.estado == 1 || slot.estado == 2) && slot.idUsuario) {
-        const profile = await fetchProfile(slot.idUsuario);
+        const userIds = [
+          slot.idUsuario,
+          slot.idUserRival,
+          slot.invitado1,
+          slot.invitado2,
+          slot.invitado3,
+        ].filter((id) => id && id !== "0");
+
+        // Remove duplicates (in case someone is listed twice)
+        const uniqueIds = [...new Set(userIds)];
+
+        const profiles = await Promise.all(uniqueIds.map(fetchProfile));
+
+        const profileHtml = profiles
+          .map(
+            (profile) => `
+      <div class="profile">
+        <img class="profile-img" src="./accion/imgPerfilUser/${profile.imgperfil}" alt="Perfil" />
+        <p>${profile.nombre}</p>
+      </div>`
+          )
+          .join("");
+
         const classToAdd = slot.estado == 2 ? "confirmed" : "reserved";
         div.classList.add(classToAdd);
 
         div.innerHTML = `
-    <div class="profile">
-      <img class="profile-img" src="./accion/imgPerfilUser/${
-        profile.imgperfil
-      }" alt="Perfil" />
-      <p>${profile.nombre} - ${slot.hora.slice(0, 5)}</p>
-    </div>
-    ${
-      slot.estado == 1
-        ? `<div class="actions">
-             <img class="card-ico cancel-btn" src="./img/cancelar.png" data-id="${slot.id}" alt="Cancelar">
-             <img class="card-ico confirm-btn" src="./img/confirmar.png" data-id="${slot.id}" alt="Confirmar">
-           </div>`
-        : ""
-    }
-  `;
+      <div class="profiles-container">
+        ${profileHtml}
+        <p class="slot-time">${horaSinSegundos}</p>
+      </div>
+      ${
+        slot.estado == 1
+          ? `<div class="actions">
+               <img class="card-ico cancel-btn" src="./img/cancelar.png" data-id="${slot.id}" alt="Cancelar">
+               <img class="card-ico confirm-btn" src="./img/confirmar.png" data-id="${slot.id}" alt="Confirmar">
+             </div>`
+          : ""
+      }
+    `;
       } else if (slot.estado == 3) {
         div.classList.add("unavailable");
         div.innerHTML = `
-            ${horaSinSegundos}
-            <div class="actions">
-                <img class="card-ico cancel-btn" data-id="${slot.id}" src="./img/cancelar.png">
-            </div>
-            `;
+        ${horaSinSegundos}
+        <div class="actions">
+            <img class="card-ico cancel-btn" data-id="${slot.id}" src="./img/cancelar.png">
+        </div>
+        `;
       }
 
       hourSlotsContainer.appendChild(div);

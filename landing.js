@@ -1115,6 +1115,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function openInviteModal(reservation) {
     selectedReservationId = reservation.id;
+    const shouldShowInviteUI =
+      reservation.idUsuario == userId || reservation.idUserRival == userId;
+
+    document.getElementById("inviteSearch").style.display = shouldShowInviteUI
+      ? "block"
+      : "none";
+    document.getElementById("inviteDropdown").style.display = shouldShowInviteUI
+      ? "block"
+      : "none";
+    document.getElementById("addInviteBtn").style.display = shouldShowInviteUI
+      ? "block"
+      : "none";
 
     // 🟦 Get current invited IDs
     const invitedIds = [
@@ -1433,6 +1445,25 @@ document.addEventListener("DOMContentLoaded", () => {
         "Ocurrió un error al conectar con el servidor.",
         "error"
       );
+    }
+  });
+
+  document.getElementById("stars").addEventListener("click", () => {
+    if (userStars === "3") {
+      Swal.fire({
+        icon: "success",
+        title: "Reputación",
+        text: "Tu reputación está impecable! Buen trabajo!",
+        timer: 2000,
+      });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Reputación",
+        text: "Tu reputación ha sufrido un golpe, comportate para recuperarla!",
+        timer: 3000,
+        showConfirmButton: false,
+      });
     }
   });
 });
