@@ -1052,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Prevent clicks on cancel button from triggering modal
             if (e.target.closest(".cancel-button")) return;
 
-            openInviteModal(item);
+            debouncedOpenInviteModal(item);
           });
         }
       } else {
@@ -1084,6 +1084,8 @@ document.addEventListener("DOMContentLoaded", () => {
       timeout = setTimeout(() => fn(...args), delay);
     };
   }
+
+  const debouncedOpenInviteModal = debounce(openInviteModal, 300);
 
   async function updateDropdownOptions(input, invitedIds) {
     const searchData = new URLSearchParams();
@@ -1198,7 +1200,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const updated = allReservations.find(
           (r) => r.id === selectedReservationId
         );
-        openInviteModal(updated);
+        debouncedOpenInviteModal(updated);
       } else {
         Swal.fire("Error", result.consultaResponse.detalleError, "error");
       }

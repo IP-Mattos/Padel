@@ -128,6 +128,7 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 5px;
 }
 
 .actions {
@@ -153,6 +154,7 @@ header {
 @media (max-width: 436px) {
   .card {
     flex-direction: column;
+    width: 85%;
   }
   .actions{
     gap: 2rem;
