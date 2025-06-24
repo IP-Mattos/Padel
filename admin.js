@@ -251,3 +251,92 @@ flatpickr("#datePicker", {
     }
   },
 });
+
+flatpickr("#dateTimePicker", {
+  disableMobile: true,
+  enableTime: true,
+  defaultDate: new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  ),
+  dateFormat: "Y-m-d H:i",
+  appendTo: document.body,
+  positionElement: document.getElementById("chooseDateTime"),
+  position: "below",
+  onClose: async function (selectedDates) {
+    const selectedDate = selectedDates[0];
+    if (!selectedDate) return;
+
+    const date = selectedDate.toISOString().split("T")[0];
+    const hour = selectedDate.getHours().toString().padStart(2, "0") + ":00";
+
+    // ✅ Confirm with SweetAlert before proceeding
+    const confirm = await Swal.fire({
+      title: "¿Confirmar restricción?",
+      text: `¿Seguro que deseas restringir el horario ${hour} del día ${date}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, restringir",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    const params = new URLSearchParams();
+    params.append("usuario", userId);
+    params.append("fecha", date);
+    params.append("hora", hour);
+
+    fetch("./accion/putRestrictHoras.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const result = data.consultaResponse;
+
+        if (result.codigoError === "0") {
+          Swal.fire({
+            toast: true,
+            icon: "success",
+            title: result.detalleError || "Hora restringida correctamente",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+          loadSlots();
+        } else {
+          Swal.fire({
+            toast: true,
+            icon: "error",
+            title: result.detalleError || "Hubo un error",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        Swal.fire({
+          toast: true,
+          icon: "error",
+          title: "Error de red o servidor",
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      });
+  },
+});
+
+document.getElementById("chooseDateTime").addEventListener("click", () => {
+  document.getElementById("dateTimePicker")._flatpickr.open();
+});

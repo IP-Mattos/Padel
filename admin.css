@@ -58,7 +58,8 @@ header {
   border: none;
 }
 
-#datePicker {
+#datePicker,
+#dateTimePicker {
   width: 1px;
   height: 1px;
   opacity: 0;
@@ -84,7 +85,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 3rem;
 }
 
 .card.reserved {
@@ -155,6 +156,7 @@ header {
   .card {
     flex-direction: column;
     width: 85%;
+    gap: 1rem;
   }
   .actions{
     gap: 2rem;

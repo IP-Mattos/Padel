@@ -680,7 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className = "card";
         card.innerHTML = `<span class="hour">${hora}</span>`;
 
-        if (estado === 1) {
+        if (estado !== 0) {
           card.style.backgroundColor = "red";
           card.style.opacity = "0.6";
           card.style.pointerEvents = "none";

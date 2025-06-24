@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
+if (isset($_SESSION['userId']) /*&& $_SESSION['isAdmin'] === "1"*/) {
   $userId = $_SESSION['userId'];
   $isadmin = $_SESSION['isAdmin'];
 } else {
@@ -31,7 +31,9 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
         <p id="currentDate" style="background-color: var(--primary-color); color: black; padding:10px 20px; border-radius: 8px;"><strong>Hoy</strong></p>
         <input type="text" id="datePicker" />
         <button id="nextDay"><img src="./img/derecha.png" alt=""></button>
-    </header>
+        <a id="chooseDateTime"><img style="width:30px;" src="img/calendar.png" alt=""></a>
+        <input id="dateTimePicker" placeholder="Select date and time" />    
+</header>
 
     <div id="container" class="container">
         <!-- <div class="card">15:00</div>
@@ -46,4 +48,5 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="admin.js"></script>
+<script>const userId = <?php echo $_SESSION['userId']; ?>;</script>
 </html>
