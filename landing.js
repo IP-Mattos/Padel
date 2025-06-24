@@ -744,12 +744,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      function formatDateName(dateStr) {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayNum = date.getDate();
+        const monthName = date.toLocaleString("es-ES", { month: "long" });
+        return `${dayNum} de ${monthName}`;
+      }
+
       // Show confirmation modal
       const confirmation = await Swal.fire({
         title: "¿Estás seguro?",
-        text: `¿Deseas reservar para el ${selectedDay.date} a las ${
-          selectedCard.querySelector(".hour").textContent
-        }?`,
+        text: `¿Deseas reservar para el ${formatDateName(
+          selectedDay.date
+        )} a las ${selectedCard.querySelector(".hour").textContent}?`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Sí, reservar",
@@ -1451,7 +1459,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("stars").addEventListener("click", () => {
-    if (userStars === "3") {
+    if (userStars === 3) {
       Swal.fire({
         icon: "success",
         title: "Reputación",
