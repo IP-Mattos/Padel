@@ -30,9 +30,7 @@ if (isset($_SESSION['userId']) /*&& $_SESSION['isAdmin'] === "1"*/) {
         <button id="prevDay"><img src="./img/izquierda.png" alt=""></button>
         <p id="currentDate" style="background-color: var(--primary-color); color: black; padding:10px 20px; border-radius: 8px;"><strong>Hoy</strong></p>
         <input type="text" id="datePicker" />
-        <button id="nextDay"><img src="./img/derecha.png" alt=""></button>
-        <a id="chooseDateTime"><img style="width:30px;" src="img/calendar.png" alt=""></a>
-        <input id="dateTimePicker" placeholder="Select date and time" />    
+        <button id="nextDay"><img src="./img/derecha.png" alt=""></button>  
 </header>
 
     <div id="container" class="container">

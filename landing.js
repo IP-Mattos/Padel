@@ -1464,7 +1464,11 @@ document.addEventListener("DOMContentLoaded", () => {
         icon: "success",
         title: "Reputación",
         text: "Tu reputación está impecable! Buen trabajo!",
-        timer: 2000,
+        timer: 3000,
+        showConfirmButton: false,
+        position: "top-end",
+        timerProgressBar: true,
+        toast: true,
       });
     } else {
       Swal.fire({
@@ -1473,6 +1477,9 @@ document.addEventListener("DOMContentLoaded", () => {
         text: "Tu reputación ha sufrido un golpe, comportate para recuperarla!",
         timer: 3000,
         showConfirmButton: false,
+        position: "top-end",
+        timerProgressBar: true,
+        toast: true,
       });
     }
   });
