@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['userId']) /*&& $_SESSION['isAdmin'] === "1"*/) {
+if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
   $userId = $_SESSION['userId'];
   $isadmin = $_SESSION['isAdmin'];
 } else {

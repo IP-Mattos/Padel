@@ -292,6 +292,7 @@ nav.menu ul li a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: rgb(10, 40, 100);
 }
 
 #inviteSearch {

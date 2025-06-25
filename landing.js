@@ -830,6 +830,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return {
         name: js.consultaResponse.nombre,
         img: `./accion/imgPerfilUser/${js.consultaResponse.imgperfil}`,
+        id: userIdToFetch,
       };
     } else {
       console.error("Perfil error", js);
@@ -966,13 +967,14 @@ document.addEventListener("DOMContentLoaded", () => {
           card.appendChild(hourP);
 
           const invitedIds = [
+            item.idUsuario,
             item.invitado1,
             item.invitado2,
             item.invitado3,
           ].filter((id) => id !== "0" && id !== "");
 
           // Always include the reserving user
-          const totalPlayers = 1 + invitedIds.length;
+          const totalPlayers = invitedIds.length;
 
           const playerImg = document.createElement("img");
           playerImg.src = `./img/${totalPlayers}players.png`;
@@ -1071,13 +1073,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  //==================================================>
+  //AGREGAR JUGADORES
+  //==================================================>
+
   let allReservations = []; // Store full reservation data
   let selectedReservationId = null;
 
   async function fetchInvitedProfiles(ids) {
     const profiles = [];
     for (let id of ids) {
-      if (id && id !== "0" && id !== userId.toString()) {
+      if (id && id !== "0") {
         const profile = await fetchProfile(id);
         if (profile) profiles.push(profile);
       }
@@ -1140,28 +1146,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 🟦 Get current invited IDs
     const invitedIds = [
+      reservation.idUsuario,
       reservation.invitado1,
       reservation.invitado2,
       reservation.invitado3,
-    ].filter((id) => id !== "0");
+    ];
+
+    // Avoid duplicates while preserving order and placeholders
+    const uniqueOrderedSlots = [];
+    const seen = new Set();
+
+    for (let id of invitedIds) {
+      if (id === "0" || id === "") {
+        uniqueOrderedSlots.push("0"); // preserve empty slot
+      } else if (!seen.has(id)) {
+        uniqueOrderedSlots.push(id);
+        seen.add(id);
+      }
+    }
 
     // 🟩 Load and show invited user profiles
     const inviteListUl = document.getElementById("inviteListUl");
     inviteListUl.innerHTML = "";
 
-    const profiles = await fetchInvitedProfiles(invitedIds);
-    for (let profile of profiles) {
-      console.log(profile);
+    for (let id of uniqueOrderedSlots) {
       const li = document.createElement("li");
       li.className = "invite-list-item";
 
       const img = document.createElement("img");
-      img.src = profile.img || "./img/defaultProfile.png"; // fallback if no image
-      img.alt = "□";
-      img.className = "invite-profile-img";
-
       const span = document.createElement("span");
-      span.textContent = profile.name;
+
+      if (id === "0") {
+        // Empty slot
+        img.src = "./img/emptySlot.png"; // 👉 Use your placeholder image path
+        img.alt = "vacío";
+        img.className = "invite-profile-img";
+
+        span.textContent = "lugar vacío";
+      } else {
+        const profile = await fetchProfile(id);
+        img.src = profile.img || "./img/defaultProfile.png";
+        img.alt = "□";
+        img.className = "invite-profile-img";
+
+        let label = profile.name;
+        if (id === reservation.idUsuario.toString()) label += " (Organizador)";
+        else if (id === userId.toString()) label += " (Tú)";
+        span.textContent = label;
+      }
 
       li.appendChild(img);
       li.appendChild(span);

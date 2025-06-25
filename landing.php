@@ -110,7 +110,7 @@ if (isset($_SESSION['userId'])) {
     <div id="inviteModal" style="display: none;" class="iModal">
       <div class="iModal-content">
         <span id="closeInvite" class="close">&times;</span>
-        <h2>Invitar usuarios</h2>
+        <h2>Agregar jugadores</h2>
         <div class="searchContent">
           <input
             type="text"
@@ -121,7 +121,7 @@ if (isset($_SESSION['userId'])) {
           <select id="inviteDropdown"></select>
           <button id="addInviteBtn">Agregar</button>
           <div id="inviteList">
-            <h4>Invitados</h4>
+            <h4>Jugadores</h4>
             <ul id="inviteListUl"></ul>
           </div>
         </div>
