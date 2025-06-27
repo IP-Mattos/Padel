@@ -17,7 +17,7 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="restrict.css" />
   <title>Administración</title>
 </head>
 <body>
@@ -38,6 +38,6 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="admin.js"></script>
+<script src="restrict.js"></script>
 <script>const userId = <?php echo $_SESSION['userId']; ?>;</script>
 </html>

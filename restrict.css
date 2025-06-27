@@ -105,6 +105,15 @@ header {
   cursor: pointer;
 }
 
+.lock-btn,
+.unrestrict-btn {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
 .profile {
   display: flex;
   align-items: center;
