@@ -54,7 +54,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <a id="landing" href="/landing.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
-        <img style="width: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="">
+      <?php if($_SESSION['userImgPerfil'] !== "") { ?>
+        <img style="width: 30px; height:30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="">
+      <?php }else{ ?>
+        <img style="width: 30px; height:30px; border-radius: 50%;" src="./img/profile.png" alt="">
+      <?php } ?>
       </a>
     </div>
 
@@ -247,7 +251,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
               <p>
                 Diseñado para ofrecer una experiencia sensorial inolvidable, combina naturaleza y sabor en un entorno mágico.
                 <span class="more-text"> 
-                Rodeado de árboles frondosos y flores coloridas, cuenta con mesas rústicas de madera dispuestas bajo luces cálidas que cuelgan entre las ramas. Aquí se sirven cervezas artesanales elaboradas localmente, cada una con una historia y un toque especial que invita a la exploración. Además, el espacio se complementa con música en vivo, áreas para juegos al aire libre y opciones gastronómicas que maridan perfectamente con una buena cerveza. Este oasis es un lugar para conectar, relajarse y celebrar la vida con brindis bajo las estrellas.
+                Rodeado de árboles frondosos y flores coloridas, cuenta con mesas rústicas de madera dispuestas bajo luces cálidas que cuelgan entre las ramas. Aquí se sirven cervezas artesanales elaboradas localmente, cada una con una historia y un toque especial que invita a la exploración. Música, áreas para juegos al aire libre y opciones gastronómicas y variedad en cervezas. Un lugar para conectar, relajarse y celebrar la vida.
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -258,7 +262,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             <div class="content">
               <h3>Familia GO Padel</h3>
               <p>
-                En nuestra casa, el espíritu deportivo no solo se vive, sino que se respira en cada rincón. 
+                En nuestra casa, el espíritu deportivo no solo se vive, sino que se respira. 
                 <span class="more-text">
                 Este espacio está diseñado para ser mucho más que un lugar de práctica; es un refugio para quienes comparten una pasión auténtica por el pádel y buscan un entorno donde la competencia se transforme en camaradería y el esfuerzo en celebración. Aquí, cada socio encuentra una comunidad que inspira, que conecta y que hace que cada momento sea especial.
                 </span>

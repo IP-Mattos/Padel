@@ -1515,4 +1515,19 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  document.getElementById("admin-access").addEventListener("click", () => {
+    Swal.fire({
+      title: "Que desea administrar?",
+      showDenyButton: true,
+      confirmButtonText: "Reservas de jugadores",
+      denyButtonText: "Restringir horarios",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/admin.php";
+      } else if (result.isDenied) {
+        window.location.href = "/restrict.php";
+      }
+    });
+  });
 });

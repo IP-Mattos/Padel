@@ -486,6 +486,13 @@ nav.menu ul li a {
   flex-direction: column;
 }
 
+.edit-profile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+}
+
 #updateProfile {
   display: none;
   flex-direction: column;

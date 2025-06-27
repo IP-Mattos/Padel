@@ -41,7 +41,7 @@ if (isset($_SESSION['userId'])) {
     <nav class="menu">
       <ul>        
         <?php if($_SESSION['isAdmin'] === "1"){ ?>
-        <li><a href="admin.php"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
+        <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
         <?php } ?>
         <li>
           <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
@@ -55,7 +55,11 @@ if (isset($_SESSION['userId'])) {
           <?php } ?>
         </li>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
-        <li><a href="#profile" id="openProfile2"><img style="width: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
+        <?php if($_SESSION['userImgPerfil'] !== "") { ?>
+        <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
+        <?php }else{ ?>
+        <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;" src="./img/profile.png" alt=""></a></li>
+        <?php } ?>
       </ul>
     </nav>
   </header>
@@ -194,12 +198,11 @@ if (isset($_SESSION['userId'])) {
         <span id="closeMembers" class="close">&times;</span>
         <h1>¡Hazte socio y vive la experiencia!</h1>
 
-  <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos que transforman cada partida en una experiencia única. Descubre por qué unirte es la mejor elección:</p>
+  <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos. Descubre por qué unirte es la mejor elección:</p>
 
   <h2>Ventajas de ser socio</h2>
   <ul>
     <li>Más juego, menos costo: Socios FULL disfrutan pádel sin costo de 7:00 a 17:00 y tarifas reducidas en otros horarios. Socios Amigo también obtienen descuentos significativos.</li>
-    <li>Duchas gratuitas: Relájate después de jugar. Socios FULL disfrutan de este beneficio sin costo.</li>
     <li>Descuentos en productos: Pelotas, greps y más con hasta un 20% de descuento.</li>
     <li>Clases a precios especiales: Aprende y mejora con tarifas exclusivas para socios.</li>
   </ul>
@@ -213,7 +216,7 @@ if (isset($_SESSION['userId'])) {
       <th>No socios</th>
     </tr>
     <tr>
-      <td>Pádel 7:00 - 17:00</td>
+      <td>Pádel 7:00 - 16:00</td>
       <td>Sin Costo</td>
       <td>$200</td>
       <td>$250</td>
@@ -267,9 +270,14 @@ if (isset($_SESSION['userId'])) {
       <div class="pModal-content">
         <span id="closeProfile" class="close">&times;</span>
         <div class="profile">
-          <label for="profileImgInput">
+          <label for="profileImgInput" style="position:relative;">
+            <img class="edit-profile" src="./img/pencil.png" alt="">
             <div class="img">
+              <?php if($_SESSION['userImgPerfil'] !== "") { ?>
               <img id="profileImg" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="perfil" />
+              <?php }else{ ?>
+              <img id="profileImg" src="./img/profile.png" alt="perfil" />
+              <?php } ?>
             </div>
           </label>
           <input type="file" id="profileImgInput" style="display: none" accept="image/*">
@@ -359,7 +367,17 @@ if (isset($_SESSION['userId'])) {
           <h3>Nick</h3>
           <input type="text" name="usuario" value="<?php echo $_SESSION["userUser"] ?>">
           <h3>Categoría</h3>
-          <input type="text" name="categoria" value="<?php echo $_SESSION["userCategoria"] ?>">
+          <!-- <input type="text" name="categoria" value="<?php echo $_SESSION["userCategoria"] ?>"> -->
+          <select name="categoria">
+            <option value="<?php echo $_SESSION["userCategoria"] ?>" selected><?php echo $_SESSION["userCategoria"] ?></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+          </select>
           <h3>Fecha de nacimiento</h3>
           <input type="date" name="fechnac" value="<?php echo $formattedDate ?>">
           <h3>Frase</h3>
