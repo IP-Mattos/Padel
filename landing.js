@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hModal = document.getElementById("hoursModal");
   const vModal = document.getElementById("versusModal");
   const iModal = document.getElementById("inviteModal");
+  const aModal = document.getElementById("slotInviteModal");
 
   const modalConfigs = [
     {
@@ -97,6 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
       openButtons: [], // manually opened
       closeButtons: ["closeInvite"],
     },
+    {
+      name: "slotInvite",
+      modal: aModal,
+      contentClass: ".aModal-content",
+      openButtons: [],
+      closeButtons: ["closePlayers"],
+    },
   ];
 
   modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
@@ -120,7 +128,20 @@ document.addEventListener("DOMContentLoaded", () => {
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
     setTimeout(() => {
-      modal.querySelector(contentClass).classList.add("show");
+      const content = modal.querySelector(contentClass);
+      console.log("Modal:", modal);
+      console.log("Looking for:", contentClass);
+      console.log("Found content?", content);
+
+      if (content) {
+        setTimeout(() => {
+          content.classList.add("show");
+        }, 10);
+      } else {
+        console.warn(
+          `⚠️ Could not find modal content element: ${contentClass}`
+        );
+      }
     }, 10);
   }
 
@@ -136,21 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //PROFILE MODAL
   //===================================>
 
-  const editProfile = document.getElementById("editProfile");
-  const profileDetail = document.getElementById("profileDetail");
   const updateProfile = document.getElementById("updateProfile");
-  const cancelUpdate = document.getElementById("cancelUpdate");
-
-  editProfile.addEventListener("click", () => {
-    profileDetail.classList.add("hidden");
-    updateProfile.style.display = "flex";
-  });
-
-  cancelUpdate.addEventListener("click", (e) => {
-    e.preventDefault();
-    updateProfile.style.display = "none";
-    profileDetail.classList.remove("hidden");
-  });
 
   updateProfile.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -171,20 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
             icon: "success",
           });
 
-          // OPTIONAL: Update the visible profile data with the new values
-          document.getElementById("profileNombre").innerText =
-            formData.get("nombre");
-          document.getElementById("profileNick").innerText =
-            formData.get("usuario");
-          document.getElementById("profileMail").innerText =
-            formData.get("mail");
-          document.getElementById("profileCategory").innerText =
-            formData.get("categoria");
-          document.getElementById("profileBirth").innerText =
-            formData.get("fechnac");
-          document.getElementById("profileFrase").innerText =
-            formData.get("frase");
-
           // For the radio option (categorías)
           const masCategoriasValue = formData.get("mascategorias");
           const masCategoriasText =
@@ -193,12 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
               : masCategoriasValue === "1"
               ? "Categorías contiguas"
               : "Todas las categorías";
-          document.getElementById("profileMasCat").innerText =
-            masCategoriasText;
-
-          // Optionally hide form and show updated profile
-          updateProfile.style.display = "none";
-          profileDetail.classList.remove("hidden");
         } else {
           Swal.fire({
             title: "Error",
@@ -511,6 +498,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
+  function formatLocalDateToYMD(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
   function populateCalendarCards(
     containerDiv,
     calendarData,
@@ -574,11 +568,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ...dayInfo,
             dayNumber,
             monthName,
-            date: actualDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
+            date: formatLocalDateToYMD(actualDate), // Format: YYYY-MM-DD
           };
           onDaySelected({
             ...dayInfo,
-            fecha: actualDate.toISOString().split("T")[0],
+            fecha: formatLocalDateToYMD(actualDate),
           });
         });
 
@@ -590,11 +584,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ...dayInfo,
             dayNumber,
             monthName,
-            date: actualDate.toISOString().split("T")[0],
+            date: formatLocalDateToYMD(actualDate),
           };
           onDaySelected({
             ...dayInfo,
-            fecha: actualDate.toISOString().split("T")[0],
+            fecha: formatLocalDateToYMD(actualDate),
           });
         }
       }
@@ -637,6 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedCard = null; // To store the selected card
 
   async function fetchHours({ servicio, profe, fecha }, container) {
+    selectedCard = null;
     container.innerHTML = "<p>Cargando horarios...</p>";
 
     try {
@@ -746,9 +741,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       function formatDateName(dateStr) {
         const [year, month, day] = dateStr.split("-").map(Number);
-        const date = new Date(year, month - 1, day);
-        const dayNum = date.getDate();
-        const monthName = date.toLocaleString("es-ES", { month: "long" });
+        const date = new Date(year, month - 1, day); // Local time
+
+        const dayNum = date.getDate(); // Local getter
+        const monthName = date.toLocaleString("es-ES", {
+          month: "long",
+          timeZone: "America/Montevideo", // Uruguay's time zone
+        });
+
         return `${dayNum} de ${monthName}`;
       }
 
@@ -920,9 +920,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
           function formatDateName(dateStr) {
             const [year, month, day] = dateStr.split("-").map(Number);
-            const date = new Date(year, month - 1, day);
-            const dayNum = date.getDate();
-            const monthName = date.toLocaleString("es-ES", { month: "long" });
+            const date = new Date(year, month - 1, day); // Local time
+
+            const dayNum = date.getDate(); // Local getter
+            const monthName = date.toLocaleString("es-ES", {
+              month: "long",
+              timeZone: "America/Montevideo", // Uruguay's time zone
+            });
+
             return `${dayNum} de ${monthName}`;
           }
 
@@ -1009,11 +1014,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 if (confirm.isConfirmed) {
-                  const cancelData = new URLSearchParams();
-                  cancelData.append("idReserv", id);
-
                   try {
-                    const res = await fetch("./accion/putReservCancel.php", {
+                    var isInvitedUser = false;
+
+                    if (item.idUsuario != userId) {
+                      isInvitedUser = true;
+                    }
+
+                    const cancelData = new URLSearchParams();
+
+                    let cancelUrl = "";
+
+                    if (isInvitedUser) {
+                      cancelUrl = "./accion/putCancelInvitado.php";
+                      cancelData.append("idReserva", id);
+                      cancelData.append("idInvitado", userId);
+                    } else {
+                      cancelUrl = "./accion/putReservCancel.php";
+                      cancelData.append("idReserv", id);
+                    }
+
+                    const res = await fetch(cancelUrl, {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -1032,7 +1053,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         showConfirmButton: false,
                       });
 
-                      // ✅ Refetch reservations
                       await loadUserReservations();
                     } else {
                       Swal.fire(
@@ -1080,17 +1100,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let allReservations = []; // Store full reservation data
   let selectedReservationId = null;
 
-  async function fetchInvitedProfiles(ids) {
-    const profiles = [];
-    for (let id of ids) {
-      if (id && id !== "0") {
-        const profile = await fetchProfile(id);
-        if (profile) profiles.push(profile);
-      }
-    }
-    return profiles;
-  }
-
   function debounce(fn, delay) {
     let timeout;
     return function (...args) {
@@ -1101,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const debouncedOpenInviteModal = debounce(openInviteModal, 300);
 
-  async function updateDropdownOptions(input, invitedIds) {
+  async function updateDropdownOptions(input, invitedIds, dropdownElement) {
     const searchData = new URLSearchParams();
     searchData.append("filtroPerfil", input);
 
@@ -1112,9 +1121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const data = await res.json();
-
-    const dropdown = document.getElementById("inviteDropdown");
-    dropdown.innerHTML = "";
+    dropdownElement.innerHTML = "";
 
     if (data.consultaResponse?.codigoError === "0") {
       const options = data.consultaResponse.registros;
@@ -1124,27 +1131,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const opt = document.createElement("option");
           opt.value = p.id;
           opt.textContent = `${p.nombre} (${p.usuario})`;
-          dropdown.appendChild(opt);
+          dropdownElement.appendChild(opt);
         });
     }
   }
 
-  async function openInviteModal(reservation) {
-    selectedReservationId = reservation.id;
-    const shouldShowInviteUI =
-      reservation.idUsuario == userId || reservation.idUserRival == userId;
-
-    document.getElementById("inviteSearch").style.display = shouldShowInviteUI
-      ? "block"
-      : "none";
-    document.getElementById("inviteDropdown").style.display = shouldShowInviteUI
-      ? "block"
-      : "none";
-    document.getElementById("addInviteBtn").style.display = shouldShowInviteUI
-      ? "block"
-      : "none";
-
-    // 🟦 Get current invited IDs
+  async function openSlotInviteModal(reservationId) {
+    const reservation = allReservations.find((r) => r.id === reservationId);
     const invitedIds = [
       reservation.idUsuario,
       reservation.invitado1,
@@ -1152,71 +1145,26 @@ document.addEventListener("DOMContentLoaded", () => {
       reservation.invitado3,
     ];
 
-    // Avoid duplicates while preserving order and placeholders
-    const uniqueOrderedSlots = [];
-    const seen = new Set();
-
-    for (let id of invitedIds) {
-      if (id === "0" || id === "") {
-        uniqueOrderedSlots.push("0"); // preserve empty slot
-      } else if (!seen.has(id)) {
-        uniqueOrderedSlots.push(id);
-        seen.add(id);
-      }
-    }
-
-    // 🟩 Load and show invited user profiles
-    const inviteListUl = document.getElementById("inviteListUl");
-    inviteListUl.innerHTML = "";
-
-    for (let id of uniqueOrderedSlots) {
-      const li = document.createElement("li");
-      li.className = "invite-list-item";
-
-      const img = document.createElement("img");
-      const span = document.createElement("span");
-
-      if (id === "0") {
-        // Empty slot
-        img.src = "./img/emptySlot.png"; // 👉 Use your placeholder image path
-        img.alt = "vacío";
-        img.className = "invite-profile-img";
-
-        span.textContent = "lugar vacío";
-      } else {
-        const profile = await fetchProfile(id);
-        img.src = profile.img || "./img/defaultProfile.png";
-        img.alt = "□";
-        img.className = "invite-profile-img";
-
-        let label = profile.name;
-        if (id === reservation.idUsuario.toString()) label += " (Organizador)";
-        else if (id === userId.toString()) label += " (Tú)";
-        span.textContent = label;
-      }
-
-      li.appendChild(img);
-      li.appendChild(span);
-      inviteListUl.appendChild(li);
-    }
-
-    // 🟦 Setup search handler
-    const searchInput = document.getElementById("inviteSearch");
     const dropdown = document.getElementById("inviteDropdown");
-    const debouncedSearch = debounce((e) => {
-      updateDropdownOptions(e.target.value, invitedIds);
-    }, 400);
-    searchInput.addEventListener("input", debouncedSearch);
-    updateDropdownOptions("", invitedIds);
-
-    // 🟩 Add invite button
+    const searchInput = document.getElementById("inviteSearch");
     const addBtn = document.getElementById("addInviteBtn");
+
+    const debouncedSearch = debounce((e) => {
+      updateDropdownOptions(e.target.value, invitedIds, dropdown);
+    }, 400);
+
+    searchInput.value = "";
+    searchInput.removeEventListener("input", debouncedSearch);
+    searchInput.addEventListener("input", debouncedSearch);
+
+    updateDropdownOptions("", invitedIds, dropdown);
+
     addBtn.onclick = async () => {
       const selectedId = dropdown.value;
       if (!selectedId) return;
 
       const payload = new URLSearchParams();
-      payload.append("idReserva", selectedReservationId);
+      payload.append("idReserva", reservationId);
       payload.append("idInvitado", selectedId);
 
       const res = await fetch("./accion/putConfirmInvitados.php", {
@@ -1235,18 +1183,93 @@ document.addEventListener("DOMContentLoaded", () => {
           showConfirmButton: false,
         });
 
-        // 🟩 Refresh reservations and reopen modal
-        await loadUserReservations();
-        const updated = allReservations.find(
-          (r) => r.id === selectedReservationId
+        // Close both modals
+        closeModal(
+          document.getElementById("slotInviteModal"),
+          ".aModal-content"
         );
-        debouncedOpenInviteModal(updated);
+        closeModal(document.getElementById("inviteModal"), ".iModal-content");
+
+        // Reload reservations
+        await loadUserReservations();
+
+        // Reopen main invite modal with updated data
+        const updated = allReservations.find((r) => r.id === reservationId);
+        if (updated) {
+          debouncedOpenInviteModal(updated);
+        }
       } else {
         Swal.fire("Error", result.consultaResponse.detalleError, "error");
       }
     };
 
-    // 🟨 Finally, open the modal
+    openModal(document.getElementById("slotInviteModal"), ".aModal-content");
+  }
+
+  async function openInviteModal(reservation) {
+    selectedReservationId = reservation.id;
+    const shouldShowInviteUI =
+      reservation.idUsuario == userId || reservation.idUserRival == userId;
+
+    const invitedIds = [
+      reservation.idUsuario,
+      reservation.invitado1,
+      reservation.invitado2,
+      reservation.invitado3,
+    ];
+
+    const uniqueOrderedSlots = [];
+    const seen = new Set();
+
+    for (let id of invitedIds) {
+      if (id === "0" || id === "") {
+        uniqueOrderedSlots.push("0");
+      } else if (!seen.has(id)) {
+        uniqueOrderedSlots.push(id);
+        seen.add(id);
+      }
+    }
+
+    const inviteListUl = document.getElementById("inviteListUl");
+    inviteListUl.innerHTML = "";
+
+    for (let id of uniqueOrderedSlots) {
+      const li = document.createElement("li");
+      li.className = "invite-list-item";
+
+      const img = document.createElement("img");
+      const span = document.createElement("span");
+
+      if (id === "0") {
+        img.src = "./img/emptySlot.png";
+        img.alt = "vacío";
+        img.className = "invite-profile-img";
+        span.textContent = "lugar vacío";
+
+        if (shouldShowInviteUI) {
+          li.classList.add("clickable-slot");
+          li.style.cursor = "pointer";
+          li.onclick = () => {
+            openSlotInviteModal(selectedReservationId);
+          };
+        }
+      } else {
+        const profile = await fetchProfile(id);
+        img.src = profile.img || "./img/defaultProfile.png";
+        img.alt = "□";
+        img.className = "invite-profile-img";
+
+        let label = profile.name;
+        if (id === reservation.idUsuario.toString()) label += " (Organizador)";
+        else if (id === userId.toString()) label += " (Tú)";
+        span.textContent = label;
+      }
+
+      li.appendChild(img);
+      li.appendChild(span);
+      inviteListUl.appendChild(li);
+    }
+
     openModal(document.getElementById("inviteModal"), ".iModal-content");
   }
 
@@ -1357,8 +1380,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const [year, month, day] = dateStr.split("-").map(Number);
             const date = new Date(year, month - 1, day); // Local time
 
-            const dayNum = date.getDate();
-            const monthName = date.toLocaleString("es-ES", { month: "long" });
+            const dayNum = date.getDate(); // Local getter
+            const monthName = date.toLocaleString("es-ES", {
+              month: "long",
+              timeZone: "America/Montevideo", // Uruguay's time zone
+            });
 
             return `${dayNum} de ${monthName}`;
           }

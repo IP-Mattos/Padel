@@ -39,26 +39,29 @@ if (isset($_SESSION['userId'])) {
     </div>
 
     <nav class="menu">
-      <ul>        
-        <?php if($_SESSION['isAdmin'] === "1"){ ?>
-        <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png" alt="admin"></a></li>
+      <ul>
+        <?php if ($_SESSION['isAdmin'] === "1") { ?>
+          <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png"
+                alt="admin"></a></li>
         <?php } ?>
         <li>
-          <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
-          <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
+          <?php if ($_SESSION['misEstrellas'] === "1") { ?>
+            <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
           <?php } ?>
-          <?php if($_SESSION['misEstrellas'] === "2"){ ?> 
-          <img id="stars" style="width: 50px;" src="./img/2stars.png" alt="2">
+          <?php if ($_SESSION['misEstrellas'] === "2") { ?>
+            <img id="stars" style="width: 50px;" src="./img/2stars.png" alt="2">
           <?php } ?>
-          <?php if($_SESSION['misEstrellas'] === "3"){ ?> 
-          <img id="stars" style="width: 50px;" src="./img/3stars.png" alt="3">
+          <?php if ($_SESSION['misEstrellas'] === "3") { ?>
+            <img id="stars" style="width: 50px;" src="./img/3stars.png" alt="3">
           <?php } ?>
         </li>
         <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
-        <?php if($_SESSION['userImgPerfil'] !== "") { ?>
-        <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
-        <?php }else{ ?>
-        <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;" src="./img/profile.png" alt=""></a></li>
+        <?php if ($_SESSION['userImgPerfil'] != "") { ?>
+          <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;"
+                src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
+        <?php } else { ?>
+          <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;"
+                src="./img/profile.png" alt=""></a></li>
         <?php } ?>
       </ul>
     </nav>
@@ -116,18 +119,29 @@ if (isset($_SESSION['userId'])) {
         <span id="closeInvite" class="close">&times;</span>
         <h2>Agregar jugadores</h2>
         <div class="searchContent">
-          <input
+          <!-- <input
             type="text"
             id="inviteSearch"
             placeholder="Buscar usuario..."
             autocomplete="off"
           />
           <select id="inviteDropdown"></select>
-          <button id="addInviteBtn">Agregar</button>
+          <button id="addInviteBtn">Agregar</button> -->
           <div id="inviteList">
             <h4>Jugadores</h4>
             <ul id="inviteListUl"></ul>
           </div>
+        </div>
+      </div>
+    </div>
+    <div id="slotInviteModal" class="aModal">
+      <div class="aModal-content">
+        <span id="closePlayers" class="close">&times;</span>
+        <div class="searchContent">
+          <h3>Invitar a un jugador</h3>
+          <input id="inviteSearch" placeholder="Buscar..." />
+          <select id="inviteDropdown"></select>
+          <button id="addInviteBtn">Agregar</button>
         </div>
       </div>
     </div>
@@ -169,7 +183,7 @@ if (isset($_SESSION['userId'])) {
       </div>
     </div>
     <div id="rivalsModal" class="rModal">
-      <h class="rModal-content">
+      <div class="rModal-content">
         <img src="./img/resRivales.png" alt="" class="service-ico">
         <span id="closeRivals" class="close">&times;</span>
         <h2>Crear partido</h2>
@@ -178,14 +192,16 @@ if (isset($_SESSION['userId'])) {
         <div class="buttons">
           <button id="acceptRivals">Confirmar</button>
         </div>
-    </div>
+      </div>
     </div>
     <div id="cantineModal" class="caModal">
       <div class="caModal-content">
         <img src="./img/resChelada.png" alt="" class="service-ico">
         <span id="closeCantine" class="close">&times;</span>
         <h2>Reservando cantina</h2>
-        <div class="calendar" id="cantine-calendar"><p style="color: white;">Próximamente</p></div>
+        <div class="calendar" id="cantine-calendar">
+          <p style="color: white;">Próximamente</p>
+        </div>
         <div class="hs" id="cantine-hs"></div>
         <!-- <div class="buttons">
           <button id="acceptCantine">Confirmar</button>
@@ -197,70 +213,68 @@ if (isset($_SESSION['userId'])) {
         <img src="./img/socios.png" alt="" class="service-ico">
         <span id="closeMembers" class="close">&times;</span>
         <h1>¡Hazte socio y vive la experiencia!</h1>
+    <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos. Descubre por qué unirte es la mejor elección:</p>
 
-  <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos. Descubre por qué unirte es la mejor elección:</p>
+      <h2>Ventajas de ser socio</h2>
+      <ul>
+        <li>Más juego, menos costo: </li>
+        <li>$ 1500 - Socio FULL  disfrutan pádel sin costo de 7:00 a 17:00 y tarifas reducidas en otros horarios. </li>
+        <li>$ 500 - Socios AMIGO. Costo significativamente reducido, obtienen descuentos especiales.</li>
+        <li>Descuentos en productos: Pelotas, greps y más con hasta un 20% de descuento.</li>
+        <li>Clases a precios especiales: Aprende y mejora con tarifas exclusivas para socios.</li>
+      </ul>
 
-  <h2>Ventajas de ser socio</h2>
-  <ul>
-    <li>Más juego, menos costo: Socios FULL disfrutan pádel sin costo de 7:00 a 17:00 y tarifas reducidas en otros horarios. Socios Amigo también obtienen descuentos significativos.</li>
-    <li>Descuentos en productos: Pelotas, greps y más con hasta un 20% de descuento.</li>
-    <li>Clases a precios especiales: Aprende y mejora con tarifas exclusivas para socios.</li>
-  </ul>
+      <h2>Comparativa de beneficios</h2>
+      <table>
+        <tr>
+          <th>Beneficio</th>
+          <th>Socio FULL</th>
+          <th>Socio Amigo</th>
+          <th>No socios</th>
+        </tr>
+        <tr>
+          <td>Pádel 7:00 - 17:00</td>
+          <td>Sin Costo</td>
+          <td>$100</td>
+          <td>$250</td>
+        </tr>
+        <tr>
+          <td>Pádel 18:00 - 21:00</td>
+          <td>$100</td>
+          <td>$150</td>
+          <td>$250</td>
+        </tr>
+        <tr>
+          <td>Pádel 22:00 - 24:00</td>
+          <td>Sin Costo</td>
+          <td>$100</td>
+          <td>$250</td>
+        </tr>
+        <tr>
+          <td>Clase Inicial (Base Doble)</td>
+          <td>$100</td>
+          <td>$150</td>
+          <td>$200</td>
+        </tr>
+        <tr>
+          <td>Clases Particulares (Base Doble)</td>
+          <td>$200</td>
+          <td>$300</td>
+          <td>$500</td>
+        </tr>
+        <tr>
+          <td>Productos</td>
+          <td>20% OFF</td>
+          <td>10% OFF</td>
+          <td>0% OFF</td>
+        </tr>
+      </table>
+       
 
-  <h2>Comparativa de beneficios</h2>
-  <table>
-    <tr>
-      <th>Beneficio</th>
-      <th>Socio FULL</th>
-      <th>Socio Amigo</th>
-      <th>No socios</th>
-    </tr>
-    <tr>
-      <td>Pádel 7:00 - 16:00</td>
-      <td>Sin Costo</td>
-      <td>$200</td>
-      <td>$250</td>
-    </tr>
-    <tr>
-      <td>Pádel 17:00 - 21:00</td>
-      <td>$150</td>
-      <td>$200</td>
-      <td>$250</td>
-    </tr>
-    <tr>
-      <td>Pádel 22:00 - 24:00</td>
-      <td>$150</td>
-      <td>$200</td>
-      <td>$250</td>
-    </tr>
-    <tr>
-      <td>Duchas</td>
-      <td>Sin Costo</td>
-      <td>$50</td>
-      <td>$50</td>
-    </tr>
-    <tr>
-      <td>Clases Principiante</td>
-      <td>$100</td>
-      <td>$150</td>
-      <td>$200</td>
-    </tr>
-    <tr>
-      <td>Clases Particulares</td>
-      <td>$200</td>
-      <td>$300</td>
-      <td>$350</td>
-    </tr>
-    <tr>
-      <td>Productos</td>
-      <td>20% OFF</td>
-      <td>10% OFF</td>
-      <td>0% OFF</td>
-    </tr>
-  </table>
-
-  <h2>Únete hoy</h2>
-  <p>Ser socio te conecta con la magia del deporte, la naturaleza y una comunidad vibrante. Relájate bajo las estrellas, disfruta de música en vivo y crea recuerdos únicos. ¡Hazte parte de Familia Go Padel y vive la diferencia!</p>           
+        <h2>Únete hoy</h2>
+        <p>Ser socio te conecta con la magia del deporte, la naturaleza y una comunidad vibrante. Relájate bajo las
+          estrellas, disfruta de música en vivo y crea recuerdos únicos. ¡Hazte parte de Familia Go Padel y vive la
+          diferencia!</p>
         <div class="buttons">
           <button id="acceptMembers">Confirmar</button>
         </div>
@@ -273,90 +287,23 @@ if (isset($_SESSION['userId'])) {
           <label for="profileImgInput" style="position:relative;">
             <img class="edit-profile" src="./img/pencil.png" alt="">
             <div class="img">
-              <?php if($_SESSION['userImgPerfil'] !== "") { ?>
-              <img id="profileImg" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="perfil" />
-              <?php }else{ ?>
-              <img id="profileImg" src="./img/profile.png" alt="perfil" />
+              <?php if ($_SESSION['userImgPerfil'] != "") { ?>
+                <img id="profileImg" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="perfil" />
+              <?php } else { ?>
+                <img id="profileImg" src="./img/profile.png" alt="perfil" />
               <?php } ?>
             </div>
           </label>
           <input type="file" id="profileImgInput" style="display: none" accept="image/*">
-          <?php if($_SESSION['misEstrellas'] === "1"){ ?> 
-          <img style="width: 100px; margin-top:10px;" src="./img/1star.png" alt="1">
+          <?php if ($_SESSION['misEstrellas'] === "1") { ?>
+            <img style="width: 100px; margin-top:10px;" src="./img/1star.png" alt="1">
           <?php } ?>
-          <?php if($_SESSION['misEstrellas'] === "2"){ ?> 
-          <img style="width: 100px; margin-top:10px;" src="./img/2stars.png" alt="2">
+          <?php if ($_SESSION['misEstrellas'] === "2") { ?>
+            <img style="width: 100px; margin-top:10px;" src="./img/2stars.png" alt="2">
           <?php } ?>
-          <?php if($_SESSION['misEstrellas'] === "3"){ ?> 
-          <img style="width: 100px; margin-top:10px;" src="./img/3stars.png" alt="3">
+          <?php if ($_SESSION['misEstrellas'] === "3") { ?>
+            <img style="width: 100px; margin-top:10px;" src="./img/3stars.png" alt="3">
           <?php } ?>
-        </div>
-        <div class="profile-detail" id="profileDetail">
-          <div class="row">
-            <h3>Nombre</h3>
-            <span id="profileNombre"><?php echo $_SESSION['userNombre'] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Nick</h3>
-            <span id="profileNick"><?php echo $_SESSION["userUser"] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Mail</h3>
-            <span id="profileMail"><?php echo $_SESSION["userMail"] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Cédula</h3>
-            <span><?php echo $_SESSION['userCi'] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Celular</h3>
-            <span><?php
-            function formatPhoneNumber($number)
-            {
-              $numStr = (string) $number;
-
-              $formatted = '(' . substr($numStr, 0, 3) . ') ' . substr($numStr, 3, 2) . ' ' . substr($numStr, 5, 3) . ' ' . substr($numStr, 8);
-              return $formatted;
-            }
-            $formattedNumber = formatPhoneNumber($_SESSION['userCel']);
-            echo $formattedNumber;
-            ?>
-            </span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Categoría</h3>
-            <span id="profileCategory"><?php echo $_SESSION['userCategoria'] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Fecha de nacimiento</h3>
-            <span id="profileBirth"><?php echo $_SESSION['userFechNac'] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Frase</h3>
-            <span id="profileFrase"><?php echo $_SESSION['userFrase'] ?></span>
-          </div>
-          <hr />
-          <div class="row">
-            <h3>Categorías en las que juego</h3>
-            <?php
-            if ($_SESSION["userMasCategoria"] == 0) {
-              echo '<span id="profileMasCat">Misma categoría</span>';
-            } else if ($_SESSION["userMasCategoria"] == 1) {
-              echo '<span id="profileMasCat">Categorías contiguas</span>';
-            } else {
-              echo '<span id="profileMasCat">Todas las categorías</span>';
-            }
-            ?>
-          </div>
-          <hr />
-          <button id="editProfile">Editar</button>
         </div>
         <form method="POST" action="./accion/savePerfil.php" id="updateProfile">
           <input type="text" name="idUser" value="<?php echo $_SESSION["userId"] ?>" hidden>
@@ -369,7 +316,8 @@ if (isset($_SESSION['userId'])) {
           <h3>Categoría</h3>
           <!-- <input type="text" name="categoria" value="<?php echo $_SESSION["userCategoria"] ?>"> -->
           <select name="categoria">
-            <option value="<?php echo $_SESSION["userCategoria"] ?>" selected><?php echo $_SESSION["userCategoria"] ?></option>
+            <option value="<?php echo $_SESSION["userCategoria"] ?>" selected><?php echo $_SESSION["userCategoria"] ?>
+            </option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -401,7 +349,6 @@ if (isset($_SESSION['userId'])) {
               </li>
             </ul>
             <button id="updateButton">Actualizar</button>
-            <button id="cancelUpdate">Cancelar</button>
           </form>
         </div>
       </div>
@@ -412,7 +359,7 @@ if (isset($_SESSION['userId'])) {
   <script src="landing.js"></script>
   <script>
     const userId = <?php echo $_SESSION['userId']; ?>;
-    const userStars = <?php echo $_SESSION['misEstrellas']; ?>
+  const userStars = <?php echo $_SESSION['misEstrellas']; ?>
 </script>
 
 </html>

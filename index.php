@@ -4,7 +4,13 @@ session_start();
 if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
   $loggedIn = true;
 } else {
-  $loggedIn = false;
+  if($_COOKIE['goCookToken']!=""){
+      $token = $_COOKIE['goCookToken'];
+      header('location:./accion/loginUserToken.php');
+  }else{
+     $token=$_COOKIE['goCookToken'];
+      $loggedIn = false;
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -18,6 +24,37 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
   <link rel="apple-touch-icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css" />
   <title>GO Padel</title>
+  <style>
+      #floating-image {
+      position: fixed;
+      top: 50%;
+      right: 25%;
+      z-index: 9999;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #floating-image img {
+      width: 300px;
+      height: auto;
+      box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+  <script>
+    window.addEventListener('load', () => {
+      const img = document.getElementById('floating-image');
+      setTimeout(() => {
+        img.style.display = 'none';
+      }, 5000); // Oculta después de 5 segundos
+    });
+  </script>
+
+  
 </head>
 <div id="loader" class="loader"></div>
 <div id="loader2" class="loader2-container">
@@ -27,6 +64,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
 
 <body>
   <header>
+    <!-- mostrar imagenes como promos -->
+    <div id="floating-image">
+      <img src="./img/promo.png" alt="Promo Activa">
+    </div>
+
     <div class="logo">
       <div class="logo">
         <a href="#home">
@@ -54,11 +96,12 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <a id="landing" href="/landing.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
-      <?php if($_SESSION['userImgPerfil'] !== "") { ?>
-        <img style="width: 30px; height:30px; border-radius: 50%;" src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="">
-      <?php }else{ ?>
-        <img style="width: 30px; height:30px; border-radius: 50%;" src="./img/profile.png" alt="">
-      <?php } ?>
+        <?php if ($_SESSION['userImgPerfil'] !== "") { ?>
+          <img style="width: 30px; height:30px; border-radius: 50%;"
+            src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt="">
+        <?php } else { ?>
+          <img style="width: 30px; height:30px; border-radius: 50%;" src="./img/profile.png" alt="">
+        <?php } ?>
       </a>
     </div>
 
@@ -74,13 +117,6 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
           echo 'hidden' ?>"><a href="/landing.php">Reservas</a></li>
           <li class="ingresar <?php if ($loggedIn)
           echo 'hidden' ?>"><a href="#login" id="openModal2">Ingresar</a></li>
-          <?php if($loggedIn){ ?>
-          <li>
-            <form style="text-align: center;" action="logout.php" method="POST">
-              <button type="submit" name="logout" id="logout">Salir</button>
-            </form>
-          </li>
-            <?php }?>
         </ul>
       </nav>
     </header>
@@ -212,7 +248,10 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
               <p>
                 ¡Únete a nuestro grupo selecto de amantes del pádel y disfruta de beneficios exclusivos!
                 <span class="more-text">
-                  Regístrate ahora para reservar tus horas en nuestras canchas y accede a promociones especiales, eventos privados y la oportunidad de compartir tu pasión por el deporte con una comunidad vibrante. No pierdas la oportunidad de asegurar tu lugar y vivir una experiencia única. ¡La competencia y diversión te esperan!
+                  Regístrate ahora para reservar tus horas en nuestras canchas y accede a promociones especiales, eventos
+                  privados y la oportunidad de compartir tu pasión por el deporte con una comunidad vibrante. No pierdas
+                  la oportunidad de asegurar tu lugar y vivir una experiencia única. ¡La competencia y diversión te
+                  esperan!
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -223,9 +262,15 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             <div class="content">
               <h3>Clases y prácticas</h3>
               <p>
-                Clases personalizadas o grupales de pádel son ideales para quienes buscan mejorar su técnica de manera específica y efectiva. 
+                Clases personalizadas o grupales de pádel son ideales para quienes buscan mejorar su técnica de manera
+                específica y efectiva.
                 <span class="more-text">
-                En sesiones individuales, el entrenador se concentra en las necesidades particulares de cada persona, ajustando los ejercicios a su nivel y objetivos. Por otro lado, las clases grupales no solo permiten trabajar habilidades en conjunto, sino que también fomentan la camaradería y la competencia amistosa. Cada sesión está diseñada para abordar aspectos cruciales del juego, desde el saque hasta las estrategias defensivas y ofensivas, permitiendo que cada participante alcance su máximo potencial mientras disfruta del aprendizaje en compañía.
+                  En sesiones individuales, el entrenador se concentra en las necesidades particulares de cada persona,
+                  ajustando los ejercicios a su nivel y objetivos. Por otro lado, las clases grupales no solo permiten
+                  trabajar habilidades en conjunto, sino que también fomentan la camaradería y la competencia amistosa.
+                  Cada sesión está diseñada para abordar aspectos cruciales del juego, desde el saque hasta las
+                  estrategias defensivas y ofensivas, permitiendo que cada participante alcance su máximo potencial
+                  mientras disfruta del aprendizaje en compañía.
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -236,9 +281,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             <div class="content">
               <h3>Escuela</h3>
               <p>
-                Para niñas y niños mayores de 10 años, nuestra escuelita de pádel ofrece un espacio dinámico donde aprender y divertirse mientras desarrollan habilidades deportivas. 
+                Para niñas y niños mayores de 10 años, nuestra escuelita de pádel ofrece un espacio dinámico donde
+                aprender y divertirse mientras desarrollan habilidades deportivas.
                 <span class="more-text">
-                Con entrenadores dedicados, los estudiantes perfeccionan su técnica en un ambiente seguro y amigable, fomentando trabajo en equipo, disciplina y amor por el deporte.
+                  Con entrenadores dedicados, los estudiantes perfeccionan su técnica en un ambiente seguro y amigable,
+                  fomentando trabajo en equipo, disciplina y amor por el deporte.
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -249,9 +296,14 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             <div class="content">
               <h3>Chelada</h3>
               <p>
-                Diseñado para ofrecer una experiencia sensorial inolvidable, combina naturaleza y sabor en un entorno mágico.
-                <span class="more-text"> 
-                Rodeado de árboles frondosos y flores coloridas, cuenta con mesas rústicas de madera dispuestas bajo luces cálidas que cuelgan entre las ramas. Aquí se sirven cervezas artesanales elaboradas localmente, cada una con una historia y un toque especial que invita a la exploración. Música, áreas para juegos al aire libre y opciones gastronómicas y variedad en cervezas. Un lugar para conectar, relajarse y celebrar la vida.
+                Diseñado para ofrecer una experiencia sensorial inolvidable, combina naturaleza y sabor en un entorno
+                mágico.
+                <span class="more-text">
+                  Rodeado de árboles frondosos y flores coloridas, cuenta con mesas rústicas de madera dispuestas bajo
+                  luces cálidas que cuelgan entre las ramas. Aquí se sirven cervezas artesanales elaboradas localmente,
+                  cada una con una historia y un toque especial que invita a la exploración. Música, áreas para juegos al
+                  aire libre y opciones gastronómicas y variedad en cervezas. Un lugar para conectar, relajarse y celebrar
+                  la vida.
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -262,9 +314,12 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
             <div class="content">
               <h3>Familia GO Padel</h3>
               <p>
-                En nuestra casa, el espíritu deportivo no solo se vive, sino que se respira. 
+                En nuestra casa, el espíritu deportivo no solo se vive, sino que se respira.
                 <span class="more-text">
-                Este espacio está diseñado para ser mucho más que un lugar de práctica; es un refugio para quienes comparten una pasión auténtica por el pádel y buscan un entorno donde la competencia se transforme en camaradería y el esfuerzo en celebración. Aquí, cada socio encuentra una comunidad que inspira, que conecta y que hace que cada momento sea especial.
+                  Este espacio está diseñado para ser mucho más que un lugar de práctica; es un refugio para quienes
+                  comparten una pasión auténtica por el pádel y buscan un entorno donde la competencia se transforme en
+                  camaradería y el esfuerzo en celebración. Aquí, cada socio encuentra una comunidad que inspira, que
+                  conecta y que hace que cada momento sea especial.
                 </span>
                 <button class="read-more-btn">Leer más</button>
               </p>
@@ -342,12 +397,13 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="index.js"></script>
     <script>
-      const loggedIn = <?php if($loggedIn){
-        echo $loggedIn;
-      }else{
-        echo 0;
-      }; ?>
-    </script>
-  </body>
+      const loggedIn = <?php if ($loggedIn) {
+          echo $loggedIn;
+        } else {
+          echo 0;
+        }
+        ; ?>
+  </script>
+</body>
 
-  </html>
+</html>

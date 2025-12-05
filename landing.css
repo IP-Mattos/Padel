@@ -169,7 +169,8 @@ nav.menu ul li a {
 .sModal,
 .hModal,
 .vModal,
-.iModal {
+.iModal,
+.aModal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -194,7 +195,8 @@ nav.menu ul li a {
 .sModal-content,
 .hModal-content,
 .vModal-content,
-.iModal-content {
+.iModal-content,
+.aModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -494,7 +496,7 @@ nav.menu ul li a {
 }
 
 #updateProfile {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
@@ -742,7 +744,8 @@ td {
   .sModal-content,
   .hModal-content,
   .vModal-content,
-  .iModal-content {
+  .iModal-content,
+  .aModal-content {
     margin: auto auto;
   }
 
