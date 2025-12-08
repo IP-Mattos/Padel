@@ -58,7 +58,7 @@ header {
   border: none;
 }
 
-#datePicker{
+#datePicker {
   width: 1px;
   height: 1px;
   opacity: 0;
@@ -123,7 +123,7 @@ header {
   text-align: center;
 }
 
-.profiles-container{
+.profiles-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -151,13 +151,72 @@ header {
   margin-right: 10px;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hidden {
+  display: none;
+}
+.modal-content {
+  background: #394b6a;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 350px;
+  max-width: 500px;
+  position: relative;
+}
+.payment-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+.payment-row img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.payment-row select,
+.payment-row input {
+  flex: 1;
+  padding: 5px;
+}
+.payment-ico {
+  width: 35px;
+  cursor: pointer;
+}
+.payments-btn {
+  border: none;
+  background: none;
+}
+.close-modal {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  top: 0;
+  right: 10px;
+  position: absolute;
+}
+.save-btn {
+  border: none;
+  padding: 10px;
+  background-color: var(--primary-color);
+  border-radius: 8px;
+}
+
 @media (max-width: 436px) {
   .card {
     flex-direction: column;
     width: 85%;
     gap: 1rem;
   }
-  .actions{
+  .actions {
     gap: 2rem;
     flex-direction: row;
   }
