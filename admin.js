@@ -49,6 +49,19 @@ function changeDate(offset) {
    Load Time Slots
 -------------------------------------------------------------- */
 
+function getProfileImage(pic) {
+  const DEFAULT_IMG = "./accion/imgPerfilUser/profile.png";
+
+  const valid =
+    pic &&
+    pic.trim() !== "" &&
+    pic !== "0" &&
+    pic.toLowerCase() !== "profile.png" &&
+    pic.toLowerCase() !== "default.png";
+
+  return valid ? `./accion/imgPerfilUser/${pic}` : DEFAULT_IMG;
+}
+
 async function loadSlots() {
   hourSlotsContainer.innerHTML = "";
 
@@ -67,6 +80,14 @@ async function loadSlots() {
     const slots = data.consultaResponse.datos;
 
     for (const slot of slots) {
+      const paymentInfo = await fetchPayments(slot.id);
+
+      const hasPayments =
+        paymentInfo &&
+        ((paymentInfo.fdpUsuario || "") !== "" ||
+          (paymentInfo.fdpInvitado1 || "") !== "" ||
+          (paymentInfo.fdpInvitado2 || "") !== "" ||
+          (paymentInfo.fdpInvitado3 || "") !== "");
       const div = document.createElement("div");
       div.className = "card";
       const horaSinSegundos = slot.hora.slice(0, 5);
@@ -84,13 +105,16 @@ async function loadSlots() {
         const profiles = await Promise.all(uniqueIds.map(fetchProfile));
 
         const profileHtml = profiles
-          .map(
-            (profile) => `
-          <div class="profile">
-            <img class="profile-img" src="./accion/imgPerfilUser/${profile.imgperfil}" alt="n/a" />
-            <p>${profile.nombre}</p>
-          </div>`
-          )
+          .map((profile) => {
+            const img = getProfileImage(profile.imgperfil);
+            return `
+            <div class="profile">
+              <img class="profile-img" src="${img}" alt="${profile.nombre}"
+                  onerror="this.src='./accion/imgPerfilUser/profile.png'">
+              <p>${profile.nombre}</p>
+            </div>
+          `;
+          })
           .join("");
 
         const isConfirmed = slot.estado == 2;
@@ -106,14 +130,25 @@ async function loadSlots() {
             isConfirmed
               ? `
               <div class="actions">
-                <button class="payments-btn" data-slot='${JSON.stringify(
-                  slot
-                )}'>
-                    <img class="payment-ico" src="./img/pago.png" alt="Pagos">
-                </button>
-              </div>`
+                ${(() => {
+                  const paymentIcon = hasPayments ? "pago.png" : "nopago.png";
+                  const paymentAlt = hasPayments
+                    ? "Pagos registrados"
+                    : "Sin pagos";
+
+                  return `
+                    <button class="payments-btn" data-slot='${JSON.stringify(
+                      slot
+                    )}'>
+                      <img class="payment-ico" src="./img/${paymentIcon}" alt="${paymentAlt}">
+                    </button>
+                  `;
+                })()}
+              </div>
+            `
               : ""
           }
+
 
           ${
             slot.estado == 1
@@ -205,9 +240,26 @@ const paymentRows = document.getElementById("paymentRows");
 const paymentsForm = document.getElementById("paymentsForm");
 const closeModal = document.querySelector(".close-modal");
 
-function openModal(slot) {
+async function fetchPayments(idAgenda) {
+  const params = new URLSearchParams();
+  params.append("idAgenda", idAgenda);
+
+  const res = await fetch("./accion/getFDP.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  });
+
+  const data = await res.json();
+  return data.consultaResponse?.datos?.[0] || null;
+}
+
+async function openModal(slot) {
   modal.classList.remove("hidden");
   paymentRows.innerHTML = "";
+
+  // Fetch existing payments for THIS agenda
+  const paymentData = await fetchPayments(slot.id);
 
   const userIds = [
     slot.idUsuario,
@@ -217,46 +269,96 @@ function openModal(slot) {
     slot.invitado3,
   ].filter((id) => id && id !== "0");
 
-  const maxRows = 4;
-  const rowPromises = [];
+  const hour = parseInt(slot.hora.slice(0, 2), 10);
+  const servicio = Number(slot.servicio);
 
-  for (let i = 0; i < maxRows; i++) {
-    const userId = userIds[i] || null;
-    rowPromises.push(buildPaymentRow(userId, i));
+  function calculatePrice() {
+    if (servicio === 2) return 250;
+    return hour <= 17 ? 150 : 250;
   }
 
-  Promise.all(rowPromises).then((rows) => {
-    paymentRows.innerHTML = rows.join("");
-    paymentRows.innerHTML += `<input type="hidden" name="idAgenda" value="${slot.id}">`;
-  });
+  const computedPrice = calculatePrice();
+  const editablePrice = servicio === 2;
+
+  const rowsHtml = [];
+
+  for (let i = 0; i < 4; i++) {
+    const userId = userIds[i] || 0;
+
+    const fieldBase = i === 0 ? "Usuario" : `Invitado${i}`;
+    const priceField = i === 0 ? "impUsu" : `impInv${i}`;
+    const fdpField = i === 0 ? "fdpUsuario" : `fdpInvitado${i}`;
+    const idField = i === 0 ? "idUsuario" : `idInvitado${i}`;
+
+    // If paymentData exists, use it — otherwise fallback to system-calculated price
+    const existingFdp = paymentData ? paymentData[fdpField] : "EFECTIVO";
+    const existingPrice = paymentData ? paymentData[priceField] : computedPrice;
+
+    rowsHtml.push(
+      await buildPaymentRow(
+        userId,
+        i,
+        existingPrice,
+        editablePrice,
+        existingFdp
+      )
+    );
+  }
+
+  paymentRows.innerHTML = rowsHtml.join("");
+
+  // Add agenda ID
+  paymentRows.innerHTML += `<input type="hidden" name="idAgenda" value="${slot.id}">`;
 }
 
-async function buildPaymentRow(userId, index) {
-  let name = "Vacío";
-  let img = "./img/default.png";
-
-  if (userId) {
-    const profile = await fetchProfile(userId);
-    name = profile.nombre;
-    img = `./accion/imgPerfilUser/${profile.imgperfil}`;
-  }
-
+async function buildPaymentRow(userId, index, price, editable, selectedFdp) {
   const fieldBase = index === 0 ? "Usuario" : `Invitado${index}`;
+  const priceInputName = index === 0 ? "impUsu" : `impInv${index}`;
+
+  const profile =
+    userId !== 0
+      ? await fetchProfile(userId)
+      : { nombre: "Vacío", imgperfil: null };
+
+  const img = getProfileImage(profile.imgperfil);
+  const name = profile.nombre;
 
   return `
     <div class="payment-row">
-        <img src="${img}" alt="n/a">
+        <img src="${img}" class="profile-img" 
+             onerror="this.src='./accion/imgPerfilUser/profile.png'">
+
         <span>${name}</span>
 
-        <input type="hidden" name="id${fieldBase}" value="${userId || 0}">
+        <input type="hidden" name="id${fieldBase}" value="${userId}">
 
         <select name="fdp${fieldBase}">
-            <option value="EFECTIVO">EFECTIVO</option>
-            <option value="TRANS">TRANS</option>
-            <option value="MERCPAGO">MERCPAGO</option>
-            <option value="DEBITO">DEBITO</option>
-            <option value="CREDITO">CREDITO</option>
+            ${["EFECTIVO", "TRANS", "MERCPAGO", "DEBITO", "CREDITO"]
+              .map(
+                (fdp) =>
+                  `<option value="${fdp}" ${
+                    fdp === selectedFdp ? "selected" : ""
+                  }>${fdp}</option>`
+              )
+              .join("")}
         </select>
+
+        ${
+          editable
+            ? `
+              <!-- Editable price ONLY for servicio = 2 -->
+              <input 
+                type="number" 
+                name="${priceInputName}" 
+                value="${price}" 
+                class="payment-amount">
+            `
+            : `
+              <!-- Fixed price label for servicio = 1 -->
+              <span class="price-label">$${price}</span>
+              <input type="hidden" name="${priceInputName}" value="${price}">
+            `
+        }
     </div>
   `;
 }
