@@ -272,37 +272,34 @@ async function openModal(slot) {
   const hour = parseInt(slot.hora.slice(0, 2), 10);
   const servicio = Number(slot.servicio);
 
-  function calculatePrice() {
-    if (servicio === 2) return 250;
-    return hour <= 17 ? 150 : 250;
+  function calculatePrice(hasUser, hour, servicio) {
+    if (servicio === 2) return 250; // servicio 2 always 250
+
+    // If there is a user AND hour < 17:00 → 150
+    if (hasUser && hour <= 17) {
+      return 150;
+    }
+
+    // Any other case → 250
+    return 250;
   }
 
-  const computedPrice = calculatePrice();
+  // const computedPrice = calculatePrice();
   const editablePrice = servicio === 2;
 
   const rowsHtml = [];
 
   for (let i = 0; i < 4; i++) {
     const userId = userIds[i] || 0;
+    const hasUser = userId !== 0;
 
-    const fieldBase = i === 0 ? "Usuario" : `Invitado${i}`;
-    const priceField = i === 0 ? "impUsu" : `impInv${i}`;
-    const fdpField = i === 0 ? "fdpUsuario" : `fdpInvitado${i}`;
-    const idField = i === 0 ? "idUsuario" : `idInvitado${i}`;
+    const price = paymentData
+      ? paymentData[priceField]
+      : calculatePrice(hasUser, hour, servicio);
 
-    // If paymentData exists, use it — otherwise fallback to system-calculated price
-    const existingFdp = paymentData ? paymentData[fdpField] : "EFECTIVO";
-    const existingPrice = paymentData ? paymentData[priceField] : computedPrice;
+    const fdp = paymentData ? paymentData[fdpField] : "EFECTIVO";
 
-    rowsHtml.push(
-      await buildPaymentRow(
-        userId,
-        i,
-        existingPrice,
-        editablePrice,
-        existingFdp
-      )
-    );
+    rowsHtml.push(await buildPaymentRow(userId, i, price, editablePrice, fdp));
   }
 
   paymentRows.innerHTML = rowsHtml.join("");
