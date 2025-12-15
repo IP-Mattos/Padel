@@ -406,6 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
     court: {
       modal: cModal,
       content: ".cModal-content",
+      servicios: 1,
       servicios: [
         { id: 1, label: "Cancha 1" },
         { id: 6, label: "Cancha 2" },
@@ -638,6 +639,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // MODAL OPEN + SERVICE SWITCH
   // ===============================
+  document.getElementById("openCourt").addEventListener("click", function () {
+    Swal.fire({
+      icon: "info",
+      toast: true,
+      title: "Este mes de Diciembre 50% de descuento alquilando Cancha 2!",
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+  });
+
   Object.entries(serviceModalMap).forEach(([key, config]) => {
     document.getElementById(`open${capitalize(key)}`).onclick = async () => {
       openModal(config.modal, config.content);
