@@ -295,6 +295,18 @@ document.addEventListener("DOMContentLoaded", () => {
               container: classCalendar,
               hoursContainer: classhs,
             });
+            document
+              .getElementById("interested")
+              .addEventListener("click", function () {
+                Swal.fire({
+                  title: "Genial!",
+                  html:
+                    "<p>Ponte en contacto con nuestro profesor por este número: " +
+                    prof.celular.replace(598, 0) +
+                    "<img src='/img/whatsapp.png'> </p>",
+                  icon: "success",
+                });
+              });
           } finally {
             isFetchingClassData = false;
           }

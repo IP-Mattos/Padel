@@ -293,11 +293,18 @@ async function openModal(slot) {
     const userId = userIds[i] || 0;
     const hasUser = userId !== 0;
 
+    const fieldBase = i === 0 ? "Usuario" : `Invitado${i}`;
+
+    const priceField = i === 0 ? "impUsuario" : `impInvitado${i}`;
+    const fdpField = i === 0 ? "fdpUsuario" : `fdpInvitado${i}`;
+
     const price = paymentData
-      ? paymentData[priceField]
+      ? Number(
+          paymentData[priceField] || calculatePrice(hasUser, hour, servicio)
+        )
       : calculatePrice(hasUser, hour, servicio);
 
-    const fdp = paymentData ? paymentData[fdpField] : "EFECTIVO";
+    const fdp = paymentData ? paymentData[fdpField] || "EFECTIVO" : "EFECTIVO";
 
     rowsHtml.push(await buildPaymentRow(userId, i, price, editablePrice, fdp));
   }

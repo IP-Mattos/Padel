@@ -644,7 +644,8 @@ td {
 #acceptTraining,
 #acceptRivals,
 #acceptMembers,
-#acceptClasses {
+#acceptClasses,
+#interested {
   border: none;
   padding: 20px;
   border-radius: 5px;
