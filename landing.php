@@ -151,6 +151,8 @@ if (isset($_SESSION['userId'])) {
         <img src="./img/resCancha.png" alt="" class="service-ico">
         <span id="closeCourt" class="close">&times;</span>
         <h2>Reservando cancha</h2>
+        <div class="service-switch" id="court-service-switch"></div>
+
         <div class="calendar" id="court-calendar"></div>
         <div class="hs" id="court-hs"></div>
         <div class="buttons">

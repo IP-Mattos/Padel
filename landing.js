@@ -328,13 +328,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function handleProfessorSelection(profeId, config) {
-    const { servicio, container, hoursContainer } = config;
+    const { servicios, container, hoursContainer } = config;
 
     container.innerHTML = "<p>Cargando días</p>";
     hoursContainer.innerHTML = "";
 
     const formData = new URLSearchParams();
-    formData.append("servicio", servicio);
+    formData.append("servicio", servicios);
     formData.append("profe", profeId);
 
     try {
@@ -357,13 +357,13 @@ document.addEventListener("DOMContentLoaded", () => {
             fetchHours(
               {
                 ...selectedDay,
-                servicio,
+                servicios,
                 profe: profeId,
               },
               hoursContainer
             );
           },
-          servicio
+          servicios
         );
       } else {
         container.innerHTML = "<p>Error al cargar los días</p>";
@@ -384,7 +384,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const cantineCalendar = document.getElementById("cantine-calendar");
   const trainingCalendar = document.getElementById("training-calendar");
   const rivalsCalendar = document.getElementById("rivals-calendar");
-
   const profListContainer = document.getElementById("profList");
 
   const courths = document.getElementById("court-hs"); // First container
@@ -407,7 +406,10 @@ document.addEventListener("DOMContentLoaded", () => {
     court: {
       modal: cModal,
       content: ".cModal-content",
-      servicio: 1,
+      servicios: [
+        { id: 1, label: "Cancha 1" },
+        { id: 6, label: "Cancha 2" },
+      ],
       profe: 0,
       container: courtCalendar,
       hoursContainer: courths,
@@ -416,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
     classes: {
       modal: clModal,
       content: ".clModal-content",
-      servicio: 2,
+      servicios: 2,
       profe: null,
       container: classCalendar,
       hoursContainer: classhs,
@@ -425,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
     training: {
       modal: tModal,
       content: ".tModal-content",
-      servicio: 3,
+      servicios: 3,
       profe: 0,
       container: trainingCalendar,
       hoursContainer: traininghs,
@@ -434,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
     rivals: {
       modal: rModal,
       content: ".rModal-content",
-      servicio: 4,
+      servicios: 4,
       profe: 0,
       container: rivalsCalendar,
       hoursContainer: rivalshs,
@@ -451,64 +453,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // },
   };
 
+  const modalState = {};
+  const calendarUtils = {};
+  let selectedHourCard = null;
+
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-
-  const calendarUtils = {};
-
-  Object.entries(serviceModalMap).forEach(
-    ([key, { modal, content, servicio, profe, container, hoursContainer }]) => {
-      document.getElementById(`open${capitalize(key)}`).onclick = async () => {
-        openModal(modal, content);
-
-        if (key === "classes") return;
-
-        container.innerHTML = "<p>Cargando...</p>";
-        hoursContainer.innerHTML = "";
-
-        try {
-          //Create the URL-encoded payload
-          const formData = new URLSearchParams();
-          formData.append("servicio", servicio);
-          formData.append("profe", profe);
-
-          const res = await fetch("./accion/getDias.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData.toString(),
-          });
-
-          const json = await res.json();
-          container.innerHTML = "";
-
-          if (json.consultaResponse.codigoError === "0") {
-            const datos = json.consultaResponse.datos;
-            calendarUtils[key] = populateCalendarCards(
-              container,
-              datos,
-              (selectedDay) => {
-                fetchHours(
-                  {
-                    ...selectedDay,
-                    servicio,
-                    profe,
-                  },
-                  hoursContainer
-                );
-              },
-              servicio
-            );
-          } else {
-            container.innerHTML = "<p>Error al cargar los días</p>";
-          }
-        } catch (err) {
-          container.innerHTML = "<p>Error de conexión</p>";
-          console.error(err);
-        }
-      };
-    }
-  );
 
   function formatLocalDateToYMD(date) {
     const y = date.getFullYear();
@@ -517,78 +468,81 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${y}-${m}-${d}`;
   }
 
+  // ===============================
+  // SERVICE SWITCH
+  // ===============================
+  function renderServiceSwitch(container, services, onChange) {
+    container.innerHTML = "";
+    services.forEach((s, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = s.label;
+      btn.className = index === 0 ? "active" : "";
+      btn.onclick = () => {
+        container
+          .querySelectorAll("button")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        onChange(s.id);
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  // ===============================
+  // CALENDAR
+  // ===============================
   function populateCalendarCards(
     containerDiv,
     calendarData,
     onDaySelected,
     servicio
   ) {
-    const today = new Date(); // Get the current date to use as a base for date calculations
-    let selectedCard = null; // Will store the currently selected card (if any)
-    let selectedCardData = null; // Will store metadata about the selected card
+    const today = new Date();
+    let selectedCard = null;
+    let selectedCardData = null;
+    const fragment = document.createDocumentFragment();
 
-    const fragment = document.createDocumentFragment(); // Optimize performance with fragment
-
-    // Loop over each day received from the backend
     calendarData.forEach((dayInfo, index) => {
-      var { dia, estado } = dayInfo;
-
-      // Calculate the actual date based on today's date + current index
+      let { dia, estado } = dayInfo;
       const actualDate = new Date(today);
       actualDate.setDate(today.getDate() + index);
 
+      // Rivals auto-available today
       if (Number(servicio) === 4) {
-        const todayString = today.toISOString().split("T")[0];
-        const actualDateString = actualDate.toISOString().split("T")[0];
-        if (todayString === actualDateString) {
+        if (formatLocalDateToYMD(today) === formatLocalDateToYMD(actualDate))
           estado = 1;
-        }
       }
 
-      // Extract date and month in readable format
+      const dayCard = document.createElement("div");
+      dayCard.className = "card";
       const dayNumber = actualDate.getDate();
       const monthName = actualDate.toLocaleDateString("es-ES", {
         month: "short",
       });
+      dayCard.innerHTML = `<span class="day">${shortDays[dia]}</span>
+                         <span class="date">${dayNumber}</span>
+                         <span class="month">${monthName}</span>`;
 
-      // Create a card element to represent the day
-      const dayCard = document.createElement("div");
-      dayCard.className = "card";
-
-      // Set the inner HTML with weekday, date, and month
-      dayCard.innerHTML = `
-        <span class="day">${shortDays[dia]}</span>
-        <span class="date">${dayNumber}</span>
-        <span class="month">${monthName}</span>
-      `;
-
-      // Check if the day is blocked (estado === 1)
       if (estado === 1) {
-        // Visually mark as unavailable
         dayCard.style.backgroundColor = "red";
         dayCard.style.opacity = "0.6";
-        dayCard.style.pointerEvents = "none"; // Prevent clicks
+        dayCard.style.pointerEvents = "none";
       } else {
-        // Make it selectable
         dayCard.addEventListener("click", () => {
-          if (selectedCard) resetCardStyle(selectedCard); // Unselect previous
-          styleSelectedCard(dayCard); // Apply selected styling
+          if (selectedCard) resetCardStyle(selectedCard);
+          styleSelectedCard(dayCard);
           selectedCard = dayCard;
-
-          // Store full data about the selected day
           selectedCardData = {
             ...dayInfo,
             dayNumber,
             monthName,
-            date: formatLocalDateToYMD(actualDate), // Format: YYYY-MM-DD
+            date: formatLocalDateToYMD(actualDate),
           };
           onDaySelected({
             ...dayInfo,
             fecha: formatLocalDateToYMD(actualDate),
           });
         });
-
-        // Auto-select the first available day
         if (!selectedCard) {
           styleSelectedCard(dayCard);
           selectedCard = dayCard;
@@ -604,17 +558,11 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
       }
-
-      // Add the card to the document fragment
       fragment.appendChild(dayCard);
     });
 
-    // Inject all generated cards into the calendar container
     containerDiv.appendChild(fragment);
 
-    // === Helper functions for styling ===
-
-    // Apply selected styles to a card
     function styleSelectedCard(card) {
       card.style.backgroundColor = "var(--primary-color)";
       card.querySelector(".day").style.textShadow = "1px 0 0 black";
@@ -622,7 +570,6 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.color = "black";
     }
 
-    // Reset card styles back to default
     function resetCardStyle(card) {
       card.style.backgroundColor = "";
       card.querySelector(".day").style.textShadow = "";
@@ -630,191 +577,191 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.color = "";
     }
 
-    // Return a way to access the selected card’s data
-    return {
-      getSelectedCardData: () => selectedCardData,
-    };
+    return { getSelectedCardData: () => selectedCardData };
   }
 
-  //================================================>
-  //HOURS
-  //================================================>
-
-  let selectedCard = null; // To store the selected card
-
+  // ===============================
+  // HOURS
+  // ===============================
   async function fetchHours({ servicio, profe, fecha }, container) {
-    selectedCard = null;
+    selectedHourCard = null;
     container.innerHTML = "<p>Cargando horarios...</p>";
 
     try {
-      const formData = new URLSearchParams();
-      formData.append("servicio", servicio);
-      formData.append("profe", profe);
-      formData.append("fecha", fecha);
-
+      const formData = new URLSearchParams({ servicio, profe, fecha });
       const res = await fetch("./accion/getHorarios.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),
       });
-
       const json = await res.json();
       container.innerHTML = "";
 
       if (json.consultaResponse.codigoError === "0") {
-        const datos = json.consultaResponse.datos;
-        generateHourCards(container, datos, {
+        generateHourCards(container, json.consultaResponse.datos, {
           servicio,
           profe,
           fecha,
-          container,
         });
       } else {
         container.innerHTML = "<p>Error al cargar horarios</p>";
       }
     } catch (err) {
-      console.error("Error fetching hours:", err);
+      console.error(err);
       container.innerHTML = "<p>Error de conexión</p>";
     }
   }
 
-  function generateHourCards(container, hourData, fetchParams) {
+  function generateHourCards(container, hourData) {
+    container.innerHTML = "";
+    hourData.forEach(({ hora, estado }) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<span class="hour">${hora}</span>`;
+      if (estado !== 0) {
+        card.style.backgroundColor = "red";
+        card.style.opacity = "0.6";
+        card.style.pointerEvents = "none";
+      } else {
+        card.addEventListener("click", () => toggleHourCard(card));
+      }
+      container.appendChild(card);
+    });
+  }
+
+  function toggleHourCard(card) {
+    if (selectedHourCard) selectedHourCard.classList.remove("selected");
+    card.classList.add("selected");
+    selectedHourCard = card;
+  }
+
+  // ===============================
+  // MODAL OPEN + SERVICE SWITCH
+  // ===============================
+  Object.entries(serviceModalMap).forEach(([key, config]) => {
+    document.getElementById(`open${capitalize(key)}`).onclick = async () => {
+      openModal(config.modal, config.content);
+
+      const serviciosArr = Array.isArray(config.servicios)
+        ? config.servicios
+        : [{ id: config.servicios, label: "Servicio" }];
+
+      modalState[key] = { servicio: serviciosArr[0].id };
+
+      const serviceSwitch = config.modal.querySelector(".service-switch");
+      if (serviciosArr.length > 1 && serviceSwitch) {
+        renderServiceSwitch(serviceSwitch, serviciosArr, (newServicio) => {
+          modalState[key].servicio = newServicio;
+          loadCalendarForService(key, newServicio);
+        });
+      }
+
+      await loadCalendarForService(key, modalState[key].servicio);
+    };
+  });
+
+  // ===============================
+  // LOAD CALENDAR FOR SERVICE
+  // ===============================
+  async function loadCalendarForService(key, servicio) {
+    const { profe, container, hoursContainer } = serviceModalMap[key];
+    container.innerHTML = "<p>Cargando...</p>";
+    hoursContainer.innerHTML = "";
+    selectedHourCard = null;
+
+    const formData = new URLSearchParams({ servicio, profe });
+    const res = await fetch("./accion/getDias.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    });
+
+    const json = await res.json();
     container.innerHTML = "";
 
-    hourData.forEach(
-      ({ hora, estado, idUsuario, timeEstado, idReserva, servicio }) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<span class="hour">${hora}</span>`;
-
-        if (estado !== 0) {
-          card.style.backgroundColor = "red";
-          card.style.opacity = "0.6";
-          card.style.pointerEvents = "none";
-        } else {
-          card.addEventListener("click", () => toggleCardSelection(card));
-          card.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              toggleCardSelection(card);
-            }
-          });
-        }
-        container.appendChild(card);
-      }
-    );
-  }
-
-  function toggleCardSelection(card) {
-    if (selectedCard) {
-      // Deselect the currently selected card
-      selectedCard.classList.remove("selected");
+    if (json.consultaResponse.codigoError === "0") {
+      calendarUtils[key] = populateCalendarCards(
+        container,
+        json.consultaResponse.datos,
+        (selectedDay) =>
+          fetchHours({ ...selectedDay, servicio, profe }, hoursContainer),
+        servicio
+      );
+    } else {
+      container.innerHTML = "<p>Error al cargar los días</p>";
     }
-
-    // Select the new card
-    card.classList.add("selected");
-    selectedCard = card; // Store the new selected card
   }
 
-  const style = document.createElement("style");
-
-  style.textContent = `
-      .card.selected {
-        background-color: var(--primary-color); /* Change to your desired color */
-        color: black;
-      }
-      .card.selected .hour {
-        text-shadow: 1px 0 0 black; /* Increase font weight */
-      }`;
-
-  document.head.appendChild(style);
-
-  //====================================>
-  //RESERVING
-  //====================================>
-
+  // ===============================
+  // RESERVATION
+  // ===============================
   Object.entries(serviceModalMap).forEach(([key, config]) => {
-    const { confirmButtonId, servicio, profe } = config;
+    const btn = document.getElementById(config.confirmButtonId);
+    if (!btn) return;
 
-    const confirmBtn = document.getElementById(confirmButtonId);
-    if (!confirmBtn) return;
-
-    confirmBtn.addEventListener("click", async () => {
+    btn.addEventListener("click", async () => {
       const selectedDay = calendarUtils[key]?.getSelectedCardData();
-      if (!selectedDay) {
-        Swal.fire("Error", "Por favor seleccione un día", "error");
-        return;
-      }
+      if (!selectedDay)
+        return Swal.fire("Error", "Por favor seleccione un día", "error");
+      if (!selectedHourCard)
+        return Swal.fire("Error", "Por favor selecciona una hora.", "error");
 
-      if (!selectedCard) {
-        Swal.fire("Error", "Por favor selecciona una hora.", "error");
-        return;
-      }
+      const selectedHour = selectedHourCard.querySelector(".hour").textContent;
+      const formattedDate = selectedDay.date;
 
-      function formatDateName(dateStr) {
-        const [year, month, day] = dateStr.split("-").map(Number);
-        const date = new Date(year, month - 1, day); // Local time
-
-        const dayNum = date.getDate(); // Local getter
-        const monthName = date.toLocaleString("es-ES", {
-          month: "long",
-          timeZone: "America/Montevideo", // Uruguay's time zone
-        });
-
-        return `${dayNum} de ${monthName}`;
-      }
-
-      // Show confirmation modal
       const confirmation = await Swal.fire({
         title: "¿Estás seguro?",
         text: `¿Deseas reservar para el ${formatDateName(
-          selectedDay.date
-        )} a las ${selectedCard.querySelector(".hour").textContent}?`,
+          formattedDate
+        )} a las ${selectedHour}?`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Sí, reservar",
         cancelButtonText: "Cancelar",
       });
+      if (!confirmation.isConfirmed) return;
 
-      // If user cancels
-      if (!confirmation.isConfirmed) {
-        return;
-      }
-
-      const selectedHour = selectedCard.querySelector(".hour").textContent;
-
-      const formData = new URLSearchParams();
-
-      formData.append("fecha", selectedDay.date); // format YYYY-MM-DD
-      formData.append("servicio", servicio);
-      formData.append("profe", profe);
-      formData.append("usuario", userId);
-      formData.append("hora", selectedHour);
+      const formData = new URLSearchParams({
+        fecha: formattedDate,
+        servicio: modalState[key].servicio,
+        profe: config.profe,
+        usuario: userId,
+        hora: selectedHour,
+      });
 
       try {
         const res = await fetch("../accion/putReserv.php", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData.toString(),
         });
-
         const json = await res.json();
-
         if (json.consultaResponse?.codigoError === "0") {
           Swal.fire("Éxito", "Reserva realizada con éxito", "success");
           closeModal(config.modal, config.content);
         } else {
           Swal.fire("Error", `${json.consultaResponse.detalleError}`, "error");
-          console.error("Respuesta del servidor:", json);
         }
       } catch (err) {
-        console.error("Error al enviar reserva:", err);
+        console.error(err);
         Swal.fire("Error", "Error de conexión al enviar la reserva.", "error");
       }
     });
   });
+
+  function formatDateName(dateStr) {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // Local time
+
+    const dayNum = date.getDate(); // Local getter
+    const monthName = date.toLocaleString("es-ES", {
+      month: "long",
+      timeZone: "America/Montevideo", // Uruguay's time zone
+    });
+
+    return `${dayNum} de ${monthName}`;
+  }
+
   //================================================================>
   //USER HOURS
   //================================================================>
@@ -826,6 +773,7 @@ document.addEventListener("DOMContentLoaded", () => {
     3: "./img/resEntrenar.png",
     4: "./img/resRivales.png",
     5: "./img/resChelada.png",
+    6: "./img/resCancha.png",
     // Add more services as needed
   };
 

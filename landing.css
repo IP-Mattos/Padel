@@ -665,6 +665,49 @@ td {
   opacity: 0.8;
 }
 
+.service-switch {
+  display: flex;
+  justify-content: center;
+}
+
+.service-switch button {
+  padding: 8px 16px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.service-switch button.active {
+  background-color: var(--primary-color);
+  color: black;
+  font-weight: bold;
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.service-switch button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.card.selected {
+  background-color: var(--primary-color); /* Change to your desired color */
+  color: black !important;
+}
+.card.selected .hour {
+  text-shadow: 1px 0 0 black; /* Increase font weight */
+}
+
 .hs {
   display: grid;
   /* Change to flex for horizontal alignment */
