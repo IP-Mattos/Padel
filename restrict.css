@@ -68,7 +68,7 @@ header {
 }
 
 .container {
-  margin-top: 100px;
+  margin-top: 50px;
   justify-content: center;
   display: flex;
   align-items: center;
@@ -159,6 +159,28 @@ header {
   height: 30px;
   margin-right: 10px;
 }
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 100px;
+  justify-content: center;
+}
+
+.tab {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #ddd;
+}
+
+.tab.active {
+  background: var(--primary-color);
+  color: black;
+  font-weight: bold;
+}
+
 
 @media (max-width: 436px) {
   .card {

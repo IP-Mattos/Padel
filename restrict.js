@@ -7,8 +7,12 @@ const datePicker = document.getElementById("datePicker");
 let currentDate = new Date();
 let selectedCard = null; // To store the selected card
 
+let currentServicio = 1;
+
 const defaultParams = {
-  servicio: 1,
+  get servicio() {
+    return currentServicio;
+  },
   profe: 0,
 };
 
@@ -264,6 +268,28 @@ async function restrictHour(fecha, hora) {
     Swal.fire("Error", "Ocurrió un error en la conexión.", "error");
   }
 }
+
+const tabs = document.querySelectorAll(".tab");
+
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    // UI state
+    tabs.forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    // Change servicio
+    currentServicio = Number(tab.dataset.servicio);
+
+    // Reload hours
+    fetchHours(
+      {
+        ...defaultParams,
+        fecha: formatDate(currentDate),
+      },
+      hourSlotsContainer
+    );
+  });
+});
 
 // Event listeners
 const debouncedChangeDate = debounce(changeDate, 300);
