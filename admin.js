@@ -10,6 +10,25 @@ let currentDate = new Date();
    Helpers
 -------------------------------------------------------------- */
 
+let activeTab = "normal"; // "normal" | "serv6"
+
+const tabNormal = document.getElementById("tab-normal");
+const tabServ6 = document.getElementById("tab-serv6");
+
+tabNormal.addEventListener("click", () => {
+  activeTab = "normal";
+  tabNormal.classList.add("active");
+  tabServ6.classList.remove("active");
+  loadSlots();
+});
+
+tabServ6.addEventListener("click", () => {
+  activeTab = "serv6";
+  tabServ6.classList.add("active");
+  tabNormal.classList.remove("active");
+  loadSlots();
+});
+
 function debounce(fn, delay) {
   let timer = null;
   return function (...args) {
@@ -79,7 +98,12 @@ async function loadSlots() {
     const data = await response.json();
     const slots = data.consultaResponse.datos;
 
-    for (const slot of slots) {
+    const filteredSlots =
+      activeTab === "serv6"
+        ? slots.filter((s) => String(s.servicio) === "6")
+        : slots.filter((s) => String(s.servicio) !== "6");
+
+    for (const slot of filteredSlots) {
       const paymentInfo = await fetchPayments(slot.id);
 
       const hasPayments =

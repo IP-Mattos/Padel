@@ -232,6 +232,7 @@ async function restrictHour(fecha, hora) {
   const params = new URLSearchParams();
   params.append("fecha", fecha);
   params.append("hora", hora);
+  params.append("servicio", currentServicio);
   params.append("userId", userId); // Ensure this is defined globally
 
   try {

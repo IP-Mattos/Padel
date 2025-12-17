@@ -32,10 +32,16 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
     <button id="prevDay"><img src="./img/izquierda.png" alt=""></button>
     <p id="currentDate"
       style="background-color: var(--primary-color); color: black; padding:10px 20px; border-radius: 8px;">
-      <strong>Hoy</strong></p>
+      <strong>Hoy</strong>
+    </p>
     <input type="text" id="datePicker" />
     <button id="nextDay"><img src="./img/derecha.png" alt=""></button>
   </header>
+
+  <div class="tabs">
+    <button id="tab-normal" class="tab active">Cancha 1</button>
+    <button id="tab-serv6" class="tab">Cancha 2</button>
+  </div>
 
   <div id="container" class="container"></div>
 
