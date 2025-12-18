@@ -136,6 +136,7 @@ async function loadSlots() {
               <img class="profile-img" src="${img}" alt="${profile.nombre}"
                   onerror="this.src='./accion/imgPerfilUser/profile.png'">
               <p>${profile.nombre}</p>
+              <p>${profile.celular.replace(598, 0)}</p>              
             </div>
           `;
           })
