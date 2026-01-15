@@ -639,21 +639,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // MODAL OPEN + SERVICE SWITCH
   // ===============================
-  document.getElementById("openCourt").addEventListener("click", function () {
-    Swal.fire({
-      icon: "info",
-      toast: true,
-      title: "Este mes de Diciembre 50% de descuento alquilando Cancha 2!",
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 5000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-      },
-    });
-  });
+  // document.getElementById("openCourt").addEventListener("click", function () {
+  //   Swal.fire({
+  //     icon: "info",
+  //     toast: true,
+  //     title: "Este mes de Diciembre 50% de descuento alquilando Cancha 2!",
+  //     position: "top-end",
+  //     showConfirmButton: false,
+  //     timer: 5000,
+  //     timerProgressBar: true,
+  //     didOpen: (toast) => {
+  //       toast.onmouseenter = Swal.stopTimer;
+  //       toast.onmouseleave = Swal.resumeTimer;
+  //     },
+  //   });
+  // });
 
   Object.entries(serviceModalMap).forEach(([key, config]) => {
     document.getElementById(`open${capitalize(key)}`).onclick = async () => {
@@ -1293,15 +1293,25 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const datos = data.consultaResponse?.datos || [];
+        const consulta = data.consultaResponse || {};
+
+        // ✅ Always safe
+        const datos = Array.isArray(consulta.datos) ? consulta.datos : [];
+        const partidoActivo = consulta.partidoActivo === true;
+
+        // ----- EXISTING ICON LOGIC -----
+        const versusIcon = document.getElementById("versusIcon");
 
         const checkFuture = datos.some((item) => checkDate(item.fecha));
-        const icon = document.getElementById("versusIcon");
+        versusIcon.src = checkFuture ? "./img/vs.gif" : "./img/vs_.gif";
 
-        if (checkFuture) {
-          icon.src = "./img/vs-ex.png";
+        // ----- NEW ICON BASED ON partidoActivo -----
+        const partidoIcon = document.getElementById("partidoIcon");
+
+        if (partidoActivo) {
+          partidoIcon.src = "./img/reserva.gif";
         } else {
-          icon.src = "./img/vs.png"; // reset to default if nothing matches
+          partidoIcon.src = "./img/reserva_.gif";
         }
       })
       .catch((err) => {

@@ -24,32 +24,57 @@ session_start();
                      switch($key){
                             case 'codigoError':
                                    $codigoError = $value;
-                                  
                             break;
                             case 'userId':
-                                   $userId = $value;
-                                   $_SESSION["userId"] = $userId;
+                                   $_SESSION["userId"] = $value;
                             break;
                             case 'userUser':
-                                   $userUser = $value;
-                                   $_SESSION["userUser"] = $userUser;
+                                   $_SESSION["userUser"] = $value;
+                            break;
+                            case 'userMail':
+                                   $_SESSION["userMail"] = $value;
                             break;
                             case 'userCi':
-                                   $userCi = $value;
-                                   $_SESSION["userCi"] = $userCi;
+                                   $_SESSION["userCi"] = $value;
                             break;
                             case 'token':
-                                   $token = $value;
-                                   $_SESSION["userToken"] = $token;
+                                   $_SESSION["userToken"] = $value;
                             break;
-                            case 'categoria':
-                                   $categoria = $value;
-                                   $_SESSION["userCategoria"] = $categoria;
+                            case 'userCategoria':
+                                   $_SESSION["userCategoria"] = $value;
                             break;
-                            case 'userName':
-                                   $userName = $value;
-                                   $_SESSION["userNombre"] = $userName;
+                            case 'userMasCategoria':
+                                   $_SESSION["userMasCategoria"] = $value;
                             break;
+                            case 'userNombre':
+                                   $_SESSION["userNombre"] = $value;
+                            break;
+                            case 'userCel':
+                                   $_SESSION["userCel"] = $value;
+                            break;
+                            case 'userJuego':    
+                                   $_SESSION["userJuego"] = $value;
+                            break;
+                            case 'userFechNac':
+                                 $_SESSION["userFechNac"] = $value;
+                            break;
+                            case 'userFrase':
+                                   $_SESSION["userFrase"] =  $value;
+                            break;
+                              case 'userImgPerfil':
+                                   $_SESSION["userImgPerfil"] =  $value;
+                            break;
+                            case 'isAdmin':
+                                   $_SESSION["isAdmin"] =  $value;
+                            break;
+                            case 'misEstrellas':
+                                   $_SESSION["misEstrellas"] =  $value;
+                            break;
+                            case 'puntos':
+                                   $_SESSION["userPuntos"] =  $value;
+                            break;
+                            
+                          
 
                      }
                                   // echo 'clave = '.$key.' - Valor = ' . $value."<br>";

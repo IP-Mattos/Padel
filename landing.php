@@ -55,7 +55,7 @@ if (isset($_SESSION['userId'])) {
             <img id="stars" style="width: 50px;" src="./img/3stars.png" alt="3">
           <?php } ?>
         </li>
-        <li><a id="openHours"><img style="width: 30px" src="./img/reserva.png"></a></li>
+        <li><a id="openHours"><img style="width: 40px" id="partidoIcon" src="./img/reserva.png"></a></li>
         <?php if ($_SESSION['userImgPerfil'] != "") { ?>
           <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;"
                 src="./accion/imgPerfilUser/<?php echo $_SESSION['userImgPerfil'] ?>" alt=""></a></li>
@@ -85,14 +85,14 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resRivales.png" alt="Imagen 4">
         </div>
         <h3>Oponentes</h3>
-        <div class="bento-item" id="openCantine">
+        <div class="bento-item hidden" id="openCantine">
           <img src="./img/resChelada.png" alt="Imagen 5">
         </div>
-        <h3>Cantina</h3>
-        <div class="bento-item" id="openMembers">
+        <!-- <h3>Cantina</h3> -->
+        <div class="bento-item hidden" id="openMembers">
           <img src="./img/socios.png" alt="Imagen 6" />
         </div>
-        <h3>Socios</h3>
+        <!-- <h3>Socios</h3> -->
         <div class="bento-item" id="openProfile">
           <img src="./img/perfil.png" alt="Imagen 7" />
         </div>
@@ -360,7 +360,7 @@ if (isset($_SESSION['userId'])) {
   </body>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="landing.js"></script>
+  <script src="landing.js?test"></script>
   <script>
     const userId = <?php echo $_SESSION['userId']; ?>;
   const userStars = <?php echo $_SESSION['misEstrellas']; ?>
