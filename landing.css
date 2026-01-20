@@ -170,7 +170,8 @@ nav.menu ul li a {
 .hModal,
 .vModal,
 .iModal,
-.aModal {
+.aModal,
+.ptModal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -196,7 +197,8 @@ nav.menu ul li a {
 .hModal-content,
 .vModal-content,
 .iModal-content,
-.aModal-content {
+.aModal-content,
+.ptModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -239,6 +241,30 @@ nav.menu ul li a {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 10px;
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+.points input {
+  padding: 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+}
+
+.points button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
 }
 
 .match-container {
@@ -790,7 +816,8 @@ td {
   .hModal-content,
   .vModal-content,
   .iModal-content,
-  .aModal-content {
+  .aModal-content,
+  .ptModal-content {
     margin: auto auto;
   }
 

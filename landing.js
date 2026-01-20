@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const vModal = document.getElementById("versusModal");
   const iModal = document.getElementById("inviteModal");
   const aModal = document.getElementById("slotInviteModal");
+  const ptModal = document.getElementById("pointsModal");
 
   const modalConfigs = [
     {
@@ -34,6 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
       contentClass: ".cModal-content",
       openButtons: [],
       closeButtons: ["closeCourt"],
+    },
+    {
+      name: "points",
+      modal: ptModal,
+      contentClass: ".ptModal-content",
+      openButtons: ["openPoints"],
+      closeButtons: ["closePoints"],
     },
     {
       name: "profile",
@@ -1503,6 +1511,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  //====================================================================>
+  //ESTRELLAS
+  //====================================================================>
+
   document.getElementById("stars").addEventListener("click", () => {
     if (userStars === 3) {
       Swal.fire({
@@ -1529,6 +1541,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  //====================================================================>
+  //ADMIN
+  //====================================================================>
+
   document.getElementById("admin-access").addEventListener("click", () => {
     Swal.fire({
       title: "Que desea administrar?",
@@ -1542,5 +1558,25 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/restrict.php";
       }
     });
+  });
+
+  //====================================================================>
+  //PUNTOS
+  //====================================================================>
+
+  document.getElementById("openPoints").addEventListener("click", () => {
+    fetch("./accion/getPerfil.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `idPerfil=${encodeURIComponent(userId)}`,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const puntos = data.consultaResponse.puntos;
+
+        document.getElementById("puntosValue").textContent =
+          "Tienes " + puntos + " puntos para canjear.";
+      })
+      .catch((err) => console.error(err));
   });
 });

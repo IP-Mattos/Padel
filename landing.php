@@ -44,6 +44,8 @@ if (isset($_SESSION['userId'])) {
           <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png"
                 alt="admin"></a></li>
         <?php } ?>
+        <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
+              alt="Puntos"></a></li>
         <li>
           <?php if ($_SESSION['misEstrellas'] === "1") { ?>
             <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
@@ -354,6 +356,17 @@ if (isset($_SESSION['userId'])) {
             </ul>
             <button id="updateButton">Actualizar</button>
           </form>
+        </div>
+      </div>
+      <div id="pointsModal" class="ptModal">
+        <div class="ptModal-content">
+          <div class="points">
+            <span id="closePoints" class="close">&times;</span>
+            <h1>Tus puntos!</h1>
+            <h3 id="puntosValue"></h3>
+            <input type="text" placeholder="Puntos a canjear...">
+            <button>Proximamente!</button>
+          </div>
         </div>
       </div>
     </main>
