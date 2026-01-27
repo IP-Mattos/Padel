@@ -52,23 +52,8 @@ header {
   gap: 1rem;
 }
 
-#prevDay,
-#nextDay {
-  background: none;
-  border: none;
-}
-
-#datePicker {
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  border: none;
-  padding: 0;
-  position: absolute;
-}
-
 .container {
-  margin-top: 50px;
+  margin-top: 100px;
   justify-content: center;
   display: flex;
   align-items: center;
@@ -87,26 +72,14 @@ header {
   gap: 3rem;
 }
 
-.card.reserved {
-  background-color: rgb(200, 150, 0);
-}
-
-.card.confirmed {
-  background-color: blue;
-}
-
-.card.unavailable {
-  background-color: rgb(200, 0, 0);
-}
-
 .card-ico {
   width: 25px;
   border-radius: 50%;
   cursor: pointer;
 }
 
-.lock-btn,
-.unrestrict-btn {
+.cancel-btn,
+.confirm-btn {
   float: right;
   background: none;
   border: none;
@@ -160,27 +133,6 @@ header {
   margin-right: 10px;
 }
 
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-top: 100px;
-  justify-content: center;
-}
-
-.tab {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #ddd;
-}
-
-.tab.active {
-  background: var(--primary-color);
-  color: black;
-  font-weight: bold;
-}
-
 @media (max-width: 436px) {
   .card {
     flex-direction: column;
@@ -190,5 +142,8 @@ header {
   .actions {
     gap: 2rem;
     flex-direction: row;
+  }
+  .profile {
+    flex-direction: column;
   }
 }

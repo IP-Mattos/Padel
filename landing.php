@@ -364,8 +364,8 @@ if (isset($_SESSION['userId'])) {
             <span id="closePoints" class="close">&times;</span>
             <h1>Tus puntos!</h1>
             <h3 id="puntosValue"></h3>
-            <input type="text" placeholder="Puntos a canjear...">
-            <button>Proximamente!</button>
+            <input type="text" id="puntosInput" placeholder="Puntos a canjear...">
+            <button id="sendPoints">Canjear</button>
           </div>
         </div>
       </div>

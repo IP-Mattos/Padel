@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 10);
       } else {
         console.warn(
-          `⚠️ Could not find modal content element: ${contentClass}`
+          `⚠️ Could not find modal content element: ${contentClass}`,
         );
       }
     }, 10);
@@ -192,8 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
             masCategoriasValue === "0"
               ? "Misma categoría"
               : masCategoriasValue === "1"
-              ? "Categorías contiguas"
-              : "Todas las categorías";
+                ? "Categorías contiguas"
+                : "Todas las categorías";
         } else {
           Swal.fire({
             title: "Error",
@@ -236,13 +236,13 @@ document.addEventListener("DOMContentLoaded", () => {
           Swal.fire(
             "Imagen actualizada",
             "Tu nueva foto de perfil se ha subido",
-            "success"
+            "success",
           );
         } else {
           Swal.fire(
             "Error",
             data.consultaResponse?.detalleError || "No se pudo subir la imagen",
-            "error"
+            "error",
           );
         }
       })
@@ -368,10 +368,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 servicios,
                 profe: profeId,
               },
-              hoursContainer
+              hoursContainer,
             );
           },
-          servicios
+          servicios,
         );
       } else {
         container.innerHTML = "<p>Error al cargar los días</p>";
@@ -504,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
     containerDiv,
     calendarData,
     onDaySelected,
-    servicio
+    servicio,
   ) {
     const today = new Date();
     let selectedCard = null;
@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
         json.consultaResponse.datos,
         (selectedDay) =>
           fetchHours({ ...selectedDay, servicio, profe }, hoursContainer),
-        servicio
+        servicio,
       );
     } else {
       container.innerHTML = "<p>Error al cargar los días</p>";
@@ -737,7 +737,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmation = await Swal.fire({
         title: "¿Estás seguro?",
         text: `¿Deseas reservar para el ${formatDateName(
-          formattedDate
+          formattedDate,
         )} a las ${selectedHour}?`,
         icon: "question",
         showCancelButton: true,
@@ -975,7 +975,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
             const now = new Date();
             const oneHourAfter = new Date(
-              estadoDate.getTime() + 60 * 60 * 1000
+              estadoDate.getTime() + 60 * 60 * 1000,
             );
 
             if (now >= estadoDate && now <= oneHourAfter) {
@@ -1043,7 +1043,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       Swal.fire(
                         "Error",
                         result.consultaResponse.detalleError,
-                        "error"
+                        "error",
                       );
                       console.error("Respuesta del servidor:", result);
                     }
@@ -1052,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     Swal.fire(
                       "Error",
                       "Hubo un problema al conectar con el servidor.",
-                      "error"
+                      "error",
                     );
                   }
                 }
@@ -1171,7 +1171,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Close both modals
         closeModal(
           document.getElementById("slotInviteModal"),
-          ".aModal-content"
+          ".aModal-content",
         );
         closeModal(document.getElementById("inviteModal"), ".iModal-content");
 
@@ -1389,8 +1389,8 @@ document.addEventListener("DOMContentLoaded", () => {
           card.innerHTML = `
           <div class="user-info">
             <img src="./accion/imgPerfilUser/${perfil.imgperfil}" alt="${
-            perfil.nombre
-          }" class="profile-img" />
+              perfil.nombre
+            }" class="profile-img" />
             <div>
               <p><strong>${perfil.nombre}</strong></p>
               <p>${fechaSimple} - ${hora.split(":").slice(0, 2).join(":")}</p>
@@ -1438,7 +1438,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     Swal.fire(
                       "Cancelado",
                       "La reserva ha sido cancelada.",
-                      "success"
+                      "success",
                     );
                     card.remove(); // Remove card from UI
                     closeModal(vModal, ".vModal-content");
@@ -1446,7 +1446,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     Swal.fire(
                       "Error",
                       `${json.consultaResponse.detalleError}`,
-                      "error"
+                      "error",
                     );
                   }
                 }
@@ -1487,7 +1487,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 Swal.fire(
                   "Confirmado",
                   "Tu participación ha sido confirmada.",
-                  "success"
+                  "success",
                 );
                 card.remove(); // Optionally remove or update card
                 closeModal(vModal, ".vModal-content");
@@ -1506,7 +1506,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Swal.fire(
         "Error",
         "Ocurrió un error al conectar con el servidor.",
-        "error"
+        "error",
       );
     }
   });
@@ -1549,13 +1549,17 @@ document.addEventListener("DOMContentLoaded", () => {
     Swal.fire({
       title: "Que desea administrar?",
       showDenyButton: true,
+      showCancelButton: true,
       confirmButtonText: "Reservas de jugadores",
       denyButtonText: "Restringir horarios",
+      cancelButtonText: "Administrar canjes",
     }).then((result) => {
       if (result.isConfirmed) {
         window.location.href = "/admin.php";
       } else if (result.isDenied) {
         window.location.href = "/restrict.php";
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        window.location.href = "/exchange.php";
       }
     });
   });
@@ -1563,6 +1567,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //====================================================================>
   //PUNTOS
   //====================================================================>
+
+  let puntosDisponibles = 0;
 
   document.getElementById("openPoints").addEventListener("click", () => {
     fetch("./accion/getPerfil.php", {
@@ -1572,6 +1578,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        puntosDisponibles = parseInt(data.consultaResponse.puntos, 10);
         const puntos = data.consultaResponse.puntos;
 
         document.getElementById("puntosValue").textContent =
@@ -1579,4 +1586,61 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((err) => console.error(err));
   });
+
+  document.getElementById("sendPoints").addEventListener("click", () => {
+    const puntos = document.getElementById("puntosInput").value;
+
+    if (isNaN(puntos) || puntos <= 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Ingresa un número válido de puntos.",
+        icon: "error",
+      });
+      return;
+    }
+
+    if (puntos > puntosDisponibles) {
+      Swal.fire({
+        title: "Error",
+        text: `No puedes canjear más de ${puntosDisponibles} puntos.`,
+        icon: "error",
+      });
+      return;
+    }
+
+    fetch("./accion/putCanje.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `puntos=${encodeURIComponent(puntos)}`,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.consultaResponse.codigoError == "0") {
+          Swal.fire({
+            title: "Éxito!",
+            text: `${data.consultaResponse.detalleError}`,
+            icon: "success",
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: `${data.consultaResponse.detalleError}`,
+            icon: "error",
+          });
+        }
+      });
+  });
+
+  //=======================================================================>
+  //HELPERS
+  //=======================================================================>
+
+  const sanitizeInput = (id) => {
+    const input = document.getElementById(id);
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+  };
+
+  ["puntosInput"].forEach(sanitizeInput);
 });
