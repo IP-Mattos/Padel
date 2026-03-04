@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let widthSlider = slider.offsetWidth;
     let heightSlider = slider.offsetHeight;
     let diameter = Math.sqrt(
-      Math.pow(widthSlider, 2) + Math.pow(heightSlider, 2)
+      Math.pow(widthSlider, 2) + Math.pow(heightSlider, 2),
     );
     document.documentElement.style.setProperty("--diameter", diameter + "px");
   };
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
   ["cedula", "celular", "cedulaRegist", "phoneRegist", "userInput"].forEach(
-    sanitizeInput
+    sanitizeInput,
   );
 
   //=========================================>
@@ -259,6 +259,12 @@ document.addEventListener("DOMContentLoaded", () => {
           if (data.confirmacionResponse.codigoError === "0") {
             const token = data.confirmacionResponse.token;
             document.getElementById("cookie").value = token;
+            let currentDate = new Date();
+            currentDate.setTime(
+              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+            );
+            let expires = "expires=" + currentDate.toUTCString();
+            document.cookie = `goCookToken=${document.getElementById("cookie").value}; ${expires}; path=/`;
             if (data.confirmacionResponse.usSMS === true) {
               loginModal.style.display = "block";
             } else {

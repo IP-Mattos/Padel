@@ -1541,28 +1541,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  //====================================================================>
-  //ADMIN
-  //====================================================================>
-
-  document.getElementById("admin-access").addEventListener("click", () => {
-    Swal.fire({
-      title: "Que desea administrar?",
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: "Reservas de jugadores",
-      denyButtonText: "Restringir horarios",
-      cancelButtonText: "Administrar canjes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/admin.php";
-      } else if (result.isDenied) {
-        window.location.href = "/restrict.php";
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        window.location.href = "/exchange.php";
-      }
-    });
-  });
+ 
 
   //====================================================================>
   //PUNTOS
@@ -1580,9 +1559,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         puntosDisponibles = parseInt(data.consultaResponse.puntos, 10);
         const puntos = data.consultaResponse.puntos;
-
-        document.getElementById("puntosValue").textContent =
-          "Tienes " + puntos + " puntos para canjear.";
+        document.getElementById("puntosValue").innerHTML = `
+        Excelente. Tienes <br><span style="color:red; font-size:2rem;">${puntos}</span><br> puntos
+ para canjear...!!!`;
       })
       .catch((err) => console.error(err));
   });
@@ -1644,3 +1623,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   ["puntosInput"].forEach(sanitizeInput);
 });
+
+ //====================================================================>
+  //ADMIN
+  //====================================================================>
+
+  document.getElementById("admin-access").addEventListener("click", () => {
+    Swal.fire({
+      title: "Que desea administrar?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Reservas de jugadores",
+      denyButtonText: "Restringir horarios",
+      cancelButtonText: "Administrar canjes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/admin.php";
+      } else if (result.isDenied) {
+        window.location.href = "/restrict.php";
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        window.location.href = "/exchange.php";
+      }
+    });
+  });

@@ -44,6 +44,9 @@ if (isset($_SESSION['userId'])) {
           <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png"
                 alt="admin"></a></li>
         <?php } ?>
+        <?php if ($_SESSION['userDeuda'] != "0") { ?>
+          <?php echo " Deuda $ " . number_format($_SESSION['userDeuda'],2,',','.'); ?>
+        <?php } ?>
         <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
               alt="Puntos"></a></li>
         <li>

@@ -74,6 +74,7 @@ session_start();
                                    $_SESSION["userPuntos"] =  $value;
                             break;
                             
+                            
                           
 
                      }
@@ -82,7 +83,7 @@ session_start();
                     
               }
             
-            //  pisarCookieToken($token);
+              //pisarCookieToken($token);
               //echo "mande datos a put<br>" ;
               //ya el sistema de registro envia al mail y al cel un link para actualizar el usuario.
               

@@ -93,7 +93,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
           <path d="M3,21 h18 C 21,12 3,12 3,21" />
         </svg>
       </label>
-      <a id="landing" href="/landing.php" class="<?php if (!$loggedIn) {
+      <a id="landing" href="/irLanding.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
         <?php if ($_SESSION['userImgPerfil'] !== "") { ?>

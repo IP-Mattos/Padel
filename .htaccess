@@ -1,0 +1,6 @@
+RewriteEngine On # Turn on the rewriting engine
+RewriteRule ^getHorario$ getHorario.php [NC,L]
+RewriteRule ^putUsuario$ putUsuario.php [NC,L]
+RewriteRule ^index$ index.php [NC,L]
+Header set Access-Control-Allow-Origin "*"
+php_value date.timezone America/Montevideo
