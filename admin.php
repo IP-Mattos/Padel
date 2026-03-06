@@ -57,6 +57,16 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
     </div>
   </div>
 
+  <div id="userSearchModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-search-modal">&times;</span>
+      <h2>Buscar usuario</h2>
+      <input type="text" id="userSearchInput" placeholder="Nombre, cédula o teléfono..." autocomplete="off" />
+      <div id="userSearchResults"></div>
+      <button id="confirmUserSelect" class="save-btn" disabled>Confirmar</button>
+    </div>
+  </div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

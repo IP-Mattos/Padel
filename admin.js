@@ -29,6 +29,18 @@ tabServ6.addEventListener("click", () => {
   loadSlots();
 });
 
+function calculatePrice(hasUser, hour, servicio) {
+  if (servicio === 2) return 250; // servicio 2 always 250
+
+  // If there is a user AND hour < 17:00 → 150
+  if (hasUser && hour <= 17) {
+    return 150;
+  }
+
+  // Any other case → 250
+  return 250;
+}
+
 function debounce(fn, delay) {
   let timer = null;
   return function (...args) {
@@ -162,9 +174,7 @@ async function loadSlots() {
                     : "Sin pagos";
 
                   return `
-                    <button class="payments-btn" data-slot='${JSON.stringify(
-                      slot
-                    )}'>
+                    <button class="payments-btn" data-slot='${JSON.stringify({ ...slot, hasPayments })}'>
                       <img class="payment-ico" src="./img/${paymentIcon}" alt="${paymentAlt}">
                     </button>
                   `;
@@ -297,17 +307,8 @@ async function openModal(slot) {
   const hour = parseInt(slot.hora.slice(0, 2), 10);
   const servicio = Number(slot.servicio);
 
-  function calculatePrice(hasUser, hour, servicio) {
-    if (servicio === 2) return 250; // servicio 2 always 250
-
-    // If there is a user AND hour < 17:00 → 150
-    if (hasUser && hour <= 17) {
-      return 150;
-    }
-
-    // Any other case → 250
-    return 250;
-  }
+  searchModalHour = hour;
+  searchModalServicio = servicio;
 
   // const computedPrice = calculatePrice();
   const editablePrice = servicio === 2;
@@ -325,13 +326,22 @@ async function openModal(slot) {
 
     const price = paymentData
       ? Number(
-          paymentData[priceField] || calculatePrice(hasUser, hour, servicio)
+          paymentData[priceField] || calculatePrice(hasUser, hour, servicio),
         )
       : calculatePrice(hasUser, hour, servicio);
 
     const fdp = paymentData ? paymentData[fdpField] || "EFECTIVO" : "EFECTIVO";
 
-    rowsHtml.push(await buildPaymentRow(userId, i, price, editablePrice, fdp));
+    rowsHtml.push(
+      await buildPaymentRow(
+        userId,
+        i,
+        price,
+        editablePrice,
+        fdp,
+        slot.hasPayments,
+      ),
+    );
   }
 
   paymentRows.innerHTML = rowsHtml.join("");
@@ -340,57 +350,246 @@ async function openModal(slot) {
   paymentRows.innerHTML += `<input type="hidden" name="idAgenda" value="${slot.id}">`;
 }
 
-async function buildPaymentRow(userId, index, price, editable, selectedFdp) {
+async function buildPaymentRow(
+  userId,
+  index,
+  price,
+  editable,
+  selectedFdp,
+  hasPayments,
+) {
   const fieldBase = index === 0 ? "Usuario" : `Invitado${index}`;
   const priceInputName = index === 0 ? "impUsu" : `impInv${index}`;
-
-  const profile =
-    userId !== 0
-      ? await fetchProfile(userId)
-      : { nombre: "Vacío", imgperfil: null };
-
+  const isEmpty = !userId || userId === 0;
+  const profile = !isEmpty
+    ? await fetchProfile(userId)
+    : { nombre: "Vacío", imgperfil: null };
   const img = getProfileImage(profile.imgperfil);
   const name = profile.nombre;
 
   return `
-    <div class="payment-row">
-        <img src="${img}" class="profile-img" 
-             onerror="this.src='./accion/imgPerfilUser/profile.png'">
-
-        <span>${name}</span>
-
-        <input type="hidden" name="id${fieldBase}" value="${userId}">
-
-        <select name="fdp${fieldBase}">
-            ${["EFECTIVO", "TRANS", "MERCPAGO", "DEBITO", "CREDITO"]
-              .map(
-                (fdp) =>
-                  `<option value="${fdp}" ${
-                    fdp === selectedFdp ? "selected" : ""
-                  }>${fdp}</option>`
-              )
-              .join("")}
-        </select>
-
+    <div class="payment-row" data-index="${index}">
+      <div class="profile-img-wrapper">
+        <img src="${img}" class="profile-img" alt="${name}" onerror="this.src='./accion/imgPerfilUser/profile.png'">
         ${
-          editable
-            ? `
-              <!-- Editable price ONLY for servicio = 2 -->
-              <input 
-                type="number" 
-                name="${priceInputName}" 
-                value="${price}" 
-                class="payment-amount">
-            `
-            : `
-              <!-- Fixed price label for servicio = 1 -->
-              <span class="price-label">$${price}</span>
-              <input type="hidden" name="${priceInputName}" value="${price}">
-            `
+          !hasPayments
+            ? !isEmpty
+              ? `<button type="button" class="remove-user-btn" data-index="${index}" title="Quitar usuario">&times;</button>`
+              : `<button type="button" class="search-user-btn" data-index="${index}" title="Buscar usuario">🔍</button>`
+            : ""
         }
+      </div>
+      <span class="user-name">${name}</span>
+      <input type="hidden" name="id${fieldBase}" value="${userId || 0}">
+      <select name="fdp${fieldBase}">
+        ${["EFECTIVO", "TRANS", "MERCPAGO", "DEBITO", "CREDITO"]
+          .map(
+            (fdp) =>
+              `<option value="${fdp}" ${fdp === selectedFdp ? "selected" : ""}>${fdp}</option>`,
+          )
+          .join("")}
+      </select>
+      ${
+        editable
+          ? `<input type="number" name="${priceInputName}" value="${price}" class="payment-amount">`
+          : `<span class="price-label">$${price}</span>
+           <input type="hidden" name="${priceInputName}" value="${price}">`
+      }
     </div>
   `;
 }
+
+/* -------------------------------------------------------------- 
+   Payment Row — User Edit (Remove / Search) 
+-------------------------------------------------------------- */
+
+// Use event delegation on paymentRows so it works after innerHTML is set
+paymentRows.addEventListener("click", (e) => {
+  const removeBtn = e.target.closest(".remove-user-btn");
+  const searchBtn = e.target.closest(".search-user-btn");
+  if (removeBtn) removeUser(Number(removeBtn.dataset.index));
+  if (searchBtn) openUserSearch(Number(searchBtn.dataset.index));
+});
+
+function removeUser(index) {
+  const fieldBase = index === 0 ? "Usuario" : `Invitado${index}`;
+  const row = paymentRows.querySelector(`.payment-row[data-index="${index}"]`);
+  if (!row) return;
+
+  // Reset hidden id to 0
+  row.querySelector(`input[name="id${fieldBase}"]`).value = "0";
+
+  // Reset profile image and name
+  const img = row.querySelector(".profile-img");
+  img.src = getProfileImage(null);
+  img.alt = "Vacío";
+  row.querySelector(".user-name").textContent = "Vacío";
+
+  // Swap X button → search button
+  const xBtn = row.querySelector(".remove-user-btn");
+  xBtn.className = "search-user-btn";
+  xBtn.title = "Buscar usuario";
+  xBtn.innerHTML = "🔍";
+  xBtn.dataset.index = index;
+
+  const priceInputName = index === 0 ? "impUsu" : `impInv${index}`;
+  const newPrice = calculatePrice(false, searchModalHour, searchModalServicio);
+  const priceInput = row.querySelector(`input[name="${priceInputName}"]`);
+  if (priceInput) priceInput.value = newPrice;
+
+  const priceLabel = row.querySelector(".price-label");
+  if (priceLabel) priceLabel.textContent = `$${newPrice}`;
+}
+
+/* -------------------------------------------------------------- 
+   User Search Modal 
+-------------------------------------------------------------- */
+
+let searchModalTargetIndex = null;
+let selectedSearchUser = null;
+let searchModalHour = null;
+let searchModalServicio = null;
+
+const userSearchModal = document.getElementById("userSearchModal");
+const userSearchInput = document.getElementById("userSearchInput");
+const userSearchResults = document.getElementById("userSearchResults");
+const confirmUserSelect = document.getElementById("confirmUserSelect");
+const closeSearchModal = document.querySelector(".close-search-modal");
+
+closeSearchModal.addEventListener("click", () => {
+  userSearchModal.classList.add("hidden");
+  selectedSearchUser = null;
+  searchModalTargetIndex = null;
+});
+
+// Close if clicking outside modal content
+userSearchModal.addEventListener("click", (e) => {
+  if (e.target === userSearchModal) {
+    userSearchModal.classList.add("hidden");
+    selectedSearchUser = null;
+    searchModalTargetIndex = null;
+  }
+});
+
+function openUserSearch(index) {
+  searchModalTargetIndex = index;
+  selectedSearchUser = null;
+  userSearchInput.value = "";
+  userSearchResults.innerHTML = "";
+  confirmUserSelect.disabled = true;
+  userSearchModal.classList.remove("hidden");
+  userSearchInput.focus();
+}
+
+const debouncedSearch = debounce(async (query) => {
+  userSearchResults.innerHTML = "";
+  confirmUserSelect.disabled = true;
+  selectedSearchUser = null;
+
+  if (!query || query.trim().length < 2) return;
+
+  const params = new URLSearchParams();
+  params.append("filtroPerfil", query.trim());
+
+  try {
+    const res = await fetch("./accion/getPerfiles.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+    });
+    const data = await res.json();
+    const users = data.consultaResponse?.registros || [];
+
+    if (users.length === 0) {
+      userSearchResults.innerHTML =
+        "<p class='no-results'>No se encontraron usuarios.</p>";
+      return;
+    }
+
+    userSearchResults.innerHTML = users
+      .map(
+        (u) => `
+        <div class="search-result-item" 
+             data-id="${u.id}" 
+             data-nombre="${u.nombre}" 
+             data-imgperfil="${u.imgperfil || ""}">
+          <img src="${getProfileImage(u.imgperfil)}" 
+               class="profile-img" 
+               alt="${u.nombre}"
+               onerror="this.src='./accion/imgPerfilUser/profile.png'">
+          <span>${u.nombre}</span>
+        </div>`,
+      )
+      .join("");
+
+    userSearchResults
+      .querySelectorAll(".search-result-item")
+      .forEach((item) => {
+        item.addEventListener("click", () => {
+          userSearchResults
+            .querySelectorAll(".search-result-item")
+            .forEach((i) => i.classList.remove("selected"));
+          item.classList.add("selected");
+          selectedSearchUser = {
+            id: item.dataset.id,
+            nombre: item.dataset.nombre,
+            imgperfil: item.dataset.imgperfil,
+          };
+          confirmUserSelect.disabled = false;
+        });
+      });
+  } catch (err) {
+    console.error("Error searching users:", err);
+    userSearchResults.innerHTML =
+      "<p class='no-results'>Error al buscar usuarios.</p>";
+  }
+}, 300);
+
+userSearchInput.addEventListener("input", (e) =>
+  debouncedSearch(e.target.value),
+);
+
+confirmUserSelect.addEventListener("click", () => {
+  if (!selectedSearchUser || searchModalTargetIndex === null) return;
+
+  const index = searchModalTargetIndex;
+  const fieldBase = index === 0 ? "Usuario" : `Invitado${index}`;
+  const row = paymentRows.querySelector(`.payment-row[data-index="${index}"]`);
+  if (!row) return;
+
+  // Update hidden id
+  row.querySelector(`input[name="id${fieldBase}"]`).value =
+    selectedSearchUser.id;
+
+  // Update profile image and name
+  const img = row.querySelector(".profile-img");
+  img.src = getProfileImage(selectedSearchUser.imgperfil);
+  img.alt = selectedSearchUser.nombre;
+  row.querySelector(".user-name").textContent = selectedSearchUser.nombre;
+
+  // Swap search button → X button
+  const searchBtn = row.querySelector(".search-user-btn");
+  if (searchBtn) {
+    searchBtn.className = "remove-user-btn";
+    searchBtn.title = "Quitar usuario";
+    searchBtn.innerHTML = "&times;";
+    searchBtn.dataset.index = index;
+  }
+
+  const priceInputName = index === 0 ? "impUsu" : `impInv${index}`;
+  const newPrice = calculatePrice(true, searchModalHour, searchModalServicio);
+  const priceInput = row.querySelector(`input[name="${priceInputName}"]`);
+  if (priceInput) priceInput.value = newPrice;
+
+  // Also update the visible label if it exists (non-editable price)
+  const priceLabel = row.querySelector(".price-label");
+  if (priceLabel) priceLabel.textContent = `$${newPrice}`;
+
+  // Close modal and reset
+  userSearchModal.classList.add("hidden");
+  selectedSearchUser = null;
+  searchModalTargetIndex = null;
+});
 
 closeModal.addEventListener("click", () => modal.classList.add("hidden"));
 
@@ -513,7 +712,7 @@ flatpickr("#datePicker", {
   defaultDate: new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
-    currentDate.getDate()
+    currentDate.getDate(),
   ),
   dateFormat: "Y-m-d",
   appendTo: document.body,
@@ -524,7 +723,7 @@ flatpickr("#datePicker", {
       currentDate = new Date(
         selectedDates[0].getFullYear(),
         selectedDates[0].getMonth(),
-        selectedDates[0].getDate()
+        selectedDates[0].getDate(),
       );
       updateDateLabel();
       loadSlots();

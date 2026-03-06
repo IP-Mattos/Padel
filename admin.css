@@ -194,7 +194,8 @@ header {
   border: none;
   background: none;
 }
-.close-modal {
+.close-modal,
+.close-search-modal {
   color: white;
   float: right;
   font-size: 28px;
@@ -229,6 +230,136 @@ header {
   background: var(--primary-color);
   color: black;
   font-weight: bold;
+}
+
+/* Profile image wrapper — positions the X / search button as overlay */
+.profile-img-wrapper {
+  position: relative;
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.profile-img-wrapper .profile-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.remove-user-btn {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #e53935;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 2;
+  transition: background 0.15s;
+}
+.remove-user-btn:hover {
+  background: #b71c1c;
+}
+
+.search-user-btn {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed #aaa;
+  background: rgba(245, 245, 245, 0.85);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 2;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.search-user-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #666;
+}
+
+/* Search modal results list */
+#userSearchResults {
+  margin-top: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.search-result-item:hover {
+  background: rgb(0, 31, 131);
+}
+.search-result-item.selected {
+  background: rgb(0, 31, 131);
+  border-color: #2196f3;
+  font-weight: 600;
+}
+.search-result-item.selected .profile-img {
+  outline: 2px solid #2196f3;
+  outline-offset: 1px;
+}
+.search-result-item .profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+#userSearchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.no-results {
+  color: #888;
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 0;
+}
+
+#confirmUserSelect {
+  margin-top: 12px;
+  width: 100%;
+}
+#confirmUserSelect:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 @media (max-width: 436px) {
