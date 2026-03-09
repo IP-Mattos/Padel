@@ -122,24 +122,18 @@ if (isset($_SESSION['userId'])) {
     <div id="inviteModal" style="display: none;" class="iModal">
       <div class="iModal-content">
         <span id="closeInvite" class="close">&times;</span>
-        <h2>Agregar jugadores</h2>
-        <div class="searchContent">
-          <div id="inviteList">
-            <h4>Jugadores</h4>
-            <ul id="inviteListUl"></ul>
-          </div>
-        </div>
+        <h2>Jugadores</h2>
+        <ul id="inviteListUl"></ul>
       </div>
     </div>
+
     <div id="slotInviteModal" class="aModal">
       <div class="aModal-content">
         <span id="closePlayers" class="close">&times;</span>
-        <div class="searchContent">
-          <h3>Invitar a un jugador</h3>
-          <input id="inviteSearch" placeholder="Buscar..." />
-          <select id="inviteDropdown"></select>
-          <button id="addInviteBtn">Agregar</button>
-        </div>
+        <h3>Invitar jugador</h3>
+        <input id="inviteSearch" placeholder="Nombre, cédula o teléfono..." autocomplete="off" />
+        <div id="inviteResults"></div>
+        <button id="addInviteBtn" disabled>Agregar</button>
       </div>
     </div>
     <button id="openVersus" class="float-vs"><img id="versusIcon" src="./img/vs.png" alt="VS"></button>

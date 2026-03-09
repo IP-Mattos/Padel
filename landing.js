@@ -1093,11 +1093,33 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  function getProfileImage(pic) {
+    const DEFAULT_IMG = "./accion/imgPerfilUser/profile.png";
+
+    const valid =
+      pic &&
+      pic.trim() !== "" &&
+      pic !== "0" &&
+      pic.toLowerCase() !== "profile.png" &&
+      pic.toLowerCase() !== "default.png";
+
+    return valid ? `./accion/imgPerfilUser/${pic}` : DEFAULT_IMG;
+  }
+
   const debouncedOpenInviteModal = debounce(openInviteModal, 300);
 
-  async function updateDropdownOptions(input, invitedIds, dropdownElement) {
+  let selectedInviteUser = null;
+
+  async function updateInviteResults(input, invitedIds) {
+    const resultsDiv = document.getElementById("inviteResults");
+    resultsDiv.innerHTML = "";
+    selectedInviteUser = null;
+    document.getElementById("addInviteBtn").disabled = true;
+
+    if (!input || input.trim().length < 2) return;
+
     const searchData = new URLSearchParams();
-    searchData.append("filtroPerfil", input);
+    searchData.append("filtroPerfil", input.trim());
 
     const res = await fetch("./accion/getPerfiles.php", {
       method: "POST",
@@ -1106,18 +1128,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const data = await res.json();
-    dropdownElement.innerHTML = "";
 
     if (data.consultaResponse?.codigoError === "0") {
-      const options = data.consultaResponse.registros;
-      options
-        .filter((p) => !invitedIds.includes(p.id) && p.id !== userId.toString())
-        .forEach((p) => {
-          const opt = document.createElement("option");
-          opt.value = p.id;
-          opt.textContent = `${p.nombre} (${p.usuario})`;
-          dropdownElement.appendChild(opt);
+      const options = data.consultaResponse.registros.filter(
+        (p) => !invitedIds.includes(p.id) && p.id !== userId.toString(),
+      );
+
+      if (options.length === 0) {
+        resultsDiv.innerHTML =
+          "<p class='no-results'>No se encontraron usuarios.</p>";
+        return;
+      }
+
+      options.forEach((p) => {
+        const item = document.createElement("div");
+        item.className = "search-result-item";
+        item.dataset.id = p.id;
+        item.dataset.nombre = p.nombre;
+        item.dataset.imgperfil = p.imgperfil || "";
+        item.innerHTML = `
+        <img src="${getProfileImage(p.imgperfil)}" class="invite-profile-img" alt="${p.nombre}"
+             onerror="this.src='./accion/imgPerfilUser/profile.png'">
+        <span>${p.nombre}${p.usuario ? ` (${p.usuario})` : ""}</span>
+      `;
+        item.addEventListener("click", () => {
+          resultsDiv
+            .querySelectorAll(".search-result-item")
+            .forEach((i) => i.classList.remove("selected"));
+          item.classList.add("selected");
+          selectedInviteUser = {
+            id: p.id,
+            nombre: p.nombre,
+            imgperfil: p.imgperfil,
+          };
+          document.getElementById("addInviteBtn").disabled = false;
         });
+        resultsDiv.appendChild(item);
+      });
     }
   }
 
@@ -1130,27 +1177,28 @@ document.addEventListener("DOMContentLoaded", () => {
       reservation.invitado3,
     ];
 
-    const dropdown = document.getElementById("inviteDropdown");
     const searchInput = document.getElementById("inviteSearch");
     const addBtn = document.getElementById("addInviteBtn");
 
+    searchInput.value = "";
+    document.getElementById("inviteResults").innerHTML = "";
+    selectedInviteUser = null;
+    addBtn.disabled = true;
+
     const debouncedSearch = debounce((e) => {
-      updateDropdownOptions(e.target.value, invitedIds, dropdown);
+      updateInviteResults(e.target.value, invitedIds);
     }, 400);
 
-    searchInput.value = "";
-    searchInput.removeEventListener("input", debouncedSearch);
+    searchInput.removeEventListener("input", searchInput._debouncedSearch);
+    searchInput._debouncedSearch = debouncedSearch;
     searchInput.addEventListener("input", debouncedSearch);
 
-    updateDropdownOptions("", invitedIds, dropdown);
-
     addBtn.onclick = async () => {
-      const selectedId = dropdown.value;
-      if (!selectedId) return;
+      if (!selectedInviteUser) return;
 
       const payload = new URLSearchParams();
       payload.append("idReserva", reservationId);
-      payload.append("idInvitado", selectedId);
+      payload.append("idInvitado", selectedInviteUser.id);
 
       const res = await fetch("./accion/putConfirmInvitados.php", {
         method: "POST",
@@ -1167,22 +1215,14 @@ document.addEventListener("DOMContentLoaded", () => {
           timer: 1500,
           showConfirmButton: false,
         });
-
-        // Close both modals
         closeModal(
           document.getElementById("slotInviteModal"),
           ".aModal-content",
         );
         closeModal(document.getElementById("inviteModal"), ".iModal-content");
-
-        // Reload reservations
         await loadUserReservations();
-
-        // Reopen main invite modal with updated data
         const updated = allReservations.find((r) => r.id === reservationId);
-        if (updated) {
-          debouncedOpenInviteModal(updated);
-        }
+        if (updated) debouncedOpenInviteModal(updated);
       } else {
         Swal.fire("Error", result.consultaResponse.detalleError, "error");
       }
@@ -1240,7 +1280,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         const profile = await fetchProfile(id);
-        img.src = profile.img || "./img/defaultProfile.png";
+        img.src = profile.img || "./img/profile.png";
+        img.onerror = function () {
+          this.src = "./img/profile.png";
+        };
         img.alt = "□";
         img.className = "invite-profile-img";
 
