@@ -73,6 +73,9 @@
                             case 'isAdmin':
                                    $_SESSION["isAdmin"] =  $value;
                             break;
+                            case 'profesor':
+                                   $_SESSION["profesor"] =  $value;
+                            break;
                             case 'misEstrellas':
                                    $_SESSION["misEstrellas"] =  $value;
                             break;

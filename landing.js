@@ -1071,7 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
       } else {
-        container.innerHTML = "<p>Hubo un error al cargar las horas</p>";
+        container.innerHTML = "<p>No tiene horas reservadas.</p>";
       }
     } catch (error) {
       console.error("Error de conexion:", error);
@@ -1541,8 +1541,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
- 
-
   //====================================================================>
   //PUNTOS
   //====================================================================>
@@ -1624,25 +1622,25 @@ document.addEventListener("DOMContentLoaded", () => {
   ["puntosInput"].forEach(sanitizeInput);
 });
 
- //====================================================================>
-  //ADMIN
-  //====================================================================>
+//====================================================================>
+//ADMIN
+//====================================================================>
 
-  document.getElementById("admin-access").addEventListener("click", () => {
-    Swal.fire({
-      title: "Que desea administrar?",
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: "Reservas de jugadores",
-      denyButtonText: "Restringir horarios",
-      cancelButtonText: "Administrar canjes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/admin.php";
-      } else if (result.isDenied) {
-        window.location.href = "/restrict.php";
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        window.location.href = "/exchange.php";
-      }
-    });
+document.getElementById("admin-access").addEventListener("click", () => {
+  Swal.fire({
+    title: "Que desea administrar?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Reservas de jugadores",
+    denyButtonText: "Restringir horarios",
+    cancelButtonText: "Administrar canjes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "/admin.php";
+    } else if (result.isDenied) {
+      window.location.href = "/restrict.php";
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      window.location.href = "/exchange.php";
+    }
   });
+});

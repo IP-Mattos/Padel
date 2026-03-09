@@ -45,7 +45,7 @@ if (isset($_SESSION['userId'])) {
                 alt="admin"></a></li>
         <?php } ?>
         <?php if ($_SESSION['userDeuda'] != "0") { ?>
-          <?php echo " Deuda $ " . number_format($_SESSION['userDeuda'],2,',','.'); ?>
+          <?php echo " Deuda $ " . number_format($_SESSION['userDeuda'], 2, ',', '.'); ?>
         <?php } ?>
         <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
               alt="Puntos"></a></li>
@@ -124,14 +124,6 @@ if (isset($_SESSION['userId'])) {
         <span id="closeInvite" class="close">&times;</span>
         <h2>Agregar jugadores</h2>
         <div class="searchContent">
-          <!-- <input
-            type="text"
-            id="inviteSearch"
-            placeholder="Buscar usuario..."
-            autocomplete="off"
-          />
-          <select id="inviteDropdown"></select>
-          <button id="addInviteBtn">Agregar</button> -->
           <div id="inviteList">
             <h4>Jugadores</h4>
             <ul id="inviteListUl"></ul>
@@ -173,8 +165,11 @@ if (isset($_SESSION['userId'])) {
         <div class="calendar" id="classes-calendar"></div>
         <div class="hs" id="class-hs"></div>
         <div class="buttons">
-          <button class="hidden" id="acceptClasses">Confirmar</button>
-          <button id="interested">Me interesa</button>
+          <?php if ($_SESSION['profesor'] === "1") { ?>
+            <button id="acceptClasses">Confirmar</button>
+          <?php } else { ?>
+            <button id="interested">Me interesa</button>
+          <?php } ?>
         </div>
       </div>
     </div>
