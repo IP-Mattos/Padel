@@ -1677,6 +1677,16 @@ document.getElementById("admin-access").addEventListener("click", () => {
     confirmButtonText: "Reservas de jugadores",
     denyButtonText: "Restringir horarios",
     cancelButtonText: "Administrar canjes",
+    footer:
+      '<button id="swal-deuda-btn" class="swal2-cancel swal2-styled" style="background-color:#6c757d;">Gestionar deudas</button>',
+    didRender: () => {
+      document
+        .getElementById("swal-deuda-btn")
+        ?.addEventListener("click", () => {
+          Swal.close();
+          window.location.href = "/deuda.php";
+        });
+    },
   }).then((result) => {
     if (result.isConfirmed) {
       window.location.href = "/admin.php";

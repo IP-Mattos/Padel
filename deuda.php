@@ -18,7 +18,6 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-    <link rel="stylesheet" href="restrict.css" />
     <title>Administración</title>
 </head>
 
@@ -30,5 +29,7 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
             </a>
         </div>
     </header>
+</body>
+<script src="deuda.js"></script>
 
 </html>
