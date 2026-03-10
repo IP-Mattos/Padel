@@ -58,6 +58,10 @@ header {
   border: none;
 }
 
+.swal2-actions {
+  flex-direction: column;
+}
+
 #datePicker {
   width: 1px;
   height: 1px;

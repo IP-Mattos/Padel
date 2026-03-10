@@ -361,7 +361,6 @@ async function openModal(slot) {
   modal.classList.remove("hidden");
   paymentRows.innerHTML = "";
 
-  // Fetch existing payments for THIS agenda
   const paymentData = await fetchPayments(slot.id);
 
   const userIds = [
@@ -378,16 +377,12 @@ async function openModal(slot) {
   searchModalHour = hour;
   searchModalServicio = servicio;
 
-  // const computedPrice = calculatePrice();
   const editablePrice = servicio === 2;
-
   const rowsHtml = [];
 
   for (let i = 0; i < 4; i++) {
     const userId = userIds[i] || 0;
     const hasUser = userId !== 0;
-
-    const fieldBase = i === 0 ? "Usuario" : `Invitado${i}`;
 
     const priceField = i === 0 ? "impUsuario" : `impInvitado${i}`;
     const fdpField = i === 0 ? "fdpUsuario" : `fdpInvitado${i}`;
@@ -413,9 +408,12 @@ async function openModal(slot) {
   }
 
   paymentRows.innerHTML = rowsHtml.join("");
-
-  // Add agenda ID
   paymentRows.innerHTML += `<input type="hidden" name="idAgenda" value="${slot.id}">`;
+
+  // Hide "Guardar Pagos" if payments already exist and it's not today
+  const saveBtn = paymentsForm.querySelector(".save-btn");
+  const isToday = formatDate(currentDate) === formatDate(new Date());
+  saveBtn.style.display = slot.hasPayments && !isToday ? "none" : "";
 }
 
 async function buildPaymentRow(
