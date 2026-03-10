@@ -165,22 +165,29 @@ async function loadSlots() {
 
           ${
             isConfirmed
-              ? `
-              <div class="actions">
-                ${(() => {
-                  const paymentIcon = hasPayments ? "pago.png" : "nopago.png";
-                  const paymentAlt = hasPayments
-                    ? "Pagos registrados"
-                    : "Sin pagos";
+              ? `<div class="actions">
+        ${(() => {
+          const paymentIcon = hasPayments ? "pago.png" : "nopago.png";
+          const paymentAlt = hasPayments ? "Pagos registrados" : "Sin pagos";
+          const fixIcon = slot.horaFija == 1 ? "fija.png" : "nofija.png";
+          const fixAlt = slot.horaFija == 1 ? "Hora fija" : "Hora no fija";
 
-                  return `
-                    <button class="payments-btn" data-slot='${JSON.stringify({ ...slot, hasPayments })}'>
-                      <img class="payment-ico" src="./img/${paymentIcon}" alt="${paymentAlt}">
-                    </button>
-                  `;
-                })()}
-              </div>
+          return `
+            <button class="payments-btn" data-slot='${JSON.stringify({ ...slot, hasPayments })}'>
+              <img class="payment-ico" src="./img/${paymentIcon}" alt="${paymentAlt}">
+            </button>
+            ${
+              hasPayments
+                ? `
+              <button class="fix-btn" data-slot='${JSON.stringify({ ...slot, hasPayments })}'>
+                <img class="payment-ico" src="./img/${fixIcon}" alt="${fixAlt}">
+              </button>
             `
+                : ""
+            }
+          `;
+        })()}
+      </div>`
               : ""
           }
 
@@ -258,6 +265,67 @@ async function loadSlots() {
       btn.addEventListener("click", () => {
         const slot = JSON.parse(btn.dataset.slot);
         openModal(slot);
+      });
+    });
+
+    /* Fix Hour Handler */
+    document.querySelectorAll(".fix-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const slot = JSON.parse(btn.dataset.slot);
+        const isFixed = slot.horaFija == 1;
+
+        const result = await Swal.fire({
+          title: isFixed ? "¿Desfijar esta hora?" : "¿Fijar esta hora?",
+          text: isFixed
+            ? "La hora dejará de estar fija para este usuario."
+            : "La hora quedará fija para este usuario.",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sí",
+          cancelButtonText: "No, volver",
+        });
+
+        if (!result.isConfirmed) return;
+
+        const dia = currentDate.getDay() + 1;
+        const params = new URLSearchParams();
+        params.append("dia", dia);
+        params.append("hora", slot.hora);
+        params.append("servicio", slot.servicio);
+        params.append("idUsuario", slot.idUsuario);
+        params.append("accion", isFixed ? "0" : "1");
+
+        try {
+          const res = await fetch("./accion/putFijarHora.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: params,
+          });
+
+          const data = await res.json();
+
+          if (data.consultaResponse?.codigoError === "0") {
+            await Swal.fire({
+              icon: "success",
+              title: "Éxito",
+              text: isFixed
+                ? "Hora desfijada correctamente."
+                : "Hora fijada correctamente.",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+            loadSlots();
+          } else {
+            Swal.fire(
+              "Error",
+              data.consultaResponse?.detalleError || "No se pudo actualizar.",
+              "error",
+            );
+          }
+        } catch (err) {
+          console.error("Error fixing hour:", err);
+          Swal.fire("Error", "No se pudo conectar al servidor.", "error");
+        }
       });
     });
   } catch (error) {

@@ -194,6 +194,10 @@ header {
   border: none;
   background: none;
 }
+.fix-btn {
+  background: none;
+  border: none;
+}
 .close-modal,
 .close-search-modal {
   color: white;
