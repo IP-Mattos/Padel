@@ -18,6 +18,7 @@
     require_once "../token/funcToken.php";
     require_once "../clases/usuarios.php";
     require_once "../clases/agenda.php";
+    require_once "../clases/horaFija.php";
     //verificacion de token
    
     $dbConn = new Conexion();
@@ -63,9 +64,17 @@
         }
      
       
-        //obtengo lista de profesores
-        $horas = Agenda::recuperarTodosLasReservas($fechaDesde, $fechaHasta);
+        //crear fechaConfirmDesde y fechaConfirmHasta para comparar con fechaConfirmacion de la reserva, si esta entre esas fechas entonces se muestra en el resultado.
+        $fechaConfirmDesde = date('Y-m-d', strtotime('2026-03-01')).' 00:00:00';
+        //fecha confirmhasta es hasta ayer a las 23:59:59, para que se muestren las reservas confirmadas hasta ayer, 
+        $fechaConfirmHasta = date('Y-m-d', strtotime('-1 day')).' 23:59:59';
+        $horas = Agenda::recuperarReservasSinConfirmarOpagar($fechaConfirmDesde, $fechaHasta);
+        
+        if(!$horas){
+          $horas = Agenda::recuperarTodosLasReservas($fechaDesde, $fechaHasta);
+        }
 
+        
         if($horas){
 
                     header("HTTP/1.1 200 OK");

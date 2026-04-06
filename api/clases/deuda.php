@@ -6,6 +6,7 @@ class Deuda {
     private $idUsuario;
     private $idChelada;
     private $idPagos;
+    private $idCobros;
     private $debe;
     private $haber;
     private $saldo;
@@ -18,6 +19,7 @@ class Deuda {
     public function getIdUsuario() { return $this->idUsuario; }
     public function getIdChelada() { return $this->idChelada; }
     public function getIdPagos() { return $this->idPagos; }
+    public function getidCobros() { return $this->idCobros; }
     public function getDebe() { return $this->debe; }
     public function getHaber() { return $this->haber; }
     public function getSaldo() { return $this->saldo; }
@@ -27,16 +29,18 @@ class Deuda {
     public function setIdUsuario($idUsuario) { $this->idUsuario = $idUsuario; }
     public function setIdChelada($idChelada) { $this->idChelada = $idChelada; }
     public function setIdPagos($idPagos) { $this->idPagos = $idPagos; }
+    public function setidCobros($idCobros) { $this->idCobros = $idCobros; }
     public function setDebe($debe) { $this->debe = $debe; }
     public function setHaber($haber) { $this->haber = $haber; }
     public function setSaldo($saldo) { $this->saldo = $saldo; }
     public function setFecha($fecha) { $this->fecha = $fecha; }
 
     // Constructor
-    public function __construct($idUsuario, $idChelada, $idPagos, $debe, $haber, $saldo, $fecha = null, $id = null) {
+    public function __construct($idUsuario, $idChelada, $idPagos, $idCobros, $debe, $haber, $saldo, $fecha = null, $id = null) {
         $this->idUsuario = $idUsuario;
         $this->idChelada = $idChelada;
         $this->idPagos = $idPagos;
+        $this->idCobros = $idCobros;
         $this->debe = $debe;
         $this->haber = $haber;
         $this->saldo = $saldo;
@@ -54,6 +58,7 @@ class Deuda {
                 idUsuario = :idUsuario,
                 idChelada = :idChelada,
                 idPagos = :idPagos,
+                idCobros = :idCobros,
                 debe = :debe,
                 haber = :haber,
                 saldo = :saldo,
@@ -63,6 +68,7 @@ class Deuda {
             $consulta->bindParam(':idUsuario', $this->idUsuario);
             $consulta->bindParam(':idChelada', $this->idChelada);
             $consulta->bindParam(':idPagos', $this->idPagos);
+            $consulta->bindParam(':idCobros', $this->idCobros);
             $consulta->bindParam(':debe', $this->debe);
             $consulta->bindParam(':haber', $this->haber);
             $consulta->bindParam(':saldo', $this->saldo);
@@ -72,12 +78,13 @@ class Deuda {
         } else {
             // Insertar nuevo registro
             $consulta = $conexion->prepare('INSERT INTO ' . self::TABLA . ' 
-                (idUsuario, idChelada, idPagos, debe, haber, saldo, fecha) 
-                VALUES (:idUsuario, :idChelada, :idPagos, :debe, :haber, :saldo, :fecha)');
+                (idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha) 
+                VALUES (:idUsuario, :idChelada, :idPagos, :idCobros, :debe, :haber, :saldo, :fecha)');
             
             $consulta->bindParam(':idUsuario', $this->idUsuario);
             $consulta->bindParam(':idChelada', $this->idChelada);
             $consulta->bindParam(':idPagos', $this->idPagos);
+            $consulta->bindParam(':idCobros', $this->idCobros);
             $consulta->bindParam(':debe', $this->debe);
             $consulta->bindParam(':haber', $this->haber);
             $consulta->bindParam(':saldo', $this->saldo);
@@ -93,7 +100,7 @@ class Deuda {
     // Buscar por ID
     public static function buscarPorId($id) {
         $conexion = new Conexion();
-        $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, debe, haber, saldo, fecha 
+        $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha 
             FROM ' . self::TABLA . ' 
             WHERE id = :id');
         $consulta->bindParam(':id', $id);
@@ -105,6 +112,7 @@ class Deuda {
                 $registro['idUsuario'],
                 $registro['idChelada'],
                 $registro['idPagos'],
+                $registro['idCobros'],
                 $registro['debe'],
                 $registro['haber'],
                 $registro['saldo'],
@@ -119,7 +127,7 @@ class Deuda {
     // Buscar por Usuario
     public static function buscarPorUsuario($idUsuario) {
         $conexion = new Conexion();
-        $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, debe, haber, saldo, fecha 
+        $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha 
             FROM ' . self::TABLA . ' 
             WHERE idUsuario = :idUsuario 
             ORDER BY id DESC');
@@ -133,6 +141,7 @@ class Deuda {
                 $registro['idUsuario'],
                 $registro['idChelada'],
                 $registro['idPagos'],
+                $registro['idCobros'],
                 $registro['debe'],
                 $registro['haber'],
                 $registro['saldo'],
@@ -158,11 +167,13 @@ class Deuda {
     }
 
     // Recuperar todos los registros
-    public static function recuperarTodos() {
+    public static function recuperarTodosDeudores() {
         $conexion = new Conexion();
-        $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, debe, haber, saldo, fecha 
-            FROM ' . self::TABLA . ' 
-            ORDER BY id DESC');
+        $sql = 'SELECT d.id, d.idUsuario, d.idChelada, d.idPagos, d.idCobros, d.debe, d.haber, (SUM(d.debe)-SUM(d.haber)) as saldo, u.nombre fecha 
+            FROM ' . self::TABLA . ' d LEFT JOIN usuarios u ON u.id = d.idUsuario WHERE (d.debe <> 0 OR d.haber <> 0) 
+            GROUP BY d.idUsuario ORDER BY u.nombre ASC';
+           //  echo $sql;
+        $consulta = $conexion->prepare($sql);
         $consulta->execute();
         $registros = $consulta->fetchAll();
         
@@ -172,6 +183,7 @@ class Deuda {
                 $registro['idUsuario'],
                 $registro['idChelada'],
                 $registro['idPagos'],
+                $registro['idCobros'],
                 $registro['debe'],
                 $registro['haber'],
                 $registro['saldo'],

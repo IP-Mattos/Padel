@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT'){
     try {
         // Crear el registro de deuda
         // idChelada, idPagos=0 (no viene de un pago), debe=importe, haber=0
-        $deuda = new Deuda($idUsuario,$idChelada,0,$importe,0,0,$nowFech);
+        $deuda = new Deuda($idUsuario,$idChelada,0,0,$importe,0,0,$nowFech);
 
 
         // Guardar la deuda

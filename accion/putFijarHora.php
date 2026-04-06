@@ -13,18 +13,16 @@ session_start();
 
     //echo "idUsuario: ". $idUsuario. "<br>" . "dia: ". $dia. "<br>". "hora: ". $hora. "<br>". "servicio: ". $servicio. "<br>". "accion: ". $accion;
     // Validar datos requeridos
-    if(empty($idUsuario) || empty($dia) || empty($hora) || empty($servicio) || empty($accion)){
+    if(empty($idUsuario) || empty($dia) || empty($hora) || empty($servicio)){
         $arrReturn = array();
         array_push($arrReturn, ["Status" => 400, "descrip" => 'Faltan datos requeridos']);
         $datos = json_encode($arrReturn);
         echo $datos;
         exit();
+    }else{
+        if($accion == 0 || $accion == 1){
+            $ret = putHoraFija($token, $idUsuario, $dia, $hora, $servicio, $accion);
+        }
     }
-
-        // Validar token
-
-
-    $ret = putHoraFija($token, $idUsuario, $dia, $hora, $servicio, $accion);
-
 
 ?>

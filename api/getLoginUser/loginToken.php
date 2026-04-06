@@ -79,7 +79,7 @@ date_default_timezone_set("America/Montevideo");
                 if ($id>0){
                         
                         $sql = $dbConn->prepare("SELECT id as UsId,nombre,mail,usuario,estado,cedula,celular,categoria,vigencia,juego,
-                        fechnac,frase,imgperfil,mascategoria,isadmin,misestrellas FROM "
+                        fechnac,frase,imgperfil,mascategoria,isadmin,profesor,misestrellas FROM "
                         .$tabla." where id=:UsId");
                        // print_r($sql);
                        // print_r($UsCl);
@@ -145,6 +145,7 @@ date_default_timezone_set("America/Montevideo");
                                 $return['userImgPerfil']=$data["imgperfil"];
                                 $return['userMasCategoria']=$data["mascategoria"];
                                 $return['isAdmin']=$data["isadmin"];
+                                $return['profesor'] = $data['profesor'];
                                 $return['misEstrellas'] = $data['misestrellas'];
                                 $return['puntos'] = $puntos;
                                 $return['deuda'] = $deuda;

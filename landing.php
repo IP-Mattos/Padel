@@ -47,9 +47,11 @@ if (isset($_SESSION['userId'])) {
         <?php if ($_SESSION['userDeuda'] != "0") { ?>
           <?php echo " Deuda $ " . number_format($_SESSION['userDeuda'], 2, ',', '.'); ?>
         <?php } ?>
-        <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
-              alt="Puntos"></a></li>
-        <li>
+        <?php if ($_SESSION['userDeuda'] == "0") { ?>
+          <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
+                alt="Puntos"></a></li>
+        <?php } ?>
+        <!-- <li>
           <?php if ($_SESSION['misEstrellas'] === "1") { ?>
             <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
           <?php } ?>
@@ -59,7 +61,7 @@ if (isset($_SESSION['userId'])) {
           <?php if ($_SESSION['misEstrellas'] === "3") { ?>
             <img id="stars" style="width: 50px;" src="./img/3stars.png" alt="3">
           <?php } ?>
-        </li>
+        </li> -->
         <li><a id="openHours"><img style="width: 40px" id="partidoIcon" src="./img/reserva.png"></a></li>
         <?php if ($_SESSION['userImgPerfil'] != "") { ?>
           <li><a href="#profile" id="openProfile2"><img style="width: 30px; height: 30px; border-radius: 50%;"
@@ -354,20 +356,22 @@ if (isset($_SESSION['userId'])) {
         <div class="ptModal-content">
           <div class="points">
             <span id="closePoints" class="close">&times;</span>
-            <h1>Tus puntos!</h1>
-            <h3 id="puntosValue"></h3>
-            <input type="text" id="puntosInput" placeholder="Puntos a canjear...">
-            <button id="sendPoints">Canjear</button>
-          </div>
+            <img style="width:30px;height:30px;" src="./img/puntos.png" alt="Puntos">
+            <p id="puntosValue"><b><?php echo ($_SESSION['userPuntos']); ?></b> 💪🥳
+          </p>
+
+          <input type="text" id="puntosInput" placeholder="Introduce puntos a canjear...">
+          <button style="font-size:20px;" id="sendPoints">Canjear</button>
         </div>
       </div>
-    </main>
-  </body>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="landing.js?test"></script>
-  <script>
-    const userId = <?php echo $_SESSION['userId']; ?>;
+    </div>
+  </main>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="landing.js?test"></script>
+<script>
+  const userId = <?php echo $_SESSION['userId']; ?>;
   const userStars = <?php echo $_SESSION['misEstrellas']; ?>
 </script>
 

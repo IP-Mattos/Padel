@@ -127,6 +127,7 @@ async function loadSlots() {
       const div = document.createElement("div");
       div.className = "card";
       const horaSinSegundos = slot.hora.slice(0, 5);
+      const fechaRegistro = slot.fecha.slice(0, 10);
 
       if ((slot.estado == 1 || slot.estado == 2) && slot.idUsuario) {
         const userIds = [
@@ -160,7 +161,7 @@ async function loadSlots() {
         div.innerHTML = `
           <div class="profiles-container">
               ${profileHtml}
-              <p class="slot-time">${horaSinSegundos}</p>
+              <p class="slot-time">${fechaRegistro + " " + horaSinSegundos}</p>
           </div>
 
           ${
@@ -208,7 +209,7 @@ async function loadSlots() {
       else if (slot.estado == 3) {
         div.classList.add("unavailable");
         div.innerHTML = `
-          ${horaSinSegundos}
+          ${fechaRegistro + " " + horaSinSegundos}
           <div class="actions">
               <img class="card-ico cancel-btn" data-id="${slot.id}" src="./img/cancelar.png">
           </div>

@@ -1,10 +1,8 @@
 <?php  
-
-
- error_reporting(E_ALL);
- ini_set('display_errors', '1');
- date_default_timezone_set("America/Montevideo");
- echo "cokie =" .$_COOKIE['goCookToken']."<br>";
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+    date_default_timezone_set("America/Montevideo");
+    echo "cokie =" .$_COOKIE['goCookToken']."<br>";
     $token=$_COOKIE['goCookToken'];
     
 ?>
@@ -173,9 +171,8 @@
 
     </form>
 
-<br>
-
-    </div>
+    <br>
+</div>
 <hr>PROFESORES - LISTAR PROFESORES
 <form method="post" action="../accion/getProfesores.php">
 
@@ -221,61 +218,166 @@
     <input type="submit" value="RESTRINGIR HORA">
 
 </form>
+<!--//PAGOS-->
+<div style="margin-top:50px;background-color:#089;">
+        <hr>ADMINISTRADOR - FDP - ESTABLECER MEDIOS DE PAGOS
+        <form method="post" action="../accion/putFDPAgenda.php">
 
-<hr>ADMINISTRADOR - FDP - ESTABLECER MEDIOS DE PAGOS
-<form method="post" action="../accion/putFDPAgenda.php">
+            <input type="text" id ="idAgenda" name = "idAgenda" value="5" placeholder="id de agenda">
+            <input type="text" id ="idusuario" name = "idUsuario" value="1" placeholder="id de usuario">
+            <select name="fdpUsuario" id="fdpUsuario">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="TRANS">TRANS</option>
+                <option value="MERCPAGO">MERCPAGO</option>
+                <option value="DEBITO">DEBITO</option>
+                <option value="CREDITO">CREDITO</option>
+            </select>
+            <input type="text" id ="idInvitado1" name = "idInvitado1" value="0" placeholder="id de invitado 1 - si no tiene va a ser cero">
+            <select name="fdpInvitado1" id="fdpInvitado1">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="TRANS">TRANS</option>
+                <option value="MERCPAGO">MERCPAGO</option>
+                <option value="DEBITO">DEBITO</option>
+                <option value="CREDITO">CREDITO</option>
+            </select>
+            <input type="text" id ="idInvitado2" name = "idInvitado2" value="0" placeholder="id de invitado 2 - si no tiene va a ser cero">
+            <select name="fdpInvitado2" id="fdpInvitado2">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="TRANS">TRANS</option>
+                <option value="MERCPAGO">MERCPAGO</option>
+                <option value="DEBITO">DEBITO</option>
+                <option value="CREDITO">CREDITO</option>
+            </select>
+            <input type="text" id ="idInvitado3" name = "idInvitado3" value="0" placeholder="id de invitado 3 - si no tiene va a ser cero">
+            <select name="fdpInvitado3" id="fdpInvitado3">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="TRANS">TRANS</option>
+                <option value="MERCPAGO">MERCPAGO</option>
+                <option value="DEBITO">DEBITO</option>
+                <option value="CREDITO">CREDITO</option>
+            </select>
+        <br>
+            <label>MEDIO DE PAGOS</label>
+            <input type="text" id ="impUsu" name = "impUsu" value="0" placeholder="importe pago por usuario">
+            <input type="text" id ="impInv1" name = "impInv1" value="0" placeholder="importe pago por invitado 1">
+            <input type="text" id ="impInv2" name = "impInv2" value="0" placeholder="importe pago por invitado 2">
+            <input type="text" id ="impInv3" name = "impInv3" value="0" placeholder="importe pago por invitado 3">
 
-    <input type="text" id ="idAgenda" name = "idAgenda" value="5" placeholder="id de agenda">
-    <input type="text" id ="idusuario" name = "idUsuario" value="1" placeholder="id de usuario">
-    <select name="fdpUsuario" id="fdpUsuario">
-        <option value="EFECTIVO">EFECTIVO</option>
-        <option value="TRANS">TRANS</option>
-        <option value="MERCPAGO">MERCPAGO</option>
-        <option value="DEBITO">DEBITO</option>
-        <option value="CREDITO">CREDITO</option>
-    </select>
-    <input type="text" id ="idInvitado1" name = "idInvitado1" value="0" placeholder="id de invitado 1 - si no tiene va a ser cero">
-    <select name="fdpInvitado1" id="fdpInvitado1">
-        <option value="EFECTIVO">EFECTIVO</option>
-        <option value="TRANS">TRANS</option>
-        <option value="MERCPAGO">MERCPAGO</option>
-        <option value="DEBITO">DEBITO</option>
-        <option value="CREDITO">CREDITO</option>
-    </select>
-    <input type="text" id ="idInvitado2" name = "idInvitado2" value="0" placeholder="id de invitado 2 - si no tiene va a ser cero">
-    <select name="fdpInvitado2" id="fdpInvitado2">
-        <option value="EFECTIVO">EFECTIVO</option>
-        <option value="TRANS">TRANS</option>
-        <option value="MERCPAGO">MERCPAGO</option>
-        <option value="DEBITO">DEBITO</option>
-        <option value="CREDITO">CREDITO</option>
-    </select>
-    <input type="text" id ="idInvitado3" name = "idInvitado3" value="0" placeholder="id de invitado 3 - si no tiene va a ser cero">
-    <select name="fdpInvitado3" id="fdpInvitado3">
-        <option value="EFECTIVO">EFECTIVO</option>
-        <option value="TRANS">TRANS</option>
-        <option value="MERCPAGO">MERCPAGO</option>
-        <option value="DEBITO">DEBITO</option>
-        <option value="CREDITO">CREDITO</option>
-    </select>
-   <br>
-    <label>MEDIO DE PAGOS</label>
-    <input type="text" id ="impUsu" name = "impUsu" value="0" placeholder="importe pago por usuario">
-    <input type="text" id ="impInv1" name = "impInv1" value="0" placeholder="importe pago por invitado 1">
-    <input type="text" id ="impInv2" name = "impInv2" value="0" placeholder="importe pago por invitado 2">
-    <input type="text" id ="impInv3" name = "impInv3" value="0" placeholder="importe pago por invitado 3">
+            <input type="submit" value="GUARDAR PAGOS">
 
-    <input type="submit" value="GUARDAR PAGOS">
+        </form>
 
+        <hr>ADMINISTRADOR - LISTAR PAGOS
+
+        <form method="post" action="../accion/getFDP.php">
+            //dia actual 
+
+            <input type="text" id ="idAgenda" name = "idAgenda" value="0" placeholder="id Agenda">
+        
+            <input type="submit" value="LISTAR PAGOS">
+
+        </form>
+
+
+</div>
+
+<!--//COBROS-->
+<div style="margin-top:50px;background-color:#033;">
+    <hr>ADMINISTRADOR COBROS DE DEUDAS
+    
+    <form method="post" action="../accion/putDeudaCobro.php">
+        <input type="text" id ="idUsuario" name = "idUsuario" placeholder="id de usuario">
+        <input type="text" id ="monto" name = "monto"  placeholder="monto">
+        <select name="origen" id="origen">
+                <option value="EFECTIVO">EFECTIVO</option>
+                <option value="TRANS">TRANS</option>
+                <option value="MERCPAGO">MERCPAGO</option>
+                <option value="DEBITO">DEBITO</option>
+                <option value="CREDITO">CREDITO</option>
+            </select>
+        <input type="text" id ="detalle" name = "detalle" value="cobro deuda" placeholder="descripcion">
+        <input type="submit" value="AGREGAR COBRO">
+    </form>
+
+    <hr>
+      
+    <form method="post" action="../accion/getDeudaUsuarios.php">
+        <input type="submit" value="CONSULTAR DEUDAS">
+    </form>
+
+</div>
+
+
+<!--FIJAR HORAS-->
+<div style="margin-top:50px;background-color:#066;">
+    <hr>ADMINISTRADOR - FIJAR HORAS DE CANCHA
+    
+    <form method="post" action="../accion/putFijarHora.php">
+        <input type="text" id ="dia" name = "dia" value="" placeholder="dia 1 = Domingo // 6 = sabado" >
+        <input type="text" id ="hora" name = "hora" value="" placeholder="hora 00:00">
+        <input type="text" id ="servicio" name = "servicio" value="" placeholder="id de servicio">
+        <input type="text" id ="idUsuario" name = "idUsuario" value="" placeholder="id de usuario">
+        <select name="accion" id="accion">
+            <option value="1">AGREGAR</option>
+            <option value="0">ELIMINAR</option>
+        </select>
+        <input type="submit" value="FIJAR HORAS">
+    </form>
+
+
+
+</div>
+
+
+<div style="margin-top:50px;background-color:#999;">
+
+
+<h3>Alta TORNEOS</h3>
+<form method="post" action="../accion/putTorneos.php">
+    <input type="number" id="id" name="id" value="" placeholder="id (opcional)">
+    <input type="number" id="categoria" name="categoria" value="1" placeholder="categoria" required>
+    <input type="date" id="fecha" name="fecha" value="" required>
+    <input type="text" id="nombre" name="nombre" value="Torneo Prueba" placeholder="nombre" required>
+    <input type="number" id="entre" name="entre" value="0" placeholder="entre">
+    <input type="number" id="estado" name="estado" value="0" placeholder="estado">
+    <input type="submit" value="GUARDAR TORNEO">
 </form>
 
-<hr>ADMINISTRADOR - LISTAR PAGOS
-
-<form method="post" action="../accion/getFDP.php">
-    //dia actual 
-
-    <input type="text" id ="idAgenda" name = "idAgenda" value="0" placeholder="id Agenda">
-   
-    <input type="submit" value="LISTAR PAGOS">
-
+<h3>Alta Aspirante (estado fijo en 0)</h3>
+<form method="post" action="../accion/putTorneoAspirante.php">
+    <input type="hidden" id="accionInsert" name="accion" value="insert">
+    <input type="number" id="idInsert" name="id" value="" placeholder="id (opcional)">
+    <input type="number" id="idTorneoInsert" name="idTorneo" value="" placeholder="idTorneo" required>
+    <input type="number" id="idUsuarioInsert" name="idUsuario" value="" placeholder="idUsuario" required>
+    <input type="submit" value="GUARDAR ASPIRANTE">
 </form>
+
+<hr>
+
+<h3>Modificar Estado Aspirante</h3>
+<form method="post" action="../accion/putTorneoAspirante.php">
+    <input type="hidden" id="accionUpdate" name="accion" value="update">
+    <input type="number" id="idUpdate" name="id" value="" placeholder="id aspirante (opcional)">
+    <input type="number" id="idTorneoUpdate" name="idTorneo" value="" placeholder="idTorneo (si no envias id)">
+    <input type="number" id="idUsuarioUpdate" name="idUsuario" value="" placeholder="idUsuario (si no envias id)">
+    <input type="number" id="estadoUpdate" name="estado" value="1" placeholder="nuevo estado" required>
+    <input type="submit" value="ACTUALIZAR ESTADO">
+</form>
+
+
+
+<h3>Listar Aspirantes por Torneo</h3>
+<form method="post" action="../accion/getTorneoAspirantes.php">
+    <input type="number" id="idTorneo" name="idTorneo" value="" placeholder="idTorneo" required>
+    <input type="submit" value="LISTAR ASPIRANTES">
+</form>
+
+<h3>Listar Torneos (filtro por estado y fechas)</h3>
+<form method="post" action="../accion/getTorneos.php">
+    <input type="number" id="estado" name="estado" value="" placeholder="estado (opcional)">
+    <input type="date" id="fechaDesde" name="fechaDesde" value="" placeholder="fechaDesde">
+    <input type="date" id="fechaHasta" name="fechaHasta" value="" placeholder="fechaHasta">
+    <input type="submit" value="LISTAR TORNEOS">
+</form>
+
+</div>

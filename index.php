@@ -395,6 +395,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- incluir versionControl script -->
+     <script src="versionControl.js"></script>
+    <!-- fin versionControl script -->
+     
     <script src="index.js"></script>
     <script>
       const loggedIn = <?php if ($loggedIn) {

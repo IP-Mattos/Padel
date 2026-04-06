@@ -1484,7 +1484,207 @@
 
             }
 
+            function putTorneos($token, $id, $categoria, $fecha, $nombre, $entre, $estado) {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/putTorneos',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'PUT',
+                  CURLOPT_POSTFIELDS =>'{
+                    "id":"'.$id.'",
+                    "categoria":"'.$categoria.'",
+                    "fecha":"'.$fecha.'",
+                    "nombre":"'.$nombre.'",
+                    "entre":"'.$entre.'",
+                    "estado":"'.$estado.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
 
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+            }
 
+            function putTorneoAspirante($token, $accion, $idTorneo, $idUsuario, $estado = 0, $id = "") {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/putTorneoAspirante',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'PUT',
+                  CURLOPT_POSTFIELDS =>'{
+                    "accion":"'.$accion.'",
+                    "id":"'.$id.'",
+                    "idTorneo":"'.$idTorneo.'",
+                    "idUsuario":"'.$idUsuario.'",
+                    "estado":"'.$estado.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+            }
+
+            // Agregar esta función al archivo utils.php existente
+
+            function putDeudaCobro($token, $idUsuario, $monto, $origen, $detalle = "") {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/putDeudaCobro',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'PUT',
+                  CURLOPT_POSTFIELDS =>'{
+                    "idUsuario":"'.$idUsuario.'",
+                    "monto":"'.$monto.'",
+                    "origen":"'.$origen.'",
+                    "detalle":"'.$detalle.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+                
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+                
+            }
+
+             function putHoraFija($token, $idUsuario, $dia, $hora, $servicio, $accion) {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/putHoraFija',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'PUT',
+                  CURLOPT_POSTFIELDS =>'{
+                    "idUsuario":"'.$idUsuario.'",
+                    "dia":"'.$dia.'",
+                    "hora":"'.$hora.'",
+                    "servicio":"'.$servicio.'",
+                    "accion":"'.$accion.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+                
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+                
+            }
+
+            function getDeudaUsuarios($token) {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/getDeudaUsuarios',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'GET',
+                  CURLOPT_POSTFIELDS =>'{}',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+                
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+                
+            }
+
+            function getTorneos($token, $estado = "", $fechaDesde = "", $fechaHasta = "") {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/getTorneos',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'GET',
+                  CURLOPT_POSTFIELDS =>'{
+                    "estado":"'.$estado.'",
+                    "fechaDesde":"'.$fechaDesde.'",
+                    "fechaHasta":"'.$fechaHasta.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+            }
+
+            function getTorneoAspirantes($token, $idTorneo) {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                  CURLOPT_URL => 'https://www.gopadel.uy/api/getPostData/getTorneoAspirantes',
+                  CURLOPT_RETURNTRANSFER => true,
+                  CURLOPT_ENCODING => '',
+                  CURLOPT_MAXREDIRS => 10,
+                  CURLOPT_TIMEOUT => 0,
+                  CURLOPT_FOLLOWLOCATION => true,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_CUSTOMREQUEST => 'GET',
+                  CURLOPT_POSTFIELDS =>'{
+                    "idTorneo":"'.$idTorneo.'"
+                }',
+                  CURLOPT_HTTPHEADER => array(
+                    'Authorization: '.$token,
+                    'Content-Type: application/json'
+                  ),
+                ));
+
+                $response = curl_exec($curl);
+                echo $response;
+                curl_close($curl);
+                return $response;
+            }
             
  ?>

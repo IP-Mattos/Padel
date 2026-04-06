@@ -1609,8 +1609,8 @@ document.addEventListener("DOMContentLoaded", () => {
         puntosDisponibles = parseInt(data.consultaResponse.puntos, 10);
         const puntos = data.consultaResponse.puntos;
         document.getElementById("puntosValue").innerHTML = `
-        <h2>Tienes</h2> <span style="color:yellow; font-size:2rem;">${puntos}</span><br> <h2>puntos
- para canjear...!!!</h2>`;
+        Excelente. Tienes <br><span style="color:red; font-size:2rem;">${puntos}</span><br> puntos
+ para canjear...!!!`;
       })
       .catch((err) => console.error(err));
   });
@@ -1677,246 +1677,31 @@ document.addEventListener("DOMContentLoaded", () => {
 //ADMIN
 //====================================================================>
 
-const adminAccessBtn = document.getElementById("admin-access");
-
-if (adminAccessBtn) {
-  adminAccessBtn.addEventListener("click", () => {
-    const styleAdminSwalButtons = () => {
-      const popup = document.querySelector(".swal2-popup");
-      if (!popup) return;
-
-      const commonButtons = popup.querySelectorAll(
-        ".swal2-actions .swal2-styled",
-      );
-
-      commonButtons.forEach((btn) => {
-        btn.style.minWidth = "220px";
-        btn.style.height = "44px";
-        btn.style.display = "inline-flex";
-        btn.style.alignItems = "center";
-        btn.style.justifyContent = "center";
-        btn.style.borderRadius = "10px";
-        btn.style.fontWeight = "600";
-        btn.style.fontSize = "16px";
-        btn.style.margin = "6px";
-        btn.style.color = "#fff";
-      });
-    };
-
-    Swal.fire({
-      title: "Que desea administrar?",
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: "Reservas de jugadores",
-      denyButtonText: "Restringir horarios",
-      cancelButtonText: "Administrar canjes",
-      didOpen: () => {
-        const actions = document.querySelector(".swal2-actions");
-        if (actions && !document.getElementById("swal-deuda-btn")) {
-          const deudaBtn = document.createElement("button");
-          deudaBtn.id = "swal-deuda-btn";
-          deudaBtn.className = "swal2-styled";
-          deudaBtn.textContent = "Administrar deudas";
-          deudaBtn.style.backgroundColor = "#6c757d";
-          deudaBtn.onclick = () => {
-            Swal.close();
-            window.location.href = "/deuda.php";
-          };
-          actions.appendChild(deudaBtn);
-        }
-        if (actions && !document.getElementById("swal-cierre-btn")) {
-          const cierreBtn = document.createElement("button");
-          cierreBtn.id = "swal-cierre-btn";
-          cierreBtn.className = "swal2-styled";
-          cierreBtn.textContent = "Cierre de caja";
-          cierreBtn.style.backgroundColor = "#1a6b3c";
-          cierreBtn.onclick = () => {
-            Swal.close();
-            abrirCierreCaja();
-          };
-          actions.appendChild(cierreBtn);
-        }
-        // if (actions && !document.getElementById("swal-torneo-btn")) {
-        //   const torneoBtn = document.createElement("button");
-        //   torneoBtn.id = "swal-torneo-btn";
-        //   torneoBtn.className = "swal2-styled";
-        //   torneoBtn.textContent = "Administrar torneos";
-        //   torneoBtn.style.backgroundColor = "#6c757d";
-        //   torneoBtn.onclick = () => {
-        //     Swal.close();
-        //     window.location.href = "/torneo.php";
-        //   };
-        //   actions.appendChild(torneoBtn);
-        // }
-
-        styleAdminSwalButtons();
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/admin.php";
-      } else if (result.isDenied) {
-        window.location.href = "/restrict.php";
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        window.location.href = "/exchange.php";
-      }
-    });
-  });
-}
-
-// ============================================================
-// CIERRE DE CAJA
-// ============================================================
-async function abrirCierreCaja() {
+document.getElementById("admin-access").addEventListener("click", () => {
   Swal.fire({
-    title: "Calculando cierre...",
-    allowOutsideClick: false,
-    didOpen: () => Swal.showLoading(),
+    title: "Que desea administrar?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Reservas de jugadores",
+    denyButtonText: "Restringir horarios",
+    cancelButtonText: "Administrar canjes",
+    footer:
+      '<button id="swal-deuda-btn" class="swal2-cancel swal2-styled" style="background-color:#6c757d;">Gestionar deudas</button>',
+    didRender: () => {
+      document
+        .getElementById("swal-deuda-btn")
+        ?.addEventListener("click", () => {
+          Swal.close();
+          window.location.href = "/deuda.php";
+        });
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "/admin.php";
+    } else if (result.isDenied) {
+      window.location.href = "/restrict.php";
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      window.location.href = "/exchange.php";
+    }
   });
-
-  try {
-    const res = await fetch("./accion/getCierreCaja.php");
-    const data = await res.json();
-
-    if (data.error) {
-      Swal.fire("Error", data.error, "error");
-      return;
-    }
-
-    if (data.pendientes > 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "No se puede cerrar",
-        html:
-          `Hay <strong>${data.pendientes}</strong> hora(s) sin confirmar ` +
-          `o sin medio de pago en el período.<br>` +
-          `Por favor resuelva los pendientes antes de realizar el cierre.`,
-      });
-      return;
-    }
-
-    const fmt = (n) =>
-      "$ " +
-      Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    const t = data.totales;
-
-    const tableHtml = `
-      <p style="font-size:0.82rem;color:#9ca3af;margin-bottom:14px;text-align:left;">
-        Período: <strong>${formatFechaCierre(data.fechaDesde)}</strong>
-        &nbsp;→&nbsp;
-        <strong>${formatFechaCierre(data.fechaHasta)}</strong>
-      </p>
-      <table style="width:100%;border-collapse:collapse;font-size:0.92rem;text-align:left;">
-        <thead>
-          <tr style="background:#0d2137;color:#90caf9;">
-            <th style="padding:9px 12px;">Forma de pago</th>
-            <th style="padding:9px 12px;text-align:right;">Alquileres</th>
-            <th style="padding:9px 12px;text-align:right;">Cobros deuda</th>
-            <th style="padding:9px 12px;text-align:right;">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${buildRowCierre("Efectivo",      "EFECTIVO",  data, fmt)}
-          ${buildRowCierre("Transferencia", "TRANS",     data, fmt)}
-          ${buildRowCierre("Mercado Pago",  "MERCPAGO",  data, fmt)}
-          ${buildRowCierre("Débito",        "DEBITO",    data, fmt)}
-        </tbody>
-        <tfoot>
-          <tr style="background:#061425;font-weight:700;color:#4fc3f7;">
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;">TOTAL</td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;"></td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;"></td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;">${fmt(t.TOTAL)}</td>
-          </tr>
-        </tfoot>
-      </table>
-      <div style="margin-top:16px;text-align:left;">
-        <label style="font-size:0.82rem;color:#9ca3af;">Observaciones (opcional)</label>
-        <textarea id="cc-obs"
-          style="width:100%;margin-top:6px;padding:8px 10px;background:#0d1b2a;
-                 border:1px solid #1e3a5f;border-radius:6px;color:#e8eaf0;
-                 font-size:0.88rem;resize:vertical;"
-          rows="2" placeholder="Notas del operador..."></textarea>
-      </div>`;
-
-    const { isConfirmed } = await Swal.fire({
-      title: "Cierre de caja",
-      html: tableHtml,
-      confirmButtonText: "Confirmar cierre",
-      confirmButtonColor: "#1a6b3c",
-      cancelButtonText: "Cancelar",
-      showCancelButton: true,
-      width: "640px",
-      background: "#111c2d",
-      color: "#e8eaf0",
-    });
-
-    if (!isConfirmed) return;
-
-    const observaciones = document.getElementById("cc-obs")?.value ?? "";
-
-    Swal.fire({
-      title: "Guardando...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-
-    const saveRes = await fetch("./accion/putCierreCaja.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fechaDesde: data.fechaDesde,
-        fechaHasta: data.fechaHasta,
-        efectivo: t.EFECTIVO,
-        transferencia: t.TRANS,
-        mercadopago: t.MERCPAGO,
-        debito: t.DEBITO,
-        observaciones,
-      }),
-    });
-
-    const saveData = await saveRes.json();
-
-    if (saveData.success) {
-      Swal.fire(
-        "¡Cierre realizado!",
-        `El cierre de caja #${saveData.id} fue registrado correctamente.`,
-        "success",
-      );
-    } else {
-      Swal.fire("Error", saveData.error ?? "No se pudo guardar el cierre.", "error");
-    }
-  } catch (err) {
-    Swal.fire("Error", "Error inesperado: " + err.message, "error");
-  }
-}
-
-function buildRowCierre(label, key, data, fmt) {
-  const keyMap = {
-    EFECTIVO: "efectivo",
-    TRANS: "transferencia",
-    MERCPAGO: "mercadopago",
-    DEBITO: "debito",
-  };
-  const k = keyMap[key];
-  const vPagos  = data.totalesPagos[k]  ?? 0;
-  const vCobros = data.totalesCobros[k] ?? 0;
-  const vTotal  = data.totales[key]     ?? 0;
-  const opacity = vTotal > 0 ? "" : "opacity:0.45;";
-  return `<tr style="border-bottom:1px solid #1a2a40;${opacity}">
-    <td style="padding:8px 12px;">${label}</td>
-    <td style="padding:8px 12px;text-align:right;">${fmt(vPagos)}</td>
-    <td style="padding:8px 12px;text-align:right;">${fmt(vCobros)}</td>
-    <td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(vTotal)}</td>
-  </tr>`;
-}
-
-function formatFechaCierre(str) {
-  if (!str) return "";
-  const d = new Date(str.replace(" ", "T"));
-  return (
-    d.toLocaleDateString("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" }) +
-    " " +
-    d.toLocaleTimeString("es-UY", { hour: "2-digit", minute: "2-digit" })
-  );
-}
+});

@@ -1,0 +1,11 @@
+{
+  "version": "1.0.1",
+  "minVersion": "1.0.0",
+  "forceUpdate": true,
+  "updateMessage": "Nueva versión disponible. Por favor actualiza la aplicación.",
+  "features": [
+    "Mejoras de rendimiento",
+    "Corrección de errores",
+    "Nueva funcionalidad de reservas"
+  ]
+}

@@ -89,10 +89,20 @@
 
 
         if($idAgenda){
-           
+            $reservAgenda = Agenda::buscarPorId($idAgenda);
+            if($reservAgenda){
+                $reservAgenda->setIdUsuario($idUsuario);
+                $reservAgenda->setInvitado1($idInvitado1);
+                $reservAgenda->setInvitado2($idInvitado2);
+                $reservAgenda->setInvitado3($idInvitado3);
+                $reservAgenda->guardar();
+            }
+
+
             $agenda = new FdpAgenda(null, $fecha, $idAgenda, $idUsuario, $fdpUsuario, $idInvitado1, $fdpInvitado1, 
             $idInvitado2, $fdpInvitado2, $idInvitado3, $fdpInvitado3,$impUsu,$impInv1,$impInv2,$impInv3);
             $agenda->guardar();
+
 
             
             

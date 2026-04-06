@@ -164,13 +164,33 @@ class Agenda {
 
     public static function recuperarTodosLasReservas($fechaDesde,$fechaHasta) {
         $conexion = new Conexion();
-        $consulta = $conexion->prepare('SELECT id, fecha, hora, idUsuario, estado, timeEstado, servicio, idUserRival, estadoRival, mensaje, invitado1, invitado2, invitado3   
-            FROM ' . self::TABLA . ' WHERE fecha BETWEEN :fechaDesde AND :fechaHasta ORDER BY fecha ASC, hora ASC');
+        $consulta = $conexion->prepare('SELECT s.id, s.fecha, s.hora, s.idUsuario, s.estado, s.timeEstado, s.servicio, s.idUserRival, s.estadoRival, s.mensaje, 
+        s.invitado1, s.invitado2, s.invitado3, 
+        (select count(h.id) FROM horafija h WHERE h.dia = DAYOFWEEK(s.fecha) AND h.servicio = s.servicio AND h.hora = s.hora) as horaFija  
+            FROM ' . self::TABLA . ' s WHERE s.fecha BETWEEN :fechaDesde AND :fechaHasta ORDER BY s.fecha ASC, s.hora ASC');
         $consulta->bindParam(':fechaDesde', $fechaDesde);
         $consulta->bindParam(':fechaHasta', $fechaHasta);
         $consulta->execute();
         $registros = $consulta->fetchAll();
         return $registros;
+    }
+
+    //recuperar reservas en estado 1 o que no tenga los 4 medios de pago
+    public static function recuperarReservasSinConfirmarOpagar($fechaDesde,$fechaHasta) {
+        $conexion = new Conexion();
+        $sql = 'SELECT s.id, s.fecha, s.hora, s.idUsuario, s.estado, s.timeEstado, s.servicio, s.idUserRival, s.estadoRival, s.mensaje, 
+        s.invitado1, s.invitado2, s.invitado3, 
+        (select count(h.id) FROM horafija h WHERE h.dia = DAYOFWEEK(s.fecha) AND h.servicio = s.servicio AND h.hora = s.hora) as horaFija  
+            FROM ' . self::TABLA . ' s WHERE s.fecha BETWEEN :fechaDesde AND :fechaHasta AND (s.estado = 1 OR (s.estado = 2 AND 
+            (select count(p.id) FROM pagos p WHERE p.idAgenda = s.id) = 0)) ORDER BY s.fecha ASC, s.hora ASC';
+            //echo $sql . $fechaDesde . " - " . $fechaHasta;
+        $consulta = $conexion->prepare($sql);
+        $consulta->bindParam(':fechaDesde', $fechaDesde);
+        $consulta->bindParam(':fechaHasta', $fechaHasta);
+        $consulta->execute();
+        $registros = $consulta->fetchAll();
+        return $registros;
+
     }
 
     //recuperar si usuario tiene reserva en estado 1
