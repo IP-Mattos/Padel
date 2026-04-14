@@ -76,9 +76,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         try {
             $estadoInsert = 0;
             if ($id !== null && $id !== "") {
-                $sql = "INSERT INTO torneo_aspirantes (id, idTorneo, idUsuario, Estado)
-                        VALUES (:id, :idTorneo, :idUsuario, :estado)";
-                $stmt = $dbConn->prepare($sql);
+                if ($estado == 0 ) {
+                    $sql = "INSERT INTO torneo_aspirantes (idTorneo, idUsuario, Estado)
+                    VALUES (:idTorneo, :idUsuario, :estado)";
+                    $stmt = $dbConn->prepare($sql);
+                }elseif($estado == 1) {
+                     $sql = "update torneo_aspirantes set idTorneo = :idTorneo, idUsuario = :idUsuario, Estado = :estado where id = :id";
+                    $stmt = $dbConn->prepare($sql);
+                }elseif($estado == 2) {
+                    $sql = "delete from torneo_aspirantes where id = :id";
+                    $stmt = $dbConn->prepare($sql);
+
+                }
+               
                 $idInt = intval($id);
                 $stmt->bindParam(':id', $idInt);
             } else {

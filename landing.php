@@ -80,6 +80,10 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resCancha.png" alt="Imagen 1" />
         </div>
         <h3>Canchas</h3>
+        <div class="bento-item hidden" id="openTournament">
+          <img src="./img/torneo.png" alt="Imagen 8" />
+        </div>
+        <h3 id="tournamentTitle" class="hidden">Torneos</h3>
         <div class="bento-item" id="openClasses">
           <img src="./img/resClases.png" alt="Imagen 2">
         </div>
@@ -280,6 +284,16 @@ if (isset($_SESSION['userId'])) {
         </div>
       </div>
     </div>
+    <div id="tournamentModal" class="trModal">
+      <div class="trModal-content">
+        <span id="closeTournament" class="close">&times;</span>
+        <h2>Torneos</h2>
+        <div id="tournamentCards" class="tournament-cards"></div>
+        <div class="buttons">
+          <button id="acceptTournament" disabled>Inscribirme</button>
+        </div>
+      </div>
+    </div>
     <div id="profileModal" class="pModal">
       <div class="pModal-content">
         <span id="closeProfile" class="close">&times;</span>
@@ -372,7 +386,8 @@ if (isset($_SESSION['userId'])) {
 <script src="landing.js?test"></script>
 <script>
   const userId = <?php echo $_SESSION['userId']; ?>;
-  const userStars = <?php echo $_SESSION['misEstrellas']; ?>
+  const userStars = <?php echo $_SESSION['misEstrellas']; ?>;
+  const userCategoria = <?php echo (int) $_SESSION['userCategoria']; ?>;
 </script>
 
 </html>

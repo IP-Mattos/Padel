@@ -174,7 +174,8 @@ nav.menu ul li a {
 .vModal,
 .iModal,
 .aModal,
-.ptModal {
+.ptModal,
+.trModal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -201,7 +202,8 @@ nav.menu ul li a {
 .vModal-content,
 .iModal-content,
 .aModal-content,
-.ptModal-content {
+.ptModal-content,
+.trModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -226,7 +228,8 @@ nav.menu ul li a {
 .sModal-content h2,
 .hModal-content h2,
 .vModal-content h2,
-.iModal-content h2 {
+.iModal-content h2,
+.trModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 20px;
@@ -554,6 +557,42 @@ nav.menu ul li a {
   display: block;
 }
 
+.tournament-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.tCard {
+  background: #0d2137;
+  border: 2px solid #1e3a5f;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  color: #e8eaf0;
+  text-align: left;
+}
+
+.tCard h3 {
+  margin: 0 0 6px;
+  color: var(--primary-color);
+}
+
+.tCard p {
+  margin: 3px 0;
+  font-size: 0.9rem;
+}
+
+.tCard.selected {
+  border-color: var(--primary-color);
+  background: #0d2f4f;
+  box-shadow: 0 0 12px var(--primary-color);
+}
+
 .profile {
   display: flex;
   margin: 2% auto;
@@ -741,6 +780,7 @@ td {
 #acceptRivals,
 #acceptMembers,
 #acceptClasses,
+#acceptTournament,
 #interested {
   border: none;
   padding: 20px;
@@ -853,7 +893,7 @@ td {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 768px) {
@@ -887,7 +927,8 @@ td {
   .vModal-content,
   .iModal-content,
   .aModal-content,
-  .ptModal-content {
+  .ptModal-content,
+  .trModal-content {
     margin: auto auto;
   }
 

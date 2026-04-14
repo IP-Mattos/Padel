@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pModal = document.getElementById("profileModal");
   const caModal = document.getElementById("cantineModal");
   const tModal = document.getElementById("trainingModal");
+  const trModal = document.getElementById("tournamentModal");
   const clModal = document.getElementById("classesModal");
   const rModal = document.getElementById("rivalsModal");
   const sModal = document.getElementById("membersModal");
@@ -63,6 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
       contentClass: ".tModal-content",
       openButtons: ["openTraining"],
       closeButtons: ["closeTraining"],
+    },
+    {
+      name: "tournament",
+      modal: trModal,
+      contentClass: ".trModal-content",
+      openButtons: ["openTournament"],
+      closeButtons: ["closeTournament"],
     },
     {
       name: "classes",
@@ -1563,6 +1571,154 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   //====================================================================>
+  //TOURNAMENT MODAL
+  //====================================================================>
+
+  fetch("./accion/getTorneos.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "estado=1",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.consultaResponse?.torneos?.length > 0) {
+        document.getElementById("openTournament").classList.remove("hidden");
+        document.getElementById("tournamentTitle").classList.remove("hidden");
+      }
+    })
+    .catch((err) => {
+      console.error("Error fetching torneos:", err);
+    });
+
+  let selectedTorneoId = null;
+
+  async function loadTorneos() {
+    const cardsContainer = document.getElementById("tournamentCards");
+    const confirmBtn = document.getElementById("acceptTournament");
+    cardsContainer.innerHTML = "<p>Cargando torneos...</p>";
+    confirmBtn.disabled = true;
+    selectedTorneoId = null;
+
+    try {
+      const res = await fetch("./accion/getTorneos.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "estado=1",
+      });
+      const data = await res.json();
+
+      if (data.consultaResponse?.torneos?.length > 0) {
+        document.getElementById("openTournament").classList.remove("hidden");
+      }
+
+      const torneos = data.consultaResponse?.torneos ?? [];
+
+      if (torneos.length === 0) {
+        cardsContainer.innerHTML = "<p>No hay torneos disponibles.</p>";
+        return;
+      }
+
+      cardsContainer.innerHTML = "";
+
+      torneos.forEach((torneo) => {
+        const card = document.createElement("div");
+        card.className = "tCard";
+
+        const [year, month, day] = torneo.fecha.split("-").map(Number);
+        const fecha = new Date(year, month - 1, day);
+        const fechaStr = fecha.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          timeZone: "America/Montevideo",
+        });
+
+        card.innerHTML = `
+        <h3>${torneo.nombre}</h3>
+        <p>📅 ${fechaStr}</p>
+        <p>🏆 Categoría <strong>${torneo.categoria}</strong></p>
+        <p>💰 Entrada: <strong>$ ${Number(torneo.entre).toLocaleString("es-UY")}</strong></p>
+      `;
+
+        card.addEventListener("click", () => {
+          cardsContainer
+            .querySelectorAll(".tCard")
+            .forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+          selectedTorneoId = torneo.id;
+          selectedTorneoCategoria = torneo.categoria;
+          confirmBtn.disabled = false;
+        });
+
+        cardsContainer.appendChild(card);
+      });
+    } catch (err) {
+      console.error("Error al cargar torneos:", err);
+      cardsContainer.innerHTML = "<p>Error al cargar torneos.</p>";
+    }
+  }
+
+  let selectedTorneoCategoria = null;
+
+  document.getElementById("openTournament").addEventListener("click", () => {
+    loadTorneos();
+  });
+
+  document
+    .getElementById("acceptTournament")
+    .addEventListener("click", async () => {
+      if (!selectedTorneoId) return;
+
+      if (String(userCategoria) !== String(selectedTorneoCategoria)) {
+        const { isConfirmed } = await Swal.fire({
+          icon: "warning",
+          title: "Categoría diferente",
+          html: `Este torneo es de categoría <strong>${selectedTorneoCategoria}</strong> y tu categoría es <strong>${userCategoria}</strong>.<br>¿Deseas inscribirte igual?`,
+          showCancelButton: true,
+          confirmButtonText: "Sí, inscribirme",
+          cancelButtonText: "Cancelar",
+        });
+        if (!isConfirmed) return;
+      }
+
+      try {
+        const payload = new URLSearchParams();
+        payload.append("idTorneo", selectedTorneoId);
+        payload.append("idUsuario", userId);
+
+        const res = await fetch("./accion/putTorneoAspirante.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: payload.toString(),
+        });
+
+        const json = await res.json();
+
+        if (json.consultaResponse?.codigoError === "0") {
+          Swal.fire({
+            icon: "success",
+            title: "¡Inscripto!",
+            text:
+              json.consultaResponse.detalleError ||
+              "Te has inscripto en el torneo.",
+            timer: 2500,
+            showConfirmButton: false,
+          });
+          closeModal(trModal, ".trModal-content");
+        } else {
+          Swal.fire(
+            "Error",
+            json.consultaResponse?.detalleError || "No se pudo inscribir.",
+            "error",
+          );
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Error de conexión.", "error");
+      }
+    });
+
+  //====================================================================>
   //ESTRELLAS
   //====================================================================>
 
@@ -1736,18 +1892,18 @@ if (adminAccessBtn) {
           };
           actions.appendChild(cierreBtn);
         }
-        // if (actions && !document.getElementById("swal-torneo-btn")) {
-        //   const torneoBtn = document.createElement("button");
-        //   torneoBtn.id = "swal-torneo-btn";
-        //   torneoBtn.className = "swal2-styled";
-        //   torneoBtn.textContent = "Administrar torneos";
-        //   torneoBtn.style.backgroundColor = "#6c757d";
-        //   torneoBtn.onclick = () => {
-        //     Swal.close();
-        //     window.location.href = "/torneo.php";
-        //   };
-        //   actions.appendChild(torneoBtn);
-        // }
+        if (actions && !document.getElementById("swal-torneo-btn")) {
+          const torneoBtn = document.createElement("button");
+          torneoBtn.id = "swal-torneo-btn";
+          torneoBtn.className = "swal2-styled";
+          torneoBtn.textContent = "Administrar torneos";
+          torneoBtn.style.backgroundColor = "#6c757d";
+          torneoBtn.onclick = () => {
+            Swal.close();
+            window.location.href = "/torneo.php";
+          };
+          actions.appendChild(torneoBtn);
+        }
 
         styleAdminSwalButtons();
       },
@@ -1796,7 +1952,10 @@ async function abrirCierreCaja() {
 
     const fmt = (n) =>
       "$ " +
-      Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      Number(n).toLocaleString("es-UY", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
     const t = data.totales;
 
@@ -1816,10 +1975,10 @@ async function abrirCierreCaja() {
           </tr>
         </thead>
         <tbody>
-          ${buildRowCierre("Efectivo",      "EFECTIVO",  data, fmt)}
-          ${buildRowCierre("Transferencia", "TRANS",     data, fmt)}
-          ${buildRowCierre("Mercado Pago",  "MERCPAGO",  data, fmt)}
-          ${buildRowCierre("Débito",        "DEBITO",    data, fmt)}
+          ${buildRowCierre("Efectivo", "EFECTIVO", data, fmt)}
+          ${buildRowCierre("Transferencia", "TRANS", data, fmt)}
+          ${buildRowCierre("Mercado Pago", "MERCPAGO", data, fmt)}
+          ${buildRowCierre("Débito", "DEBITO", data, fmt)}
         </tbody>
         <tfoot>
           <tr style="background:#061425;font-weight:700;color:#4fc3f7;">
@@ -1884,7 +2043,11 @@ async function abrirCierreCaja() {
         "success",
       );
     } else {
-      Swal.fire("Error", saveData.error ?? "No se pudo guardar el cierre.", "error");
+      Swal.fire(
+        "Error",
+        saveData.error ?? "No se pudo guardar el cierre.",
+        "error",
+      );
     }
   } catch (err) {
     Swal.fire("Error", "Error inesperado: " + err.message, "error");
@@ -1899,9 +2062,9 @@ function buildRowCierre(label, key, data, fmt) {
     DEBITO: "debito",
   };
   const k = keyMap[key];
-  const vPagos  = data.totalesPagos[k]  ?? 0;
+  const vPagos = data.totalesPagos[k] ?? 0;
   const vCobros = data.totalesCobros[k] ?? 0;
-  const vTotal  = data.totales[key]     ?? 0;
+  const vTotal = data.totales[key] ?? 0;
   const opacity = vTotal > 0 ? "" : "opacity:0.45;";
   return `<tr style="border-bottom:1px solid #1a2a40;${opacity}">
     <td style="padding:8px 12px;">${label}</td>
@@ -1915,7 +2078,11 @@ function formatFechaCierre(str) {
   if (!str) return "";
   const d = new Date(str.replace(" ", "T"));
   return (
-    d.toLocaleDateString("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" }) +
+    d.toLocaleDateString("es-UY", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }) +
     " " +
     d.toLocaleTimeString("es-UY", { hour: "2-digit", minute: "2-digit" })
   );
