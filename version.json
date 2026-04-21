@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
-  "minVersion": "1.0.0",
+  "version": "1.0.2",
+  "minVersion": "1.0.1",
   "forceUpdate": true,
   "updateMessage": "Nueva versión disponible. Por favor actualiza la aplicación.",
   "features": [

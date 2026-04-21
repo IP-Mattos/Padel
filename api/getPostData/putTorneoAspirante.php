@@ -48,21 +48,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         exit();
     }
 
-    $accion = "insert";
     $id = null;
     $idTorneo = null;
     $idUsuario = null;
     $estado = 0;
 
     foreach ($input as $clave => $valor) {
-        if ($clave === "accion") { $accion = strtolower(trim((string)$valor)); }
         if ($clave === "id") { $id = trim((string)$valor); }
         if ($clave === "idTorneo") { $idTorneo = intval($valor); }
         if ($clave === "idUsuario") { $idUsuario = intval($valor); }
         if ($clave === "estado") { $estado = intval($valor); }
     }
 
-    if ($accion === "insert") {
+    
         if (!$idTorneo || !$idUsuario) {
             header("HTTP/1.1 400 Bad Request");
             $return['codigoError'] = "2";
@@ -74,32 +72,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         }
 
         try {
-            $estadoInsert = 0;
+
             if ($id !== null && $id !== "") {
-                if ($estado == 0 ) {
+                if ($estado === 0 ) {
                     $sql = "INSERT INTO torneo_aspirantes (idTorneo, idUsuario, Estado)
                     VALUES (:idTorneo, :idUsuario, :estado)";
                     $stmt = $dbConn->prepare($sql);
-                }elseif($estado == 1) {
-                     $sql = "update torneo_aspirantes set idTorneo = :idTorneo, idUsuario = :idUsuario, Estado = :estado where id = :id";
+                        $stmt->bindParam(':idTorneo', $idTorneo);
+                        $stmt->bindParam(':idUsuario', $idUsuario);
+                        $stmt->bindParam(':estado', $estado);
+                }elseif($estado === 1) {
+                     $sql = "UPDATE torneo_aspirantes SET idTorneo = :idTorneo, idUsuario = :idUsuario, Estado = :estado WHERE id = :id";
                     $stmt = $dbConn->prepare($sql);
-                }elseif($estado == 2) {
-                    $sql = "delete from torneo_aspirantes where id = :id";
+                    $idInt = intval($id);
+                    $stmt->bindParam(':id', $idInt);
+                     $stmt->bindParam(':idTorneo', $idTorneo);
+                    $stmt->bindParam(':idUsuario', $idUsuario);
+                    $stmt->bindParam(':estado', $estado);
+                }elseif($estado === 2) {
+                    $sql = "DELETE FROM torneo_aspirantes WHERE id = :id";
                     $stmt = $dbConn->prepare($sql);
+                    $idInt = intval($id);
+                    $stmt->bindParam(':id', $idInt);
 
                 }
                
-                $idInt = intval($id);
-                $stmt->bindParam(':id', $idInt);
+                
             } else {
                 $sql = "INSERT INTO torneo_aspirantes (idTorneo, idUsuario, Estado)
                         VALUES (:idTorneo, :idUsuario, :estado)";
                 $stmt = $dbConn->prepare($sql);
+                 $stmt->bindParam(':idTorneo', $idTorneo);
+                $stmt->bindParam(':idUsuario', $idUsuario);
+                $stmt->bindParam(':estado', $estado);
             }
 
-            $stmt->bindParam(':idTorneo', $idTorneo);
-            $stmt->bindParam(':idUsuario', $idUsuario);
-            $stmt->bindParam(':estado', $estadoInsert);
+           
             $stmt->execute();
 
             $idAspirante = $dbConn->lastInsertId();
@@ -111,11 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $return['codigoError'] = "0";
             $return['detalleError'] = "Aspirante registrado correctamente";
             $return['fechaHora'] = $fechHora;
-            $return['accion'] = "insert";
             $return['id'] = $idAspirante;
+            $return['estado'] = $estado;
+            $return['sql'] = $sql;
             $return['idTorneo'] = $idTorneo;
             $return['idUsuario'] = $idUsuario;
-            $return['estado'] = $estadoInsert;
             $response['consultaResponse'] = $return;
             echo json_encode($response);
             exit();
@@ -129,86 +137,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             echo json_encode($response);
             exit();
         }
-    }
+}else{
 
-    if ($accion === "update") {
-        if ($estado < 0) {
-            header("HTTP/1.1 400 Bad Request");
-            $return['codigoError'] = "3";
-            $return['detalleError'] = "estado invalido";
-            $return['fechaHora'] = $fechHora;
-            $response['consultaResponse'] = $return;
-            echo json_encode($response);
-            exit();
-        }
-
-        try {
-            if ($id !== null && $id !== "") {
-                $sql = "UPDATE torneo_aspirantes SET Estado = :estado WHERE id = :id";
-                $stmt = $dbConn->prepare($sql);
-                $idInt = intval($id);
-                $stmt->bindParam(':id', $idInt);
-            } else {
-                if (!$idTorneo || !$idUsuario) {
-                    header("HTTP/1.1 400 Bad Request");
-                    $return['codigoError'] = "4";
-                    $return['detalleError'] = "Para update sin id, enviar idTorneo e idUsuario";
-                    $return['fechaHora'] = $fechHora;
-                    $response['consultaResponse'] = $return;
-                    echo json_encode($response);
-                    exit();
-                }
-
-                $sql = "UPDATE torneo_aspirantes
-                        SET Estado = :estado
-                        WHERE idTorneo = :idTorneo AND idUsuario = :idUsuario";
-                $stmt = $dbConn->prepare($sql);
-                $stmt->bindParam(':idTorneo', $idTorneo);
-                $stmt->bindParam(':idUsuario', $idUsuario);
-            }
-
-            $stmt->bindParam(':estado', $estado);
-            $stmt->execute();
-
-            header("HTTP/1.1 200 OK");
-            $return['codigoError'] = "0";
-            $return['detalleError'] = "Estado actualizado correctamente";
-            $return['fechaHora'] = $fechHora;
-            $return['accion'] = "update";
-            $return['id'] = ($id !== null && $id !== "") ? intval($id) : null;
-            $return['idTorneo'] = $idTorneo;
-            $return['idUsuario'] = $idUsuario;
-            $return['estado'] = $estado;
-            $return['filasAfectadas'] = $stmt->rowCount();
-            $response['consultaResponse'] = $return;
-            echo json_encode($response);
-            exit();
-
-        } catch (PDOException $e) {
-            header("HTTP/1.1 500 Internal Server Error");
-            $return['codigoError'] = "99";
-            $return['detalleError'] = "Error al actualizar aspirante: " . $e->getMessage();
-            $return['fechaHora'] = $fechHora;
-            $response['consultaResponse'] = $return;
-            echo json_encode($response);
-            exit();
-        }
-    }
-
-    header("HTTP/1.1 400 Bad Request");
-    $return['codigoError'] = "5";
-    $return['detalleError'] = "accion invalida. Use insert o update";
+    header("HTTP/1.1 405 Method Not Allowed");
+    $return['codigoError'] = "11";
+    $return['detalleError'] = "Metodo no permitido";
     $return['fechaHora'] = $fechHora;
     $response['consultaResponse'] = $return;
     echo json_encode($response);
     exit();
 }
 
-header("HTTP/1.1 405 Method Not Allowed");
-$return['codigoError'] = "11";
-$return['detalleError'] = "Metodo no permitido";
-$return['fechaHora'] = $fechHora;
-$response['consultaResponse'] = $return;
-echo json_encode($response);
-exit();
 ?>

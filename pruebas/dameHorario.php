@@ -345,7 +345,6 @@
 
 <h3>Alta Aspirante (estado fijo en 0)</h3>
 <form method="post" action="../accion/putTorneoAspirante.php">
-    <input type="hidden" id="accionInsert" name="accion" value="insert">
     <input type="number" id="idInsert" name="id" value="" placeholder="id (opcional)">
     <input type="number" id="idTorneoInsert" name="idTorneo" value="" placeholder="idTorneo" required>
     <input type="number" id="idUsuarioInsert" name="idUsuario" value="" placeholder="idUsuario" required>
@@ -357,7 +356,7 @@
 <h3>Modificar Estado Aspirante</h3>
 <form method="post" action="../accion/putTorneoAspirante.php">
     <input type="hidden" id="accionUpdate" name="accion" value="update">
-    <input type="number" id="idUpdate" name="id" value="" placeholder="id aspirante (opcional)">
+    <input type="number" id="idUpdate" name="id" value="" placeholder="id relacion torneo-aspirante ">
     <input type="number" id="idTorneoUpdate" name="idTorneo" value="" placeholder="idTorneo (si no envias id)">
     <input type="number" id="idUsuarioUpdate" name="idUsuario" value="" placeholder="idUsuario (si no envias id)">
     <input type="number" id="estadoUpdate" name="estado" value="1" placeholder="nuevo estado" required>

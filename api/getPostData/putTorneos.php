@@ -87,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
 
     try {
         if ($id !== null && $id !== "") {
-            $sql = "INSERT INTO torneos (id, categoria, fecha, nombre, entre, estado)
-                    VALUES (:id, :categoria, :fecha, :nombre, :entre, :estado)";
+            $sql = "UPDATE torneos SET categoria = :categoria, fecha = :fecha, nombre = :nombre, entre = :entre, estado = :estado 
+            WHERE id = :id";
             $stmt = $dbConn->prepare($sql);
             $idInt = intval($id);
             $stmt->bindParam(':id', $idInt);

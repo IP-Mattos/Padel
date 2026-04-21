@@ -339,6 +339,7 @@ if (isset($_SESSION['userId'])) {
             <option value="5">5</option>
             <option value="6">6</option>
             <option value="7">7</option>
+            <option value="8">8</option>
           </select>
           <h3>Fecha de nacimiento</h3>
           <input type="date" name="fechnac" value="<?php echo $formattedDate ?>">
@@ -389,5 +390,6 @@ if (isset($_SESSION['userId'])) {
   const userStars = <?php echo $_SESSION['misEstrellas']; ?>;
   const userCategoria = <?php echo (int) $_SESSION['userCategoria']; ?>;
 </script>
+<script src="push-manager.js"></script>
 
 </html>

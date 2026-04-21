@@ -943,6 +943,9 @@ document.addEventListener("DOMContentLoaded", () => {
             .slice(0, 2)
             .join(":")}</strong>`;
 
+          const canchaP = document.createElement("p");
+          canchaP.innerHTML = `<strong>${item.nombreServicio}</strong>`;
+
           const imageWrapper = document.createElement("div");
           imageWrapper.className = "image-wrapper";
 
@@ -960,6 +963,7 @@ document.addEventListener("DOMContentLoaded", () => {
           img.className = "service-icon";
           imageWrapper.appendChild(img);
 
+          card.appendChild(canchaP);
           card.appendChild(dateP);
           card.appendChild(imageWrapper);
 

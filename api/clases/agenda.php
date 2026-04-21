@@ -145,9 +145,12 @@ class Agenda {
 
     public static function recuperarTodosIdUserFech($fechaDesde,$fechaHasta, $idUsuario) {
         $conexion = new Conexion();
-        $sql = 'SELECT id, fecha, hora, idUsuario, estado, timeEstado, servicio, idUserRival, estadoRival, mensaje, invitado1, invitado2, invitado3   
-            FROM ' . self::TABLA . ' WHERE fecha BETWEEN :fechaDesde AND :fechaHasta AND 
-            (idUsuario = :idUsuario or idUserRival = :idRival or invitado1 = :inv1 or invitado2 = :inv2 or invitado3 = :inv3) ORDER BY fecha ASC, hora ASC';
+        $sql = 'SELECT a.id, a.fecha, a.hora, a.idUsuario, a.estado, a.timeEstado, a.servicio, 
+        (select s.nombre from servicio s where s.servicio = a.servicio) as nombreServicio,
+         a.idUserRival, a.estadoRival, a.mensaje, a.invitado1, a.invitado2, a.invitado3   
+            FROM ' . self::TABLA . ' a WHERE a.fecha BETWEEN :fechaDesde AND :fechaHasta AND 
+            (a.idUsuario = :idUsuario or a.idUserRival = :idRival or a.invitado1 = :inv1 or a.invitado2 = :inv2 or a.invitado3 = :inv3) 
+            ORDER BY a.fecha ASC, a.hora ASC';
         //echo $sql;
         $consulta = $conexion->prepare($sql);
         $consulta->bindParam(':fechaDesde', $fechaDesde);

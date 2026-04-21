@@ -4,12 +4,12 @@ session_start();
 if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
   $loggedIn = true;
 } else {
-  if($_COOKIE['goCookToken']!=""){
-      $token = $_COOKIE['goCookToken'];
-      header('location:./accion/loginUserToken.php');
-  }else{
-     $token=$_COOKIE['goCookToken'];
-      $loggedIn = false;
+  if ($_COOKIE['goCookToken'] != "") {
+    $token = $_COOKIE['goCookToken'];
+    header('location:./accion/loginUserToken.php');
+  } else {
+    $token = $_COOKIE['goCookToken'];
+    $loggedIn = false;
   }
 }
 ?>
@@ -25,10 +25,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
   <link rel="stylesheet" href="style.css" />
   <title>GO Padel</title>
   <style>
-      #floating-image {
+    #floating-image {
       position: fixed;
-      top: 50%;
-      right: 25%;
+      top: 200%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 9999;
       animation: fadeIn 1s ease-in-out;
     }
@@ -36,13 +37,130 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
     #floating-image img {
       width: 300px;
       height: auto;
-      box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
       border-radius: 8px;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .youtube-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1f2937;
+      position: relative;
+    }
+
+    .youtube-icon {
+      transition: color 0.3s ease;
+    }
+
+    .youtube-button:hover .youtube-icon {
+      color: #ff0000;
+    }
+
+    .live-badge {
+      background-color: #ff0000;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+      white-space: nowrap;
+    }
+
+    .live-badge.hidden {
+      display: none;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    .menu ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 12px;
+    }
+
+    .menu li {
+      margin: 0;
+      padding: 0;
+    }
+
+    .menu li a {
+      padding: 8px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      color: #1f2937;
+      text-decoration: none;
+    }
+
+    .menu a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+
+    .menu svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .menu a {
+        width: auto;
+        height: auto;
+        padding: 12px 16px;
+        justify-content: flex-start;
+        border-radius: 10px;
+      }
+
+      .menu svg,
+      .youtube-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      nav.menu {
+        background-color: #121317 !important;
+      }
+
+      nav.menu ul li a {
+        color: #edf2fa !important;
+      }
+
+      nav.menu ul li a:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
     }
   </style>
   <script>
@@ -51,10 +169,26 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       setTimeout(() => {
         img.style.display = 'none';
       }, 5000); // Oculta después de 5 segundos
+
+      // Verificar estado de transmisión en vivo de YouTube
+      checkYouTubeLiveStatus();
     });
+
+    function checkYouTubeLiveStatus() {
+      // Esta función verifica si hay transmisión en vivo
+      // Puedes reemplazar con una llamada a tu servidor que verifique la API de YouTube
+      fetch('./api/checkYouTubeLive.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.isLive) {
+            document.getElementById('live-badge').classList.remove('hidden');
+          }
+        })
+        .catch(error => console.log('No se pudo verificar estado en vivo'));
+    }
   </script>
 
-  
+
 </head>
 <div id="loader" class="loader"></div>
 <div id="loader2" class="loader2-container">
@@ -66,7 +200,7 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
   <header>
     <!-- mostrar imagenes como promos -->
     <div id="floating-image">
-      <img src="./img/promo.png" alt="Promo Activa">
+      <!-- <img src="./img/promo.png" alt="Promo Activa"> -->
     </div>
 
     <div class="logo">
@@ -93,6 +227,8 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
           <path d="M3,21 h18 C 21,12 3,12 3,21" />
         </svg>
       </label>
+
+
       <a id="landing" href="/irLanding.php" class="<?php if (!$loggedIn) {
         echo 'hidden';
       } ?>">
@@ -109,14 +245,56 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
 
     <nav class="menu">
       <ul>
-        <li><a href="#home">Inicio</a></li>
-        <li><a href="#services">Servicios</a></li>
-        <!-- <li><a href="#about">Sobre Nosotros</a></li> -->
-        <li><a href="#contact">Contactos</a></li>
+        <li><a href="#home" title="Inicio">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" />
+            </svg>
+          </a></li>
+        <li><a href="#services" title="Servicios">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z" />
+            </svg>
+          </a></li>
+        <li><a href="#contact" title="Contactos">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21.6 12a1 1 0 0 1-.093.583L19.2 18.35A1 1 0 0 1 18.23 19H5.77a1 1 0 0 1-.97-.65L2.493 12.583A1 1 0 0 1 2.4 12a9.6 9.6 0 0 1 19.2 0Z" />
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 6h.01M17 6h.01" />
+            </svg>
+          </a></li>
+        <li><a id="youtube-btn" href="http://www.youtube.com/@GoPadelFlorida" target="_blank" class="youtube-button"
+            title="YouTube">
+            <svg class="youtube-icon" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          </a></li>
         <li class="reservas <?php if (!$loggedIn)
-          echo 'hidden' ?>"><a href="/landing.php">Reservas</a></li>
+          echo 'hidden' ?>"><a href="/landing.php" title="Reservas">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 4v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1Z" />
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 2v2m4-2v2m4-2v2M3 10h18" />
+              </svg>
+            </a></li>
           <li class="ingresar <?php if ($loggedIn)
-          echo 'hidden' ?>"><a href="#login" id="openModal2">Ingresar</a></li>
+          echo 'hidden' ?>"><a href="#login" id="openModal2" title="Ingresar">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7h.01M12 7h.01M8 7h.01M16 11h.01M12 11h.01M8 11h.01M16 15h.01M12 15h.01M8 15h.01" />
+              </svg>
+            </a></li>
         </ul>
       </nav>
     </header>
@@ -395,11 +573,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!-- incluir versionControl script -->
-     <script src="versionControl.js"></script>
+    <script src="versionControl.js"></script>
     <!-- fin versionControl script -->
-     
+
     <script src="index.js"></script>
     <script>
       const loggedIn = <?php if ($loggedIn) {

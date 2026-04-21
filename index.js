@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     cover.style.display = "none"; // Hide cover
     document.body.style.overflow = "auto";
 
-     // Inicializar control de versiones después de cargar la página
-    if (typeof versionControl !== 'undefined') {
+    // Inicializar control de versiones después de cargar la página
+    if (typeof versionControl !== "undefined") {
       versionControl.init();
     }
     // fin inicializar control de versiones después de cargar la página
@@ -513,45 +513,52 @@ document.addEventListener("DOMContentLoaded", () => {
   //=============================================>
   //SERVICE WORKER REGISTRATION
   //=============================================>
+  let swRegistration = null;
+
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("sw.js")
       .then((registration) => {
         console.log("SW Registered", registration);
+        swRegistration = registration;
+        // Detectar actualizaciones del Service Worker
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          console.log("New service worker found");
 
-         // Detectar actualizaciones del Service Worker
-                registration.addEventListener('updatefound', () => {
-                  const newWorker = registration.installing;
-                  console.log('New service worker found');
-                  
-                  newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      console.log('New service worker installed, update available');
-                      
-                      // Notificar al usuario que hay una actualización
-                      Swal.fire({
-                        title: 'Actualización Disponible',
-                        text: 'Hay una nueva versión de la aplicación. ¿Deseas actualizar ahora?',
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: 'Actualizar',
-                        cancelButtonText: 'Más Tarde'
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          // Enviar mensaje al service worker para activarse
-                          newWorker.postMessage({ type: 'SKIP_WAITING' });
-                          
-                          // Recargar cuando el nuevo SW tome control
-                          navigator.serviceWorker.addEventListener('controllerchange', () => {
-                            window.location.reload();
-                          });
-                        }
-                      });
-                    }
-                  });
-                });
-          //FIN Detectar actualizaciones del Service Worker
- 
+          newWorker.addEventListener("statechange", () => {
+            if (
+              newWorker.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
+              console.log("New service worker installed, update available");
+
+              // Notificar al usuario que hay una actualización
+              Swal.fire({
+                title: "Actualización Disponible",
+                text: "Hay una nueva versión de la aplicación. ¿Deseas actualizar ahora?",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Actualizar",
+                cancelButtonText: "Más Tarde",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Enviar mensaje al service worker para activarse
+                  newWorker.postMessage({ type: "SKIP_WAITING" });
+
+                  // Recargar cuando el nuevo SW tome control
+                  navigator.serviceWorker.addEventListener(
+                    "controllerchange",
+                    () => {
+                      window.location.reload();
+                    },
+                  );
+                }
+              });
+            }
+          });
+        });
+        //FIN Detectar actualizaciones del Service Worker
       })
       .catch((error) => {
         console.log("Error:", error);
