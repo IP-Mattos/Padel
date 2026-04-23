@@ -157,9 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
 
                 $agenda->guardar();
 
-                //mando notificacion para el invitado
-                noti_agregarJugador($idInvitado, "🎾 GO Padel", "Te han agregado a un partido. Revisa en tus reservas y buen juego.");
-
                 //si no hay registro
                 header("HTTP/1.1 200 OK");
                 $return['codigoError'] = "0";

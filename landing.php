@@ -100,10 +100,10 @@ if (isset($_SESSION['userId'])) {
           <img src="./img/resChelada.png" alt="Imagen 5">
         </div>
         <!-- <h3>Cantina</h3> -->
-        <div class="bento-item hidden" id="openMembers">
+        <div class="bento-item" id="openMembers" onclick="window.location.href = '/soySocio'">
           <img src="./img/socios.png" alt="Imagen 6" />
         </div>
-        <!-- <h3>Socios</h3> -->
+        <h3>Socios</h3>
         <div class="bento-item" id="openProfile">
           <img src="./img/perfil.png" alt="Imagen 7" />
         </div>

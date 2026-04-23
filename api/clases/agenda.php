@@ -1,8 +1,9 @@
 <?php
 // File: c:\wamp64\www\www\www\elGO\gopadel\api\clases\agenda.php
-require_once '../Conexion.php';
+require_once __DIR__ . '/../Conexion.php';
 
-class Agenda {
+class Agenda
+{
     private $id;
     private $fecha;
     private $hora;
@@ -19,51 +20,140 @@ class Agenda {
 
     const TABLA = 'agenda';
 
-    public function getId()                       { return $this->id; }
-    public function getFecha()                    { return $this->fecha; }
-    public function getHora()                     { return $this->hora; }
-    public function getIdUsuario()                { return $this->idUsuario; }
-    public function getEstado()                   { return $this->estado; }
-    public function getTimeEstado()               { return $this->timeEstado; }
-    public function getServicio()                 { return $this->servicio; }
-    public function getIdUserRival()              { return $this->idUserRival; }
-    public function getEstadoRival()              { return $this->estadoRival; }
-    public function getMensaje()                  { return $this->mensaje; }
-    public function getInvitado1()                { return $this->invitado1; }
-    public function getInvitado2()                { return $this->invitado2; }
-    public function getInvitado3()                { return $this->invitado3; }
-
-    public function setFecha($fecha)              { $this->fecha = $fecha; }
-    public function setHora($hora)                { $this->hora = $hora; }
-    public function setIdUsuario($idUsuario)      { $this->idUsuario = $idUsuario; }
-    public function setEstado($estado)            { $this->estado = $estado; }
-    public function setTimeEstado($timeEstado)    { $this->timeEstado = $timeEstado; }
-    public function setServicio($servicio)        { $this->servicio = $servicio; }
-    public function setIdUserRival($idUserRival)  { $this->idUserRival = $idUserRival; }
-    public function setEstadoRival($estadoRival)  { $this->estadoRival = $estadoRival; }
-    public function setMensaje($mensaje)          { $this->mensaje = $mensaje; }
-    public function setInvitado1($invitado1)      { $this->invitado1 = $invitado1; }
-    public function setInvitado2($invitado2)      { $this->invitado2 = $invitado2; }
-    public function setInvitado3($invitado3)      { $this->invitado3 = $invitado3; }
-
-    public function __construct($id, $fecha, $hora, $idUsuario, $estado, $timeEstado, $servicio,
-     $idUserRival, $estadoRival, $mensaje, $invitado1, $invitado2, $invitado3) {
-        $this->id         = $id;
-        $this->fecha      = $fecha;
-        $this->hora       = $hora;
-        $this->idUsuario  = $idUsuario;
-        $this->estado     = $estado;
-        $this->timeEstado = $timeEstado;
-        $this->servicio   = $servicio;
-        $this->idUserRival = $idUserRival;
-        $this->estadoRival = $estadoRival;
-        $this->mensaje    = $mensaje;
-        $this->invitado1  = $invitado1;
-        $this->invitado2  = $invitado2;
-        $this->invitado3  = $invitado3;
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function getFecha()
+    {
+        return $this->fecha;
+    }
+    public function getHora()
+    {
+        return $this->hora;
+    }
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+    public function getTimeEstado()
+    {
+        return $this->timeEstado;
+    }
+    public function getServicio()
+    {
+        return $this->servicio;
+    }
+    public function getIdUserRival()
+    {
+        return $this->idUserRival;
+    }
+    public function getEstadoRival()
+    {
+        return $this->estadoRival;
+    }
+    public function getMensaje()
+    {
+        return $this->mensaje;
+    }
+    public function getInvitado1()
+    {
+        return $this->invitado1;
+    }
+    public function getInvitado2()
+    {
+        return $this->invitado2;
+    }
+    public function getInvitado3()
+    {
+        return $this->invitado3;
     }
 
-    public function guardar() {
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    }
+    public function setHora($hora)
+    {
+        $this->hora = $hora;
+    }
+    public function setIdUsuario($idUsuario)
+    {
+        $this->idUsuario = $idUsuario;
+    }
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    }
+    public function setTimeEstado($timeEstado)
+    {
+        $this->timeEstado = $timeEstado;
+    }
+    public function setServicio($servicio)
+    {
+        $this->servicio = $servicio;
+    }
+    public function setIdUserRival($idUserRival)
+    {
+        $this->idUserRival = $idUserRival;
+    }
+    public function setEstadoRival($estadoRival)
+    {
+        $this->estadoRival = $estadoRival;
+    }
+    public function setMensaje($mensaje)
+    {
+        $this->mensaje = $mensaje;
+    }
+    public function setInvitado1($invitado1)
+    {
+        $this->invitado1 = $invitado1;
+    }
+    public function setInvitado2($invitado2)
+    {
+        $this->invitado2 = $invitado2;
+    }
+    public function setInvitado3($invitado3)
+    {
+        $this->invitado3 = $invitado3;
+    }
+
+    public function __construct(
+        $id,
+        $fecha,
+        $hora,
+        $idUsuario,
+        $estado,
+        $timeEstado,
+        $servicio,
+        $idUserRival,
+        $estadoRival,
+        $mensaje,
+        $invitado1,
+        $invitado2,
+        $invitado3
+    ) {
+        $this->id = $id;
+        $this->fecha = $fecha;
+        $this->hora = $hora;
+        $this->idUsuario = $idUsuario;
+        $this->estado = $estado;
+        $this->timeEstado = $timeEstado;
+        $this->servicio = $servicio;
+        $this->idUserRival = $idUserRival;
+        $this->estadoRival = $estadoRival;
+        $this->mensaje = $mensaje;
+        $this->invitado1 = $invitado1;
+        $this->invitado2 = $invitado2;
+        $this->invitado3 = $invitado3;
+    }
+
+    public function guardar()
+    {
         $conexion = new Conexion();
         if ($this->id) {
             $consulta = $conexion->prepare('UPDATE ' . self::TABLA . ' SET 
@@ -105,10 +195,11 @@ class Agenda {
         $conexion = null;
     }
 
-    public static function buscarPorId($id) {
+    public static function buscarPorId($id)
+    {
         $conexion = new Conexion();
         $sql = 'SELECT id, fecha, hora, idUsuario, estado, timeEstado, servicio, idUserRival, estadoRival, mensaje, invitado1, invitado2, invitado3 
-            FROM '. self::TABLA.' WHERE id = :id';
+            FROM ' . self::TABLA . ' WHERE id = :id';
         $consulta = $conexion->prepare($sql);
         $consulta->bindParam(':id', $id);
         $consulta->execute();
@@ -134,7 +225,8 @@ class Agenda {
         }
     }
 
-    public static function recuperarTodos() {
+    public static function recuperarTodos()
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT id, fecha, hora, idUsuario, estado, timeEstado, servicio, idUserRival, estadoRival, mensaje, invitado1, invitado2, invitado3  
             FROM ' . self::TABLA);
@@ -143,7 +235,8 @@ class Agenda {
         return $registros;
     }
 
-    public static function recuperarTodosIdUserFech($fechaDesde,$fechaHasta, $idUsuario) {
+    public static function recuperarTodosIdUserFech($fechaDesde, $fechaHasta, $idUsuario)
+    {
         $conexion = new Conexion();
         $sql = 'SELECT a.id, a.fecha, a.hora, a.idUsuario, a.estado, a.timeEstado, a.servicio, 
         (select s.nombre from servicio s where s.servicio = a.servicio) as nombreServicio,
@@ -165,7 +258,8 @@ class Agenda {
         return $registros;
     }
 
-    public static function recuperarTodosLasReservas($fechaDesde,$fechaHasta) {
+    public static function recuperarTodosLasReservas($fechaDesde, $fechaHasta)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT s.id, s.fecha, s.hora, s.idUsuario, s.estado, s.timeEstado, s.servicio, s.idUserRival, s.estadoRival, s.mensaje, 
         s.invitado1, s.invitado2, s.invitado3, 
@@ -179,14 +273,15 @@ class Agenda {
     }
 
     //recuperar reservas en estado 1 o que no tenga los 4 medios de pago
-    public static function recuperarReservasSinConfirmarOpagar($fechaDesde,$fechaHasta) {
+    public static function recuperarReservasSinConfirmarOpagar($fechaDesde, $fechaHasta)
+    {
         $conexion = new Conexion();
         $sql = 'SELECT s.id, s.fecha, s.hora, s.idUsuario, s.estado, s.timeEstado, s.servicio, s.idUserRival, s.estadoRival, s.mensaje, 
         s.invitado1, s.invitado2, s.invitado3, 
         (select count(h.id) FROM horafija h WHERE h.dia = DAYOFWEEK(s.fecha) AND h.servicio = s.servicio AND h.hora = s.hora) as horaFija  
             FROM ' . self::TABLA . ' s WHERE s.fecha BETWEEN :fechaDesde AND :fechaHasta AND (s.estado = 1 OR (s.estado = 2 AND 
             (select count(p.id) FROM pagos p WHERE p.idAgenda = s.id) = 0)) ORDER BY s.fecha ASC, s.hora ASC';
-            //echo $sql . $fechaDesde . " - " . $fechaHasta;
+        //echo $sql . $fechaDesde . " - " . $fechaHasta;
         $consulta = $conexion->prepare($sql);
         $consulta->bindParam(':fechaDesde', $fechaDesde);
         $consulta->bindParam(':fechaHasta', $fechaHasta);
@@ -197,10 +292,11 @@ class Agenda {
     }
 
     //recuperar si usuario tiene reserva en estado 1
-    public static function tieneReserva($idUsuario) {
+    public static function tieneReserva($idUsuario)
+    {
         $conexion = new Conexion();
         $sql = 'SELECT COUNT(*) as cantidad
-            FROM '. self::TABLA.' WHERE idUsuario = :idUsuario AND estado = 1';
+            FROM ' . self::TABLA . ' WHERE idUsuario = :idUsuario AND estado = 1';
         $consulta = $conexion->prepare($sql);
         $consulta->bindParam(':idUsuario', $idUsuario);
         $consulta->execute();
@@ -212,7 +308,8 @@ class Agenda {
         }
     }
 
-    public static function borrarRegistro($id) {
+    public static function borrarRegistro($id)
+    {
         try {
             $conexion = new Conexion();
             $consulta = $conexion->prepare('DELETE FROM ' . self::TABLA . ' WHERE id = :id');
@@ -222,4 +319,32 @@ class Agenda {
             return $e->getMessage();
         }
     }
+    public function buscarPorIdUsuario($idAgenda)
+    {
+        $conexion = new Conexion();
+        $consulta = $conexion->prepare('SELECT * FROM ' . self::TABLA . ' WHERE id = :idAgenda');
+        $consulta->bindParam(':idAgenda', $idAgenda);
+        $consulta->execute();
+        $registros = $consulta->fetch();
+        if ($registros) {
+            return new self(
+                $registros['id'],
+                $registros['fecha'],
+                $registros['hora'],
+                $registros['idUsuario'],
+                $registros['estado'],
+                $registros['timeEstado'],
+                $registros['servicio'],
+                $registros['idUserRival'],
+                $registros['estadoRival'],
+                $registros['mensaje'],
+                $registros['invitado1'],
+                $registros['invitado2'],
+                $registros['invitado3']
+            );
+        } else {
+            return false;
+        }
+    }
+
 }

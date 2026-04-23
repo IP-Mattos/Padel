@@ -1,17 +1,18 @@
 <?php
 
-       session_start();
-       require_once "../api/utils.php";
-       $fechHora = date('Y-m-d H:i:s');
-       $codigoError = "1";
+session_start();
+require_once "../api/utils.php";
+$fechHora = date('Y-m-d H:i:s');
+$codigoError = "1";
 
-       $token = $_COOKIE['goCookToken'];
-       $idReserva = $_POST['idReserva'];
-       $idInvitado = $_POST['idInvitado'];
+$token = $_COOKIE['goCookToken'];
+$idReserva = $_POST['idReserva'];
+$idInvitado = $_POST['idInvitado'];
 
 
 
-              
-       $ret = putReservInvitados($token,$idReserva,$idInvitado,$_SESSION['userId']);
 
+$ret = putReservInvitados($token, $idReserva, $idInvitado, $_SESSION['userId']);
+
+sendPushToUser($idInvitado, "🎾 GO Padel", $_SESSION['userNombre'] . " te ha agregado a un partido. Revisa en tus reservas y buen juego.", '/landing.php');
 ?>

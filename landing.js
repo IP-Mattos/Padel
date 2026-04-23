@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cover = document.getElementById("cover");
   const loader = document.getElementById("loader");
   document.body.style.overflow = "hidden";
-
+  pushManager.init(); // Initialize push notifications on page load
   window.onload = function () {
     loader.style.display = "none"; // Hide loader
     cover.style.display = "none"; // Hide cover
@@ -86,13 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
       openButtons: ["openRivals"],
       closeButtons: ["closeRivals"],
     },
-    {
-      name: "members",
-      modal: sModal,
-      contentClass: ".sModal-content",
-      openButtons: ["openMembers"],
-      closeButtons: ["closeMembers"],
-    },
+    // {
+    //   name: "members",
+    //   modal: sModal,
+    //   contentClass: ".sModal-content",
+    //   openButtons: ["openMembers"],
+    //   closeButtons: ["closeMembers"],
+    // },
     {
       name: "hours",
       modal: hModal,

@@ -53,7 +53,7 @@ self.addEventListener("fetch", (event) => {
     event.request.url.includes("/accion/") ||
     event.request.url.includes("version.json")
   ) {
-    return fetch(event.request);
+    return;
   }
 
   event.respondWith(

@@ -1258,7 +1258,7 @@ function putReservInvitados($token, $idReserva, $idInvitado, $idUser)
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
+    // CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => 'PUT',
     CURLOPT_POSTFIELDS => '{
@@ -1740,11 +1740,6 @@ function getTorneoAspirantes($token, $idTorneo)
   echo $response;
   curl_close($curl);
   return $response;
-}
-
-function noti_agregarJugador($usuario, $titulo, $texto)
-{
-  sendPushToUser($usuario, $titulo, $texto);
 }
 
 ?>
