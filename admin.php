@@ -3,9 +3,7 @@ session_start();
 
 if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
   $userId = $_SESSION['userId'];
-  $isadmin = $_SESSION['isAdmin'];
 } else {
-  // Redirect to login page if no token is found
   header("Location: landing.php");
   exit();
 }
@@ -17,60 +15,70 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
   <link rel="stylesheet" href="admin.css" />
-  <title>Administración</title>
+  <title>Administración — GO Padel</title>
 </head>
 
 <body>
+
   <header>
-    <div class="logo">
-      <a href="landing.php">
-        <img src="img/return.png" alt="volver" class="logo-image" />
-      </a>
+    <a href="landing.php" class="back-btn">
+      <img src="img/return.png" alt="Volver" />
+    </a>
+    <div class="date-nav">
+      <button id="prevDay" class="nav-btn" aria-label="Día anterior">
+        <img src="./img/izquierda.png" alt="" />
+      </button>
+      <button id="currentDate">Hoy</button>
+      <input type="text" id="datePicker" />
+      <button id="nextDay" class="nav-btn" aria-label="Día siguiente">
+        <img src="./img/derecha.png" alt="" />
+      </button>
     </div>
-    <button id="prevDay"><img src="./img/izquierda.png" alt=""></button>
-    <p id="currentDate"
-      style="background-color: var(--primary-color); color: black; padding:10px 20px; border-radius: 8px;">
-      <strong>Hoy</strong>
-    </p>
-    <input type="text" id="datePicker" />
-    <button id="nextDay"><img src="./img/derecha.png" alt=""></button>
+    <div class="tabs">
+      <button id="tab-normal" class="tab active">Cancha 1</button>
+      <button id="tab-serv6" class="tab">Cancha 2</button>
+    </div>
   </header>
 
-  <div class="tabs">
-    <button id="tab-normal" class="tab active">Cancha 1</button>
-    <button id="tab-serv6" class="tab">Cancha 2</button>
-  </div>
+  <main>
+    <div id="container" class="container"></div>
+  </main>
 
-  <div id="container" class="container"></div>
-
-  <div id="paymentsModal" class="modal hidden">
+  <!-- Payments Modal -->
+  <div id="paymentsModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2>Registrar pagos</h2>
+      <button class="close-modal" aria-label="Cerrar">&times;</button>
+      <h2>Registrar Pagos</h2>
       <form id="paymentsForm">
         <div id="paymentRows"></div>
-
         <button type="submit" class="save-btn">Guardar Pagos</button>
       </form>
     </div>
   </div>
 
-  <div id="userSearchModal" class="modal hidden">
+  <!-- User Search Modal -->
+  <div id="userSearchModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-content">
-      <span class="close-search-modal">&times;</span>
-      <h2>Buscar usuario</h2>
-      <input type="text" id="userSearchInput" placeholder="Nombre, cédula o teléfono..." autocomplete="off" />
+      <button class="close-search-modal" aria-label="Cerrar">&times;</button>
+      <h2>Buscar Usuario</h2>
+      <input type="text" id="userSearchInput" placeholder="Nombre, cédula o teléfono…" autocomplete="off" />
       <div id="userSearchResults"></div>
-      <button id="confirmUserSelect" class="save-btn" disabled>Confirmar</button>
+      <button id="confirmUserSelect" class="save-btn" disabled>Confirmar selección</button>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="admin.js"></script>
+  <script>const userId = <?php echo (int) $_SESSION['userId']; ?>;</script>
+
 </body>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="admin.js"></script>
-<script>const userId = <?php echo $_SESSION['userId']; ?>;</script>
 
 </html>

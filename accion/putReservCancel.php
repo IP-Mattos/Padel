@@ -28,5 +28,24 @@ if ($agenda != null) {
 
 $ret = putReservHorasCancel($token, $idReserva, $_SESSION['userId']);
 
-sendPushToUsers($arr, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado el partido de " . $agenda->getFecha() . " a las " . $agenda->getHora() . ".", '/landing.php');
+$meses = [
+       1 => 'enero',
+       'febrero',
+       'marzo',
+       'abril',
+       'mayo',
+       'junio',
+       'julio',
+       'agosto',
+       'septiembre',
+       'octubre',
+       'noviembre',
+       'diciembre'
+];
+
+$ts = strtotime($agenda->getFecha());
+$mes = $meses[(int) date('n', $ts)];
+$fecha = date('j', $ts) . ' de ' . $mes;
+sendPushToUsers($arr, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado la reserva del " . $fecha . " a las " . substr($agenda->getHora(), 0, 5) . ".", '/landing.php');
+sendPushToUser(73, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado la reserva del " . $fecha . " a las " . substr($agenda->getHora(), 0, 5) . ".", '/admin.php');
 ?>
