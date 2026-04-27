@@ -47,5 +47,5 @@ $ts = strtotime($agenda->getFecha());
 $mes = $meses[(int) date('n', $ts)];
 $fecha = date('j', $ts) . ' de ' . $mes;
 sendPushToUsers($arr, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado la reserva del " . $fecha . " a las " . substr($agenda->getHora(), 0, 5) . ".", '/landing.php');
-sendPushToUser(73, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado la reserva del " . $fecha . " a las " . substr($agenda->getHora(), 0, 5) . ".", '/admin.php');
+sendPushToUser(193, "🎾 GO Padel", $_SESSION['userNombre'] . " ha cancelado la reserva del " . $fecha . " a las " . substr($agenda->getHora(), 0, 5) . ".", '/admin.php');
 ?>

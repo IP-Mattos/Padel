@@ -801,6 +801,112 @@ td {
   opacity: 0.8;
 }
 
+/* Deuda button */
+.deuda-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.deuda-btn:hover {
+  background: rgba(239, 68, 68, 0.28);
+}
+
+/* Deuda modal */
+.dModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+.dModal-content {
+  background: #0d1829;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  width: min(480px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+.dModal-content h2 {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+/* Summary row */
+.deuda-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+.deuda-total {
+  font-weight: 700;
+  color: #f87171;
+  font-size: 15px;
+}
+
+/* Table */
+.deuda-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.deuda-table th {
+  text-align: left;
+  padding: 7px 10px;
+  color: #6b7e9c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-weight: 500;
+}
+.deuda-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.deuda-debe {
+  color: #f87171;
+  font-weight: 600;
+}
+.deuda-haber {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* Badges */
+.deuda-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.03em;
+}
+.badge-gopadel {
+  background: rgba(3, 255, 3, 0.1);
+  color: #03ff03;
+  border: 1px solid rgba(3, 255, 3, 0.25);
+}
+.badge-chelada {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
 .service-switch {
   display: flex;
   justify-content: center;

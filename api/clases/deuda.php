@@ -1,7 +1,8 @@
 <?php
-require_once '../Conexion.php';
+require_once __DIR__ . '/../Conexion.php';
 
-class Deuda {
+class Deuda
+{
     private $id;
     private $idUsuario;
     private $idChelada;
@@ -15,28 +16,80 @@ class Deuda {
     const TABLA = 'deuda';
 
     // Getters
-    public function getId() { return $this->id; }
-    public function getIdUsuario() { return $this->idUsuario; }
-    public function getIdChelada() { return $this->idChelada; }
-    public function getIdPagos() { return $this->idPagos; }
-    public function getidCobros() { return $this->idCobros; }
-    public function getDebe() { return $this->debe; }
-    public function getHaber() { return $this->haber; }
-    public function getSaldo() { return $this->saldo; }
-    public function getFecha() { return $this->fecha; }
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
+    public function getIdChelada()
+    {
+        return $this->idChelada;
+    }
+    public function getIdPagos()
+    {
+        return $this->idPagos;
+    }
+    public function getidCobros()
+    {
+        return $this->idCobros;
+    }
+    public function getDebe()
+    {
+        return $this->debe;
+    }
+    public function getHaber()
+    {
+        return $this->haber;
+    }
+    public function getSaldo()
+    {
+        return $this->saldo;
+    }
+    public function getFecha()
+    {
+        return $this->fecha;
+    }
 
     // Setters
-    public function setIdUsuario($idUsuario) { $this->idUsuario = $idUsuario; }
-    public function setIdChelada($idChelada) { $this->idChelada = $idChelada; }
-    public function setIdPagos($idPagos) { $this->idPagos = $idPagos; }
-    public function setidCobros($idCobros) { $this->idCobros = $idCobros; }
-    public function setDebe($debe) { $this->debe = $debe; }
-    public function setHaber($haber) { $this->haber = $haber; }
-    public function setSaldo($saldo) { $this->saldo = $saldo; }
-    public function setFecha($fecha) { $this->fecha = $fecha; }
+    public function setIdUsuario($idUsuario)
+    {
+        $this->idUsuario = $idUsuario;
+    }
+    public function setIdChelada($idChelada)
+    {
+        $this->idChelada = $idChelada;
+    }
+    public function setIdPagos($idPagos)
+    {
+        $this->idPagos = $idPagos;
+    }
+    public function setidCobros($idCobros)
+    {
+        $this->idCobros = $idCobros;
+    }
+    public function setDebe($debe)
+    {
+        $this->debe = $debe;
+    }
+    public function setHaber($haber)
+    {
+        $this->haber = $haber;
+    }
+    public function setSaldo($saldo)
+    {
+        $this->saldo = $saldo;
+    }
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    }
 
     // Constructor
-    public function __construct($idUsuario, $idChelada, $idPagos, $idCobros, $debe, $haber, $saldo, $fecha = null, $id = null) {
+    public function __construct($idUsuario, $idChelada, $idPagos, $idCobros, $debe, $haber, $saldo, $fecha = null, $id = null)
+    {
         $this->idUsuario = $idUsuario;
         $this->idChelada = $idChelada;
         $this->idPagos = $idPagos;
@@ -49,9 +102,10 @@ class Deuda {
     }
 
     // Guardar (Insertar o Actualizar)
-    public function guardar() {
+    public function guardar()
+    {
         $conexion = new Conexion();
-        
+
         if ($this->id) {
             // Actualizar registro existente
             $consulta = $conexion->prepare('UPDATE ' . self::TABLA . ' SET 
@@ -64,7 +118,7 @@ class Deuda {
                 saldo = :saldo,
                 fecha = :fecha
                 WHERE id = :id');
-            
+
             $consulta->bindParam(':idUsuario', $this->idUsuario);
             $consulta->bindParam(':idChelada', $this->idChelada);
             $consulta->bindParam(':idPagos', $this->idPagos);
@@ -80,7 +134,7 @@ class Deuda {
             $consulta = $conexion->prepare('INSERT INTO ' . self::TABLA . ' 
                 (idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha) 
                 VALUES (:idUsuario, :idChelada, :idPagos, :idCobros, :debe, :haber, :saldo, :fecha)');
-            
+
             $consulta->bindParam(':idUsuario', $this->idUsuario);
             $consulta->bindParam(':idChelada', $this->idChelada);
             $consulta->bindParam(':idPagos', $this->idPagos);
@@ -90,15 +144,16 @@ class Deuda {
             $consulta->bindParam(':saldo', $this->saldo);
             $consulta->bindParam(':fecha', $this->fecha);
             $consulta->execute();
-            
+
             $this->id = $conexion->lastInsertId();
         }
-        
+
         $conexion = null;
     }
 
     // Buscar por ID
-    public static function buscarPorId($id) {
+    public static function buscarPorId($id)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha 
             FROM ' . self::TABLA . ' 
@@ -106,7 +161,7 @@ class Deuda {
         $consulta->bindParam(':id', $id);
         $consulta->execute();
         $registro = $consulta->fetch();
-        
+
         if ($registro) {
             return new self(
                 $registro['idUsuario'],
@@ -125,7 +180,8 @@ class Deuda {
     }
 
     // Buscar por Usuario
-    public static function buscarPorUsuario($idUsuario) {
+    public static function buscarPorUsuario($idUsuario)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT id, idUsuario, idChelada, idPagos, idCobros, debe, haber, saldo, fecha 
             FROM ' . self::TABLA . ' 
@@ -134,7 +190,7 @@ class Deuda {
         $consulta->bindParam(':idUsuario', $idUsuario);
         $consulta->execute();
         $registros = $consulta->fetchAll();
-        
+
         $deudas = [];
         foreach ($registros as $registro) {
             $deudas[] = new self(
@@ -149,12 +205,13 @@ class Deuda {
                 $registro['id']
             );
         }
-        
+
         return $deudas;
     }
 
     // Obtener saldo total de un usuario
-    public static function obtenerSaldoUsuario($idUsuario) {
+    public static function obtenerSaldoUsuario($idUsuario)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT (SUM(debe)-SUM(haber)) as saldoTotal 
             FROM ' . self::TABLA . ' 
@@ -162,21 +219,22 @@ class Deuda {
         $consulta->bindParam(':idUsuario', $idUsuario);
         $consulta->execute();
         $resultado = $consulta->fetch();
-        
+
         return $resultado['saldoTotal'] ?? 0;
     }
 
     // Recuperar todos los registros
-    public static function recuperarTodosDeudores() {
+    public static function recuperarTodosDeudores()
+    {
         $conexion = new Conexion();
         $sql = 'SELECT d.id, d.idUsuario, d.idChelada, d.idPagos, d.idCobros, d.debe, d.haber, (SUM(d.debe)-SUM(d.haber)) as saldo, u.nombre fecha 
             FROM ' . self::TABLA . ' d LEFT JOIN usuarios u ON u.id = d.idUsuario WHERE (d.debe <> 0 OR d.haber <> 0) 
             GROUP BY d.idUsuario ORDER BY u.nombre ASC';
-           //  echo $sql;
+        //  echo $sql;
         $consulta = $conexion->prepare($sql);
         $consulta->execute();
         $registros = $consulta->fetchAll();
-        
+
         $deudas = [];
         foreach ($registros as $registro) {
             $deudas[] = new self(
@@ -191,22 +249,24 @@ class Deuda {
                 $registro['id']
             );
         }
-        
+
         return $deudas;
     }
 
     // Borrar registro
-    public static function borrarRegistro($id) {
+    public static function borrarRegistro($id)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('DELETE FROM ' . self::TABLA . ' WHERE id = :id');
         $consulta->bindParam(':id', $id);
         $consulta->execute();
         $conexion = null;
-        
+
         return $consulta->rowCount() > 0;
     }
 
-    public static function obtenerSaldoActual($idUsuario) {
+    public static function obtenerSaldoActual($idUsuario)
+    {
         $conexion = new Conexion();
         $consulta = $conexion->prepare('SELECT (SUM(debe)-SUM(haber)) as saldo 
             FROM ' . self::TABLA . ' 
@@ -216,7 +276,7 @@ class Deuda {
         $consulta->bindParam(':idUsuario', $idUsuario);
         $consulta->execute();
         $registro = $consulta->fetch();
-        
+
         return $registro ? floatval($registro['saldo']) : 0;
     }
 }

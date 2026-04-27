@@ -712,7 +712,7 @@ main {
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 360px) {
   .tabs {
     display: none;
   } /* tabs move below header on very small screens */

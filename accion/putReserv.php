@@ -49,6 +49,6 @@ $meses = [
 $ts = strtotime($fecha);
 $mes = $meses[(int) date('n', $ts)];
 $fechaF = date('j', $ts) . ' de ' . $mes;
-sendPushToUser(73, "🎾 GO Padel", $_SESSION['userNombre'] . " ha reservado para el " . $fechaF . " a las " . substr($hora, 0, 5) . ".", '/admin.php');
+sendPushToUser(193, "🎾 GO Padel", $_SESSION['userNombre'] . " ha reservado para el " . $fechaF . " a las " . substr($hora, 0, 5) . ".", '/admin.php');
 
 ?>

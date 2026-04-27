@@ -121,6 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
       openButtons: [],
       closeButtons: ["closePlayers"],
     },
+    {
+      name: "deuda",
+      modal: document.getElementById("deudaModal"),
+      contentClass: ".dModal-content",
+      openButtons: ["openDeuda"],
+      closeButtons: ["closeDeuda"],
+    },
   ];
 
   modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
@@ -1721,6 +1728,81 @@ document.addEventListener("DOMContentLoaded", () => {
         Swal.fire("Error", "Error de conexión.", "error");
       }
     });
+
+  //====================================================================>
+  //DEUDA MODAL
+  //=====================================================================>
+
+  const deudaBtn = document.getElementById("openDeuda");
+  if (deudaBtn) {
+    deudaBtn.addEventListener("click", loadDeudaMovimientos);
+  }
+
+  async function loadDeudaMovimientos() {
+    const container = document.getElementById("deudaMovimientos");
+    container.innerHTML = "<p>Cargando movimientos...</p>";
+
+    try {
+      const res = await fetch("./accion/getDeudaMovimientos.php");
+      const data = await res.json();
+
+      if (data.consultaResponse?.codigoError !== "0") {
+        container.innerHTML = "<p>Error al cargar movimientos.</p>";
+        return;
+      }
+
+      const movs = data.consultaResponse.movimientos;
+
+      if (!movs.length) {
+        container.innerHTML = "<p>Sin movimientos registrados.</p>";
+        return;
+      }
+
+      // Running balance header
+      const saldoFinal = movs.reduce(
+        (acc, m) => acc + Number(m.debe) - Number(m.haber),
+        0,
+      );
+
+      container.innerHTML = `
+      <div class="deuda-summary">
+        <span>Saldo total</span>
+        <span class="deuda-total">$ ${saldoFinal.toLocaleString("es-UY", { minimumFractionDigits: 2 })}</span>
+      </div>
+      <table class="deuda-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Origen</th>
+            <th>Debe</th>
+            <th>Haber</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${movs
+            .map(
+              (m) => `
+            <tr>
+              <td>${m.fecha.slice(0, 10)}</td>
+              <td>
+                <span class="deuda-badge ${m.tipo === "Chelada" ? "badge-chelada" : "badge-gopadel"}">
+                  ${m.tipo}
+                </span>
+              </td>
+              <td class="${Number(m.debe) > 0 ? "deuda-debe" : ""}">${Number(m.debe) > 0 ? "$ " + Number(m.debe).toLocaleString("es-UY", { minimumFractionDigits: 2 }) : "—"}</td>
+              <td class="${Number(m.haber) > 0 ? "deuda-haber" : ""}">${Number(m.haber) > 0 ? "$ " + Number(m.haber).toLocaleString("es-UY", { minimumFractionDigits: 2 }) : "—"}</td>
+            </tr>
+          `,
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+    } catch (err) {
+      console.error("Error cargando deuda:", err);
+      container.innerHTML = "<p>Error de conexión.</p>";
+    }
+  }
 
   //====================================================================>
   //ESTRELLAS

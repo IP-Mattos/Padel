@@ -31,8 +31,14 @@ if (isset($_SESSION['userId'])) {
   <header>
     <div class="logo">
       <div class="logo">
-        <a href="/">
-          <img src="img/logo.jpg" alt="Padel Pro-Florida Logo" class="logo-image" />
+        <a href="./index.php">
+          <?php
+          if ($_SESSION['soySocio'] > "0") {
+            echo '<img src="img/logoSocio.gif" alt="Padel Pro-Florida Logo" class="logo-image" />';
+          } else {
+            echo '<img src="img/logo.jpg" alt="Padel Pro-Florida Logo" class="logo-image" />';
+          }
+          ?>
           <h1>INICIO</h1>
         </a>
       </div>
@@ -44,13 +50,17 @@ if (isset($_SESSION['userId'])) {
           <li><a id="admin-access" style="cursor: pointer;"><img style="width: 30px;" src="./img/llave.png"
                 alt="admin"></a></li>
         <?php } ?>
-        <?php if ($_SESSION['userDeuda'] != "0") { ?>
-          <?php echo " Deuda $ " . number_format($_SESSION['userDeuda'], 2, ',', '.'); ?>
-        <?php } ?>
-        <?php if ($_SESSION['userDeuda'] == "0") { ?>
-          <li><a href="#puntos" id="openPoints"><img style="width:30px;height:30px;" src="./img/puntos.png"
-                alt="Puntos"></a></li>
-        <?php } ?>
+        <li>
+          <button id="openDeuda" class="deuda-btn"
+            style="<?php echo $_SESSION['userDeuda'] != '0' ? '' : 'display:none;' ?>">
+            Deuda $ <?php echo number_format($_SESSION['userDeuda'], 2, ',', '.'); ?>
+          </button>
+        </li>
+        <li>
+          <a id="openPoints" style="<?php echo $_SESSION['userDeuda'] == '0' ? '' : 'display:none;' ?>">
+            <img style="width:30px;height:30px;" src="./img/puntos.png" alt="Puntos">
+          </a>
+        </li>
         <!-- <li>
           <?php if ($_SESSION['misEstrellas'] === "1") { ?>
             <img id="stars" style="width: 50px;" src="./img/1star.png" alt="1">
@@ -77,12 +87,17 @@ if (isset($_SESSION['userId'])) {
     <section class="Services" id="home">
       <div class="bento-grid">
         <div class="bento-item" id="openCourt">
-          <img src="./img/resCancha.png" alt="Imagen 1" />
+          <img src="./img/resCanchaNew.png" alt="Imagen 1" />
         </div>
-        <h3>Canchas</h3>
+        <h3>Reservas</h3>
         <div class="bento-item hidden" id="openTournament">
           <img src="./img/torneo.png" alt="Imagen 8" />
         </div>
+        <!-- <h3>Cantina</h3> -->
+        <div class="bento-item" id="openMembers" onclick="window.location.href = '/soySocio'">
+          <img src="./img/sociosNew.png" alt="Imagen 6" />
+        </div>
+        <h3>Socios</h3>
         <h3 id="tournamentTitle" class="hidden">Torneos</h3>
         <div class="bento-item" id="openClasses">
           <img src="./img/resClases.png" alt="Imagen 2">
@@ -99,11 +114,6 @@ if (isset($_SESSION['userId'])) {
         <div class="bento-item hidden" id="openCantine">
           <img src="./img/resChelada.png" alt="Imagen 5">
         </div>
-        <!-- <h3>Cantina</h3> -->
-        <div class="bento-item" id="openMembers" onclick="window.location.href = '/soySocio'">
-          <img src="./img/socios.png" alt="Imagen 6" />
-        </div>
-        <h3>Socios</h3>
         <div class="bento-item" id="openProfile">
           <img src="./img/perfil.png" alt="Imagen 7" />
         </div>
@@ -133,6 +143,14 @@ if (isset($_SESSION['userId'])) {
       </div>
     </div>
 
+    <div id="deudaModal" class="dModal">
+      <div class="dModal-content">
+        <span id="closeDeuda" class="close">&times;</span>
+        <h2>Estado de cuenta</h2>
+        <div id="deudaMovimientos"></div>
+      </div>
+    </div>
+
     <div id="slotInviteModal" class="aModal">
       <div class="aModal-content">
         <span id="closePlayers" class="close">&times;</span>
@@ -145,9 +163,9 @@ if (isset($_SESSION['userId'])) {
     <button id="openVersus" class="float-vs"><img id="versusIcon" src="./img/vs.png" alt="VS"></button>
     <div id="courtModal" class="cModal">
       <div class="cModal-content">
-        <img src="./img/resCancha.png" alt="" class="service-ico">
+        <img src="./img/resCanchaNew.png" alt="" class="service-ico">
         <span id="closeCourt" class="close">&times;</span>
-        <h2>Reservando cancha</h2>
+        <h2>Reserva</h2>
         <div class="service-switch" id="court-service-switch"></div>
 
         <div class="calendar" id="court-calendar"></div>
@@ -215,70 +233,7 @@ if (isset($_SESSION['userId'])) {
       <div class="sModal-content">
         <img src="./img/socios.png" alt="" class="service-ico">
         <span id="closeMembers" class="close">&times;</span>
-        <h1>¡Hazte socio y vive la experiencia!</h1>
-        <p>En Familia Go Padel, vivir el deporte es solo el comienzo. Ser socio te da acceso a beneficios exclusivos.
-          Descubre por qué unirte es la mejor elección:</p>
 
-        <h2>Ventajas de ser socio</h2>
-        <ul>
-          <li>Más juego, menos costo: </li>
-          <li>$ 1500 - Socio FULL disfrutan pádel sin costo de 7:00 a 17:00 y tarifas reducidas en otros horarios. </li>
-          <li>$ 500 - Socios AMIGO. Costo significativamente reducido, obtienen descuentos especiales.</li>
-          <li>Descuentos en productos: Pelotas, greps y más con hasta un 20% de descuento.</li>
-          <li>Clases a precios especiales: Aprende y mejora con tarifas exclusivas para socios.</li>
-        </ul>
-
-        <h2>Comparativa de beneficios</h2>
-        <table>
-          <tr>
-            <th>Beneficio</th>
-            <th>Socio FULL</th>
-            <th>Socio Amigo</th>
-            <th>No socios</th>
-          </tr>
-          <tr>
-            <td>Pádel 7:00 - 17:00</td>
-            <td>Sin Costo</td>
-            <td>$100</td>
-            <td>$250</td>
-          </tr>
-          <tr>
-            <td>Pádel 18:00 - 21:00</td>
-            <td>$100</td>
-            <td>$150</td>
-            <td>$250</td>
-          </tr>
-          <tr>
-            <td>Pádel 22:00 - 24:00</td>
-            <td>Sin Costo</td>
-            <td>$100</td>
-            <td>$250</td>
-          </tr>
-          <tr>
-            <td>Clase Inicial (Base Doble)</td>
-            <td>$100</td>
-            <td>$150</td>
-            <td>$200</td>
-          </tr>
-          <tr>
-            <td>Clases Particulares (Base Doble)</td>
-            <td>$200</td>
-            <td>$300</td>
-            <td>$500</td>
-          </tr>
-          <tr>
-            <td>Productos</td>
-            <td>20% OFF</td>
-            <td>10% OFF</td>
-            <td>0% OFF</td>
-          </tr>
-        </table>
-
-
-        <h2>Únete hoy</h2>
-        <p>Ser socio te conecta con la magia del deporte, la naturaleza y una comunidad vibrante. Relájate bajo las
-          estrellas, disfruta de música en vivo y crea recuerdos únicos. ¡Hazte parte de Familia Go Padel y vive la
-          diferencia!</p>
         <div class="buttons">
           <button id="acceptMembers">Confirmar</button>
         </div>
