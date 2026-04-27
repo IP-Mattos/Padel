@@ -175,7 +175,8 @@ nav.menu ul li a {
 .iModal,
 .aModal,
 .ptModal,
-.trModal {
+.trModal,
+.dModal {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -203,7 +204,8 @@ nav.menu ul li a {
 .iModal-content,
 .aModal-content,
 .ptModal-content,
-.trModal-content {
+.trModal-content,
+.dModal-content {
   background-color: #061425;
   color: white;
   margin: auto auto;
@@ -229,7 +231,8 @@ nav.menu ul li a {
 .hModal-content h2,
 .vModal-content h2,
 .iModal-content h2,
-.trModal-content h2 {
+.trModal-content h2,
+.dModal-content h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 20px;
@@ -818,31 +821,6 @@ td {
 }
 
 /* Deuda modal */
-.dModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
-.dModal-content {
-  background: #0d1829;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 24px;
-  width: min(480px, 100%);
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-}
-.dModal-content h2 {
-  margin-bottom: 16px;
-  font-size: 16px;
-}
 
 /* Summary row */
 .deuda-summary {
@@ -895,6 +873,7 @@ td {
   padding: 2px 8px;
   border-radius: 10px;
   letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 .badge-gopadel {
   background: rgba(3, 255, 3, 0.1);
@@ -1034,7 +1013,8 @@ td {
   .iModal-content,
   .aModal-content,
   .ptModal-content,
-  .trModal-content {
+  .trModal-content,
+  .dModal-content {
     margin: auto auto;
   }
 
