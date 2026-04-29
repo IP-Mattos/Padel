@@ -100,7 +100,7 @@ if (isset($_SESSION['userId'])) {
         <h3>Socios</h3>
         <h3 id="tournamentTitle" class="hidden">Torneos</h3>
         <div class="bento-item" id="openClasses">
-          <img src="./img/resClases.png" alt="Imagen 2">
+          <img src="./img/resClasesNew.png" alt="Imagen 2">
         </div>
         <h3>Clases</h3>
         <div class="bento-item hidden" id="openTraining"><!-- escondido -->

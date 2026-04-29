@@ -1804,6 +1804,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function updateDeudaButton() {
+    fetch("./accion/getDeudaUsuario.php")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.consultaResponse?.codigoError !== "0") return;
+
+        const saldo = Number(data.consultaResponse.saldo);
+        const btn = document.getElementById("openDeuda");
+        const points = document.getElementById("openPoints");
+
+        if (saldo != 0) {
+          btn.textContent = `Deuda $ ${saldo.toLocaleString("es-UY", { minimumFractionDigits: 2 })}`;
+          btn.style.display = "";
+          points.style.display = "none";
+        } else {
+          btn.style.display = "none";
+          points.style.display = "";
+        }
+      })
+      .catch((err) => console.error("Error actualizando deuda:", err));
+  }
+
+  // Run once on load, then every 60 seconds
+  updateDeudaButton();
+  setInterval(updateDeudaButton, 60000);
+
   //====================================================================>
   //ESTRELLAS
   //====================================================================>
