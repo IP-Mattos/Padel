@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
-    $userId = $_SESSION['userId'];
-    $isadmin = $_SESSION['isAdmin'];
-} else {
-    // Redirect to login page if no token is found
+if (empty($_SESSION['userId']) || $_SESSION['isAdmin'] !== "1") {
     header("Location: landing.php");
     exit();
 }
@@ -17,25 +13,27 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="exchange.css" />
-    <title>Administración</title>
+    <title>Administración — Canjes</title>
 </head>
 
 <body>
     <header>
-        <div class="logo">
-            <a href="landing.php">
-                <img src="img/return.png" alt="volver" class="logo-image" />
-            </a>
-        </div>
+        <a href="landing.php" class="back-link" aria-label="Volver">
+            <img src="img/return.png" alt="" class="logo-image" />
+        </a>
+        <span class="header-title">Canjes pendientes</span>
     </header>
 
+    <main id="container" class="container"></main>
 
-    <div id="container" class="container"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="exchange.js"></script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="exchange.js"></script>
 
 </html>

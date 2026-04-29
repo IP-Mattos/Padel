@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
-    $userId = $_SESSION['userId'];
-    $isadmin = $_SESSION['isAdmin'];
-} else {
-    // Redirect to login page if no token is found
+if (empty($_SESSION['userId']) || $_SESSION['isAdmin'] !== "1") {
     header("Location: landing.php");
     exit();
 }
@@ -17,19 +13,17 @@ if (isset($_SESSION['userId']) && $_SESSION['isAdmin'] === "1") {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-    <title>Administración</title>
+    <title>Administración — Deudas</title>
 </head>
 
 <body>
     <header>
-        <div class="logo">
-            <a href="landing.php">
-                <img src="img/return.png" alt="volver" class="logo-image" />
-            </a>
-        </div>
+        <a href="landing.php" class="logo-link" aria-label="Volver">
+            <img src="img/return.png" alt="" class="logo-image" />
+        </a>
     </header>
+
+    <script src="deuda.js"></script>
 </body>
-<script src="deuda.js"></script>
 
 </html>

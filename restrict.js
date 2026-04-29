@@ -1,153 +1,184 @@
+// ─── DOM refs ────────────────────────────────────────────
 const hourSlotsContainer = document.getElementById("container");
 const currentDateDisplay = document.getElementById("currentDate");
 const prevDayBtn = document.getElementById("prevDay");
 const nextDayBtn = document.getElementById("nextDay");
 const datePicker = document.getElementById("datePicker");
 
+// ─── State ───────────────────────────────────────────────
 let currentDate = new Date();
-let selectedCard = null; // To store the selected card
-
 let currentServicio = 1;
+let selectedCard = null;
 
-const defaultParams = {
-  get servicio() {
-    return currentServicio;
-  },
-  profe: 0,
-};
+// ─── Helpers ─────────────────────────────────────────────
+function formatDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
 function debounce(fn, delay) {
-  let timer = null;
-  return function (...args) {
+  let timer;
+  return (...args) => {
     clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
+    timer = setTimeout(() => fn(...args), delay);
   };
 }
 
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
+// ─── Date display ─────────────────────────────────────────
 function updateDateLabel() {
-  const today = new Date();
-  const formattedCurrent = formatDate(currentDate);
-  const formattedToday = formatDate(today);
-
-  currentDateDisplay.textContent =
-    formattedCurrent === formattedToday
-      ? "Hoy"
-      : currentDate.toLocaleDateString("es-UY");
+  const isToday = formatDate(currentDate) === formatDate(new Date());
+  currentDateDisplay.textContent = isToday
+    ? "Hoy"
+    : currentDate.toLocaleDateString("es-UY");
 }
 
 function changeDate(offset) {
   currentDate.setDate(currentDate.getDate() + offset);
   updateDateLabel();
-  fetchHours(
-    {
-      ...defaultParams,
-      fecha: formatDate(currentDate),
-    },
-    hourSlotsContainer
-  );
+  fetchHours();
 }
 
-async function fetchHours({ servicio, profe, fecha }, container) {
-  container.innerHTML = "<p>Cargando horarios...</p>";
+// ─── Fetch hours ─────────────────────────────────────────
+async function fetchHours() {
+  hourSlotsContainer.innerHTML = "<p>Cargando horarios…</p>";
+
+  const body = new URLSearchParams({
+    servicio: currentServicio,
+    profe: 0,
+    fecha: formatDate(currentDate),
+  });
 
   try {
-    const formData = new URLSearchParams();
-    formData.append("servicio", servicio);
-    formData.append("profe", profe);
-    formData.append("fecha", fecha);
-
     const res = await fetch("./accion/getHorarios.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
+      body: body.toString(),
     });
-
     const json = await res.json();
-    container.innerHTML = "";
+    hourSlotsContainer.innerHTML = "";
 
     if (json.consultaResponse.codigoError === "0") {
-      const datos = json.consultaResponse.datos;
-      generateHourCards(container, datos, {
-        servicio,
-        profe,
-        fecha,
-        container,
-      });
+      renderHourCards(json.consultaResponse.datos);
     } else {
-      container.innerHTML = "<p>Error al cargar horarios</p>";
+      hourSlotsContainer.innerHTML = "<p>Error al cargar horarios.</p>";
     }
-  } catch (err) {
-    console.error("Error fetching hours:", err);
-    container.innerHTML = "<p>Error de conexión</p>";
+  } catch {
+    hourSlotsContainer.innerHTML = "<p>Error de conexión.</p>";
   }
 }
 
-function generateHourCards(container, hourData, fetchParams) {
-  container.innerHTML = "";
+// ─── Render cards ────────────────────────────────────────
+function renderHourCards(hourData) {
+  selectedCard = null;
 
   hourData.forEach(({ hora, estado, idReserva }) => {
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("tabindex", "0");
-    card.innerHTML = `<span class="hour">${hora}</span>`;
+
+    const hourSpan = document.createElement("span");
+    hourSpan.className = "hour";
+    hourSpan.textContent = hora;
+    card.appendChild(hourSpan);
 
     if (estado === "3") {
-      // ❌ Unrestrict button
-      const unrestrictBtn = document.createElement("button");
-      unrestrictBtn.textContent = "❌";
-      unrestrictBtn.className = "unrestrict-btn";
-      unrestrictBtn.title = "Eliminar restricción";
-
-      unrestrictBtn.addEventListener("click", async (e) => {
+      // Restricted — show unrestrict button
+      card.classList.add("state-restricted");
+      const btn = makeButton("❌", "unrestrict-btn", "Eliminar restricción");
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        await unrestrictHour(idReserva, fetchParams.fecha);
+        unrestrictHour(idReserva);
       });
-
-      card.appendChild(unrestrictBtn);
-      card.style.backgroundColor = "red";
-      card.style.opacity = "1";
+      card.appendChild(btn);
     } else if (estado === 0) {
-      // 🔒 Lock button
-      const lockBtn = document.createElement("button");
-      lockBtn.textContent = "🔒";
-      lockBtn.className = "lock-btn";
-      lockBtn.title = "Restringir este horario";
-
-      lockBtn.addEventListener("click", async (e) => {
+      // Available — selectable + lock button
+      const btn = makeButton("🔒", "lock-btn", "Restringir este horario");
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        await restrictHour(fetchParams.fecha, hora);
+        restrictHour(hora);
       });
+      card.appendChild(btn);
 
-      card.appendChild(lockBtn);
-
-      // Allow selection
-      card.addEventListener("click", () => toggleCardSelection(card));
-      card.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          toggleCardSelection(card);
+      card.addEventListener("click", () => toggleSelection(card));
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleSelection(card);
         }
       });
     } else {
-      // Reserved/unavailable (no interaction)
-      card.style.backgroundColor = "red";
-      card.style.opacity = "0.6";
-      card.style.pointerEvents = "none";
+      // Reserved / unavailable
+      card.classList.add("state-taken");
+      card.removeAttribute("tabindex");
     }
 
-    container.appendChild(card);
+    hourSlotsContainer.appendChild(card);
   });
 }
 
-async function unrestrictHour(idReserv, fecha) {
-  const result = await Swal.fire({
+function makeButton(label, className, title) {
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.className = className;
+  btn.title = title;
+  return btn;
+}
+
+function toggleSelection(card) {
+  if (selectedCard) selectedCard.classList.remove("selected");
+  selectedCard = card;
+  card.classList.add("selected");
+}
+
+// ─── Restrict hour ───────────────────────────────────────
+async function restrictHour(hora) {
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Restringir este horario?",
+    text: `El horario ${hora} será bloqueado para reservas.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, restringir",
+    cancelButtonText: "Cancelar",
+  });
+
+  if (!isConfirmed) return;
+
+  const body = new URLSearchParams({
+    fecha: formatDate(currentDate),
+    hora,
+    servicio: currentServicio,
+    userId,
+  });
+
+  try {
+    const res = await fetch("./accion/putRestrictHoras.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    });
+    const json = await res.json();
+
+    if (json.consultaResponse?.codigoError === "0") {
+      await Swal.fire({
+        icon: "success",
+        title: "Horario restringido",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      fetchHours();
+    } else {
+      Swal.fire("Error", "No se pudo restringir el horario.", "error");
+    }
+  } catch {
+    Swal.fire("Error", "Ocurrió un error en la conexión.", "error");
+  }
+}
+
+// ─── Unrestrict hour ─────────────────────────────────────
+async function unrestrictHour(idReserv) {
+  const { isConfirmed } = await Swal.fire({
     title: "¿Eliminar restricción?",
     text: "Este horario volverá a estar disponible.",
     icon: "warning",
@@ -156,188 +187,82 @@ async function unrestrictHour(idReserv, fecha) {
     cancelButtonText: "Cancelar",
   });
 
-  if (!result.isConfirmed) return;
+  if (!isConfirmed) return;
 
-  const params = new URLSearchParams();
-  params.append("idReserv", idReserv);
+  const body = new URLSearchParams({ idReserv });
 
   try {
     const res = await fetch("./accion/putReservCancel.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
+      body: body.toString(),
     });
-
     const json = await res.json();
 
     if (json.consultaResponse?.codigoError === "0") {
       await Swal.fire({
         icon: "success",
         title: "Restricción eliminada",
-        text: "El horario fue liberado.",
         timer: 1500,
         showConfirmButton: false,
       });
-
-      // Refresh
-      fetchHours(
-        {
-          ...defaultParams,
-          fecha,
-        },
-        hourSlotsContainer
-      );
+      fetchHours();
     } else {
       Swal.fire("Error", "No se pudo liberar el horario.", "error");
     }
-  } catch (err) {
-    console.error("Error unrestricting hour:", err);
+  } catch {
     Swal.fire("Error", "Ocurrió un error en la conexión.", "error");
   }
 }
 
-function toggleCardSelection(card) {
-  if (selectedCard) {
-    selectedCard.classList.remove("selected");
-  }
-  card.classList.add("selected");
-  selectedCard = card;
-}
-
-// Inject selection style
-const style = document.createElement("style");
-style.textContent = `
-  .card.selected {
-    background-color: var(--primary-color);
-    color: black;
-  }
-  .card.selected .hour {
-    text-shadow: 1px 0 0 black;
-  }
-`;
-document.head.appendChild(style);
-
-async function restrictHour(fecha, hora) {
-  const result = await Swal.fire({
-    title: "¿Restringir este horario?",
-    text: `El horario ${hora} será bloqueado para reservas.`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, restringir",
-    cancelButtonText: "No, cancelar",
-  });
-
-  if (!result.isConfirmed) return;
-
-  const params = new URLSearchParams();
-  params.append("fecha", fecha);
-  params.append("hora", hora);
-  params.append("servicio", currentServicio);
-  params.append("userId", userId); // Ensure this is defined globally
-
-  try {
-    const res = await fetch("./accion/putRestrictHoras.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
-    });
-
-    const json = await res.json();
-
-    if (json.consultaResponse?.codigoError === "0") {
-      await Swal.fire({
-        icon: "success",
-        title: "Horario restringido",
-        text: "El horario fue bloqueado con éxito.",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-
-      // Refresh the list
-      fetchHours(
-        {
-          ...defaultParams,
-          fecha,
-        },
-        hourSlotsContainer
-      );
-    } else {
-      Swal.fire("Error", "No se pudo restringir el horario.", "error");
-    }
-  } catch (err) {
-    console.error("Error restricting hour:", err);
-    Swal.fire("Error", "Ocurrió un error en la conexión.", "error");
-  }
-}
-
-const tabs = document.querySelectorAll(".tab");
-
-tabs.forEach((tab) => {
+// ─── Tabs ─────────────────────────────────────────────────
+document.querySelectorAll(".tab").forEach((tab) => {
   tab.addEventListener("click", () => {
-    // UI state
-    tabs.forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach((t) => {
+      t.classList.remove("active");
+      t.setAttribute("aria-selected", "false");
+    });
     tab.classList.add("active");
+    tab.setAttribute("aria-selected", "true");
 
-    // Change servicio
     currentServicio = Number(tab.dataset.servicio);
-
-    // Reload hours
-    fetchHours(
-      {
-        ...defaultParams,
-        fecha: formatDate(currentDate),
-      },
-      hourSlotsContainer
-    );
+    fetchHours();
   });
 });
 
-// Event listeners
-const debouncedChangeDate = debounce(changeDate, 300);
-prevDayBtn.addEventListener("click", () => debouncedChangeDate(-1));
-nextDayBtn.addEventListener("click", () => debouncedChangeDate(1));
-
-currentDateDisplay.addEventListener("click", () => {
-  datePicker._flatpickr.open();
-});
-
-// Flatpickr setup
+// ─── Flatpickr ────────────────────────────────────────────
 flatpickr("#datePicker", {
   disableMobile: true,
   defaultDate: new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
-    currentDate.getDate()
+    currentDate.getDate(),
   ),
   dateFormat: "Y-m-d",
   appendTo: document.body,
   positionElement: currentDateDisplay,
   position: "below",
-  onChange: function (selectedDates) {
-    if (selectedDates.length) {
-      currentDate = new Date(
-        selectedDates[0].getFullYear(),
-        selectedDates[0].getMonth(),
-        selectedDates[0].getDate()
-      );
-      updateDateLabel();
-      fetchHours(
-        {
-          ...defaultParams,
-          fecha: formatDate(currentDate),
-        },
-        hourSlotsContainer
-      );
-    }
+  onChange([selected]) {
+    if (!selected) return;
+    currentDate = new Date(
+      selected.getFullYear(),
+      selected.getMonth(),
+      selected.getDate(),
+    );
+    updateDateLabel();
+    fetchHours();
   },
 });
 
-// Init on page load
-updateDateLabel();
-fetchHours(
-  {
-    ...defaultParams,
-    fecha: formatDate(currentDate),
-  },
-  hourSlotsContainer
+currentDateDisplay.addEventListener("click", () =>
+  datePicker._flatpickr.open(),
 );
+
+// ─── Date buttons ─────────────────────────────────────────
+const debouncedChange = debounce(changeDate, 300);
+prevDayBtn.addEventListener("click", () => debouncedChange(-1));
+nextDayBtn.addEventListener("click", () => debouncedChange(1));
+
+// ─── Init ─────────────────────────────────────────────────
+updateDateLabel();
+fetchHours();

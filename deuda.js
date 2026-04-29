@@ -10,28 +10,48 @@ style.textContent = `
     background-color: #061425;
     color: #e8eaf0;
     min-height: 100vh;
+
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 
   header {
-    padding: 16px 24px;
-    background: #394b6ad7;
-    border-bottom: 1px solid #1e2130;
+    padding: 14px 24px;
+    background: rgba(6, 14, 26, 0.82);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
     position: sticky;
     top: 0;
     z-index: 100;
+    backdrop-filter: blur(16px) saturate(180%);
   }
 
-  .logo-image {
+  .logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
     height: 36px;
-    display: block;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: #0c1828;
+    transition: border-color 0.16s, background 0.16s;
+  }
+  .logo-link:hover {
+    border-color: rgba(255,255,255,0.14);
+    background: #112236;
   }
 
-  /* ── Page title ── */
+  .logo-image { width: 18px; height: 18px; opacity: 0.8; display: block; }
+
+  /* ── Page header ── */
   .page-header {
-    padding: 36px 32px 16px;
+    padding: 32px 32px 0;
     display: flex;
     align-items: baseline;
-    gap: 16px;
+    gap: 14px;
+    flex-wrap: wrap;
   }
 
   .page-title {
@@ -51,6 +71,69 @@ style.textContent = `
     padding: 3px 10px;
     border-radius: 20px;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  /* ── Search / filter ── */
+  .filter-bar {
+    padding: 16px 32px 0;
+    max-width: 360px;
+  }
+
+  .filter-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .filter-icon {
+    position: absolute;
+    left: 12px;
+    pointer-events: none;
+    color: #4b5563;
+    font-size: 0.9rem;
+  }
+
+  .filter-input {
+    width: 100%;
+    background: #0f1117;
+    border: 1px solid #2a2f44;
+    border-radius: 8px;
+    color: #e8eaf0;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    padding: 9px 36px 9px 34px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .filter-input::placeholder { color: #4b5563; }
+  .filter-input:focus { border-color: #e84040; }
+
+  .filter-clear {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #4b5563;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    display: none;
+    transition: color 0.15s;
+  }
+
+  .filter-clear:hover { color: #e8eaf0; }
+  .filter-clear.visible { display: block; }
+
+  .filter-empty {
+    grid-column: 1 / -1;
+    padding: 48px 0;
+    text-align: center;
+    color: #4b5563;
+    font-size: 0.95rem;
   }
 
   /* ── Grid ── */
@@ -115,10 +198,7 @@ style.textContent = `
     justify-content: space-between;
   }
 
-  .card-phone {
-    font-size: 0.78rem;
-    color: #8891a4;
-  }
+  .card-phone { font-size: 0.78rem; color: #8891a4; }
 
   .card-saldo {
     font-family: 'Barlow Condensed', sans-serif;
@@ -225,9 +305,7 @@ style.textContent = `
   .modal-close:hover { color: #fff; }
 
   /* ── Form ── */
-  .form-group {
-    margin-bottom: 16px;
-  }
+  .form-group { margin-bottom: 16px; }
 
   .form-label {
     display: block;
@@ -265,9 +343,7 @@ style.textContent = `
 
   .form-input:focus,
   .form-select:focus,
-  .form-textarea:focus {
-    border-color: #e84040;
-  }
+  .form-textarea:focus { border-color: #e84040; }
 
   .form-select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
@@ -277,14 +353,8 @@ style.textContent = `
     cursor: pointer;
   }
 
-  .form-select option {
-    background: #171a23;
-  }
-
-  .form-textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+  .form-select option { background: #171a23; }
+  .form-textarea { resize: vertical; min-height: 80px; }
 
   /* ── Submit button ── */
   .btn-submit {
@@ -321,7 +391,7 @@ style.textContent = `
     animation: spin 0.65s linear infinite;
   }
 
-  /* ── Toast notification ── */
+  /* ── Toast ── */
   .toast {
     position: fixed;
     bottom: 28px;
@@ -338,30 +408,31 @@ style.textContent = `
     animation: toastIn 0.25s ease forwards;
   }
 
-  .toast.error {
-    background: #2e1a1a;
-    border-color: #5a2d2d;
-    color: #cf6f6f;
+  .toast.error { background: #2e1a1a; border-color: #5a2d2d; color: #cf6f6f; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
   @media (max-width: 600px) {
-    .cards-grid { padding: 12px 16px 40px; gap: 12px; }
-    .page-header { padding: 24px 16px 12px; }
+    .cards-grid  { padding: 12px 16px 40px; gap: 12px; }
+    .page-header { padding: 24px 16px 0; }
+    .filter-bar  { padding: 12px 16px 0; max-width: 100%; }
   }
 `;
 document.head.appendChild(style);
 
 // ─── State ────────────────────────────────────────────────────────────────────
-let currentUser = null; // { idUsuario, nombreUsuario }
+let currentUser = null;
+let allDeudas = []; // full dataset kept for filtering
 
-// ─── Main container ───────────────────────────────────────────────────────────
+// ─── App root ─────────────────────────────────────────────────────────────────
 const app = document.createElement("div");
 app.id = "deuda-app";
 document.body.appendChild(app);
 
-// ─── Toast helper ─────────────────────────────────────────────────────────────
+// ─── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg, type = "success") {
   const t = document.createElement("div");
   t.className = `toast${type === "error" ? " error" : ""}`;
@@ -370,13 +441,58 @@ function showToast(msg, type = "success") {
   setTimeout(() => t.remove(), 3200);
 }
 
-// ─── Fetch & render cards ─────────────────────────────────────────────────────
+// ─── Card builder ─────────────────────────────────────────────────────────────
+function buildCard(d) {
+  const phone = d.celularUsuario.replace(/^598/, "+598 ");
+  const saldo = Number(d.saldo).toLocaleString("es-UY");
+
+  const card = document.createElement("div");
+  card.className = "debt-card";
+  card.innerHTML = `
+    <div class="card-name">${d.nombreUsuario}</div>
+    <div class="card-ci">CI ${d.cedulaUsuario}</div>
+    <div class="card-footer">
+      <div class="card-phone">${phone}</div>
+      <div class="card-saldo"><span>$</span>${saldo}</div>
+    </div>
+  `;
+  card.addEventListener("click", () =>
+    openModal({
+      idUsuario: d.idUsuario,
+      nombreUsuario: d.nombreUsuario,
+      saldo,
+    }),
+  );
+  return card;
+}
+
+// ─── Filter ───────────────────────────────────────────────────────────────────
+function applyFilter(query) {
+  const grid = document.getElementById("cards-grid");
+  if (!grid) return;
+
+  const term = query.trim().toLowerCase();
+  const matches = term
+    ? allDeudas.filter((d) => d.nombreUsuario.toLowerCase().includes(term))
+    : allDeudas;
+
+  grid.innerHTML = "";
+
+  if (matches.length === 0) {
+    grid.innerHTML = `<div class="filter-empty">Sin resultados para "<strong>${query}</strong>".</div>`;
+    return;
+  }
+
+  matches.forEach((d) => grid.appendChild(buildCard(d)));
+}
+
+// ─── Load cards ───────────────────────────────────────────────────────────────
 async function loadCards() {
   app.innerHTML = `
     <div class="page-header">
       <h1 class="page-title">Gestión de Deudas</h1>
     </div>
-    <div class="state-container"><div class="spinner"></div><span>Cargando deudas...</span></div>
+    <div class="state-container"><div class="spinner"></div><span>Cargando deudas…</span></div>
   `;
 
   let data;
@@ -394,48 +510,57 @@ async function loadCards() {
     return;
   }
 
-  const deudas = data?.consultaResponse?.deudas ?? [];
-  const totalSaldo = deudas.reduce((sum, d) => sum + Number(d.saldo), 0);
+  allDeudas = data?.consultaResponse?.deudas ?? [];
+  const totalSaldo = allDeudas.reduce((sum, d) => sum + Number(d.saldo), 0);
 
   app.innerHTML = `
     <div class="page-header">
       <h1 class="page-title">Gestión de Deudas</h1>
-      <span class="debt-total-badge">${deudas.length} usuarios · $${totalSaldo.toLocaleString("es-UY")}</span>
+      <span class="debt-total-badge">${allDeudas.length} usuarios · $${totalSaldo.toLocaleString("es-UY")}</span>
     </div>
-    <div class="cards-grid" id="cards-container"></div>
+    <div class="filter-bar">
+      <div class="filter-input-wrap">
+        <span class="filter-icon">⌕</span>
+        <input
+          class="filter-input"
+          id="filter-input"
+          type="text"
+          placeholder="Buscar por nombre…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="filter-clear" id="filter-clear" aria-label="Limpiar búsqueda">×</button>
+      </div>
+    </div>
+    <div class="cards-grid" id="cards-grid"></div>
   `;
 
-  const grid = document.getElementById("cards-container");
-
-  if (deudas.length === 0) {
-    grid.innerHTML = `<div class="state-container"><span>No hay deudas registradas.</span></div>`;
+  if (allDeudas.length === 0) {
+    document.getElementById("cards-grid").innerHTML =
+      `<div class="state-container"><span>No hay deudas registradas.</span></div>`;
     return;
   }
 
-  deudas.forEach((d) => {
-    const card = document.createElement("div");
-    card.className = "debt-card";
-    card.dataset.idUsuario = d.idUsuario;
-    card.dataset.nombre = d.nombreUsuario;
+  // Initial render — all cards
+  allDeudas.forEach((d) =>
+    document.getElementById("cards-grid").appendChild(buildCard(d)),
+  );
 
-    const phone = d.celularUsuario.replace(/^598/, "+598 ");
-    card.innerHTML = `
-      <div class="card-name">${d.nombreUsuario}</div>
-      <div class="card-ci">CI ${d.cedulaUsuario}</div>
-      <div class="card-footer">
-        <div class="card-phone">${phone}</div>
-        <div class="card-saldo"><span>$</span>${Number(d.saldo).toLocaleString("es-UY")}</div>
-      </div>
-    `;
+  // Wire up filter input
+  const filterInput = document.getElementById("filter-input");
+  const filterClear = document.getElementById("filter-clear");
 
-    card.addEventListener("click", () =>
-      openModal({
-        idUsuario: d.idUsuario,
-        nombreUsuario: d.nombreUsuario,
-        saldo: Number(d.saldo).toLocaleString("es-UY"),
-      }),
-    );
-    grid.appendChild(card);
+  filterInput.addEventListener("input", () => {
+    const q = filterInput.value;
+    filterClear.classList.toggle("visible", q.length > 0);
+    applyFilter(q);
+  });
+
+  filterClear.addEventListener("click", () => {
+    filterInput.value = "";
+    filterClear.classList.remove("visible");
+    applyFilter("");
+    filterInput.focus();
   });
 }
 
@@ -446,7 +571,6 @@ function openModal(user) {
   const overlay = document.createElement("div");
   overlay.className = "modal-overlay";
   overlay.id = "cobro-modal";
-
   overlay.innerHTML = `
     <div class="modal-box" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -466,7 +590,7 @@ function openModal(user) {
       <div class="form-group">
         <label class="form-label" for="origen">Forma de pago</label>
         <select class="form-select" id="origen">
-          <option value="" disabled selected>Seleccionar...</option>
+          <option value="" disabled selected>Seleccionar…</option>
           <option value="EFECTIVO">Efectivo</option>
           <option value="TRANS">Transferencia</option>
           <option value="MERCPAGO">Mercado Pago</option>
@@ -475,8 +599,10 @@ function openModal(user) {
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="detalle">Detalle <span class="optional">(opcional)</span></label>
-        <textarea class="form-textarea" id="detalle" placeholder="Descripción del cobro..."></textarea>
+        <label class="form-label" for="detalle">
+          Detalle <span class="optional">(opcional)</span>
+        </label>
+        <textarea class="form-textarea" id="detalle" placeholder="Descripción del cobro…"></textarea>
       </div>
 
       <button class="btn-submit" id="submit-cobro">Confirmar cobro</button>
@@ -484,24 +610,18 @@ function openModal(user) {
   `;
 
   document.body.appendChild(overlay);
-
-  // Close on overlay click or × button
   document.getElementById("close-modal").addEventListener("click", closeModal);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
-
-  // Close on Escape
   document.addEventListener("keydown", handleEscape);
-
   document
     .getElementById("submit-cobro")
     .addEventListener("click", submitCobro);
 }
 
 function closeModal() {
-  const overlay = document.getElementById("cobro-modal");
-  if (overlay) overlay.remove();
+  document.getElementById("cobro-modal")?.remove();
   document.removeEventListener("keydown", handleEscape);
   currentUser = null;
 }
@@ -527,7 +647,7 @@ async function submitCobro() {
 
   const btn = document.getElementById("submit-cobro");
   btn.disabled = true;
-  btn.innerHTML = `<div class="btn-spinner"></div> Enviando...`;
+  btn.innerHTML = `<div class="btn-spinner"></div> Enviando…`;
 
   const body = new URLSearchParams({
     idUsuario: currentUser.idUsuario,
@@ -545,7 +665,6 @@ async function submitCobro() {
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    // Optionally read response for error codes
     const data = await res.json().catch(() => null);
     const codigoError =
       data?.consultaResponse?.codigoError ?? data?.codigoError ?? "0";
@@ -558,7 +677,7 @@ async function submitCobro() {
 
     closeModal();
     showToast("Cobro registrado correctamente.");
-    loadCards(); // Refresh grid
+    loadCards();
   } catch (err) {
     btn.disabled = false;
     btn.innerHTML = "Confirmar cobro";
