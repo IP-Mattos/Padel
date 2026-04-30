@@ -2,7 +2,7 @@
 //  GO Padel — Service Worker
 //
 //  THE ONLY LINE YOU NEED TO CHANGE ON EACH DEPLOY:
-const CACHE_VERSION = "1.0.2";
+const CACHE_VERSION = "1.0.4";
 // ─────────────────────────────────────────────────────────────
 
 const CACHE_NAME = `gopadel-v${CACHE_VERSION}`;

@@ -1,20 +1,71 @@
+// ─── Utilities ────────────────────────────────────────────────────────────────
+
+function formatDateName(dateStr) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return `${date.getDate()} de ${date.toLocaleString("es-ES", {
+    month: "long",
+    timeZone: "America/Montevideo",
+  })}`;
+}
+
+function formatLocalDateToYMD(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function debounce(fn, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
+
+function getProfileImage(pic) {
+  const DEFAULT_IMG = "./accion/imgPerfilUser/profile.png";
+  const invalid =
+    !pic ||
+    !pic.trim() ||
+    pic === "0" ||
+    pic.toLowerCase() === "profile.png" ||
+    pic.toLowerCase() === "default.png";
+  return invalid ? DEFAULT_IMG : `./accion/imgPerfilUser/${pic}`;
+}
+
+// ─── Short day labels ──────────────────────────────────────────────────────────
+
+const SHORT_DAYS = {
+  lunes: "lun",
+  martes: "mar",
+  miercoles: "mié",
+  jueves: "jue",
+  viernes: "vie",
+  sabado: "sáb",
+  domingo: "dom",
+};
+
+// ─── DOMContentLoaded ──────────────────────────────────────────────────────────
+
 document.addEventListener("DOMContentLoaded", () => {
-  //============================================>
-  //LOADER
-  //============================================>
+  // ── Loader ─────────────────────────────────────────────────────────────────
   const cover = document.getElementById("cover");
   const loader = document.getElementById("loader");
   document.body.style.overflow = "hidden";
-  pushManager.init(); // Initialize push notifications on page load
-  window.onload = function () {
-    loader.style.display = "none"; // Hide loader
-    cover.style.display = "none"; // Hide cover
+  pushManager.init();
+  window.onload = () => {
+    loader.style.display = "none";
+    cover.style.display = "none";
     document.body.style.overflow = "auto";
   };
 
-  //============================================>
-  //MODALS
-  //============================================>
+  // ── Modal elements ─────────────────────────────────────────────────────────
   const cModal = document.getElementById("courtModal");
   const pModal = document.getElementById("profileModal");
   const caModal = document.getElementById("cantineModal");
@@ -22,232 +73,155 @@ document.addEventListener("DOMContentLoaded", () => {
   const trModal = document.getElementById("tournamentModal");
   const clModal = document.getElementById("classesModal");
   const rModal = document.getElementById("rivalsModal");
-  const sModal = document.getElementById("membersModal");
   const hModal = document.getElementById("hoursModal");
   const vModal = document.getElementById("versusModal");
   const iModal = document.getElementById("inviteModal");
   const aModal = document.getElementById("slotInviteModal");
   const ptModal = document.getElementById("pointsModal");
+  const dModal = document.getElementById("deudaModal");
 
-  const modalConfigs = [
-    {
-      name: "court",
-      modal: cModal,
-      contentClass: ".cModal-content",
-      openButtons: [],
-      closeButtons: ["closeCourt"],
-    },
-    {
-      name: "points",
-      modal: ptModal,
-      contentClass: ".ptModal-content",
-      openButtons: ["openPoints"],
-      closeButtons: ["closePoints"],
-    },
-    {
-      name: "profile",
-      modal: pModal,
-      contentClass: ".pModal-content",
-      openButtons: ["openProfile", "openProfile2"],
-      closeButtons: ["closeProfile"],
-    },
-    {
-      name: "cantine",
-      modal: caModal,
-      contentClass: ".caModal-content",
-      openButtons: ["openCantine"],
-      closeButtons: ["closeCantine"],
-    },
-    {
-      name: "training",
-      modal: tModal,
-      contentClass: ".tModal-content",
-      openButtons: ["openTraining"],
-      closeButtons: ["closeTraining"],
-    },
-    {
-      name: "tournament",
-      modal: trModal,
-      contentClass: ".trModal-content",
-      openButtons: ["openTournament"],
-      closeButtons: ["closeTournament"],
-    },
-    {
-      name: "classes",
-      modal: clModal,
-      contentClass: ".clModal-content",
-      openButtons: ["openClasses"],
-      closeButtons: ["closeClasses"],
-    },
-    {
-      name: "rivals",
-      modal: rModal,
-      contentClass: ".rModal-content",
-      openButtons: ["openRivals"],
-      closeButtons: ["closeRivals"],
-    },
-    // {
-    //   name: "members",
-    //   modal: sModal,
-    //   contentClass: ".sModal-content",
-    //   openButtons: ["openMembers"],
-    //   closeButtons: ["closeMembers"],
-    // },
-    {
-      name: "hours",
-      modal: hModal,
-      contentClass: ".hModal-content",
-      openButtons: ["openHours"],
-      closeButtons: ["closeHours"],
-    },
-    {
-      name: "versus",
-      modal: vModal,
-      contentClass: ".vModal-content",
-      openButtons: ["openVersus"],
-      closeButtons: ["closeVersus"],
-    },
-    {
-      name: "invite",
-      modal: iModal,
-      contentClass: ".iModal-content",
-      openButtons: [], // manually opened
-      closeButtons: ["closeInvite"],
-    },
-    {
-      name: "slotInvite",
-      modal: aModal,
-      contentClass: ".aModal-content",
-      openButtons: [],
-      closeButtons: ["closePlayers"],
-    },
-    {
-      name: "deuda",
-      modal: document.getElementById("deudaModal"),
-      contentClass: ".dModal-content",
-      openButtons: ["openDeuda"],
-      closeButtons: ["closeDeuda"],
-    },
-  ];
-
-  modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
-    //Openers
-    openButtons.forEach((btnId) => {
-      const btn = document.getElementById(btnId);
-      if (btn) {
-        btn.onclick = () => openModal(modal, contentClass);
-      }
-    });
-
-    //Closers
-    closeButtons.forEach((btnId) => {
-      const btn = document.getElementById(btnId);
-      if (btn) {
-        btn.onclick = () => closeModal(modal, contentClass);
-      }
-    });
-  });
-
+  // ── Modal open / close ─────────────────────────────────────────────────────
   function openModal(modal, contentClass) {
     modal.style.display = "flex";
     setTimeout(() => {
       const content = modal.querySelector(contentClass);
-      console.log("Modal:", modal);
-      console.log("Looking for:", contentClass);
-      console.log("Found content?", content);
-
-      if (content) {
-        setTimeout(() => {
-          content.classList.add("show");
-        }, 10);
-      } else {
-        console.warn(
-          `⚠️ Could not find modal content element: ${contentClass}`,
-        );
-      }
+      if (content) setTimeout(() => content.classList.add("show"), 10);
     }, 10);
   }
 
   function closeModal(modal, contentClass) {
-    modal.querySelector(contentClass).classList.remove("show");
+    modal.querySelector(contentClass)?.classList.remove("show");
     setTimeout(() => {
       modal.style.display = "none";
       selectedCard = null;
     }, 350);
   }
 
-  //===================================>
-  //PROFILE MODAL
-  //===================================>
+  // Wire up all static modal triggers from a config table
+  let selectedCard = null;
 
-  const updateProfile = document.getElementById("updateProfile");
+  const modalConfigs = [
+    {
+      modal: ptModal,
+      contentClass: ".ptModal-content",
+      openButtons: ["openPoints"],
+      closeButtons: ["closePoints"],
+    },
+    {
+      modal: pModal,
+      contentClass: ".pModal-content",
+      openButtons: ["openProfile", "openProfile2"],
+      closeButtons: ["closeProfile"],
+    },
+    {
+      modal: caModal,
+      contentClass: ".caModal-content",
+      openButtons: ["openCantine"],
+      closeButtons: ["closeCantine"],
+    },
+    {
+      modal: tModal,
+      contentClass: ".tModal-content",
+      openButtons: ["openTraining"],
+      closeButtons: ["closeTraining"],
+    },
+    {
+      modal: trModal,
+      contentClass: ".trModal-content",
+      openButtons: ["openTournament"],
+      closeButtons: ["closeTournament"],
+    },
+    {
+      modal: clModal,
+      contentClass: ".clModal-content",
+      openButtons: ["openClasses"],
+      closeButtons: ["closeClasses"],
+    },
+    {
+      modal: rModal,
+      contentClass: ".rModal-content",
+      openButtons: ["openRivals"],
+      closeButtons: ["closeRivals"],
+    },
+    {
+      modal: hModal,
+      contentClass: ".hModal-content",
+      openButtons: ["openHours"],
+      closeButtons: ["closeHours"],
+    },
+    {
+      modal: vModal,
+      contentClass: ".vModal-content",
+      openButtons: ["openVersus"],
+      closeButtons: ["closeVersus"],
+    },
+    {
+      modal: iModal,
+      contentClass: ".iModal-content",
+      openButtons: [],
+      closeButtons: ["closeInvite"],
+    },
+    {
+      modal: aModal,
+      contentClass: ".aModal-content",
+      openButtons: [],
+      closeButtons: ["closePlayers"],
+    },
+    {
+      modal: dModal,
+      contentClass: ".dModal-content",
+      openButtons: ["openDeuda"],
+      closeButtons: ["closeDeuda"],
+    },
+    {
+      modal: cModal,
+      contentClass: ".cModal-content",
+      openButtons: [],
+      closeButtons: ["closeCourt"],
+    },
+  ];
 
-  updateProfile.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    fetch("./accion/savePerfil.php", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.consultaResponse.codigoError === "0") {
-          Swal.fire({
-            title: "Éxito!",
-            text: data.consultaResponse.detalleError,
-            icon: "success",
-          });
-
-          // For the radio option (categorías)
-          const masCategoriasValue = formData.get("mascategorias");
-          const masCategoriasText =
-            masCategoriasValue === "0"
-              ? "Misma categoría"
-              : masCategoriasValue === "1"
-                ? "Categorías contiguas"
-                : "Todas las categorías";
-        } else {
-          Swal.fire({
-            title: "Error",
-            text: data.consultaResponse.detalleError,
-            icon: "error",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        Swal.fire("Oops", "Algo salió mal en el servidor", "error");
-      });
+  modalConfigs.forEach(({ modal, contentClass, openButtons, closeButtons }) => {
+    openButtons.forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) btn.onclick = () => openModal(modal, contentClass);
+    });
+    closeButtons.forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) btn.onclick = () => closeModal(modal, contentClass);
+    });
   });
 
-  const profileImgInput = document.getElementById("profileImgInput");
-  const profileImg = document.getElementById("profileImg");
-
-  profileImgInput.addEventListener("change", () => {
-    const file = profileImgInput.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("imgPerfilUser", file); // Sending the image file
-    formData.append("idUser", userId); // Sending the user ID from the PHP session
-
-    fetch("./accion/saveImgPerfil.php", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
+  // ── Profile ────────────────────────────────────────────────────────────────
+  document.getElementById("updateProfile").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    fetch("./accion/savePerfil.php", { method: "POST", body: formData })
+      .then((r) => r.json())
       .then((data) => {
-        if (
-          data.consultaResponse &&
-          data.consultaResponse.codigoError === "0"
-        ) {
-          const timestamp = new Date().getTime();
-          const newImg = data.consultaResponse.newImg;
-          profileImg.src = `./accion/imgPerfilUser/${newImg}?t=${timestamp}`;
+        const ok = data.consultaResponse.codigoError === "0";
+        Swal.fire({
+          title: ok ? "Éxito!" : "Error",
+          text: data.consultaResponse.detalleError,
+          icon: ok ? "success" : "error",
+        });
+      })
+      .catch(() => Swal.fire("Oops", "Algo salió mal en el servidor", "error"));
+  });
 
+  document.getElementById("profileImgInput").addEventListener("change", () => {
+    const file = document.getElementById("profileImgInput").files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("imgPerfilUser", file);
+    formData.append("idUser", userId);
+    fetch("./accion/saveImgPerfil.php", { method: "POST", body: formData })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.consultaResponse?.codigoError === "0") {
+          const ts = Date.now();
+          document.getElementById("profileImg").src =
+            `./accion/imgPerfilUser/${data.consultaResponse.newImg}?t=${ts}`;
           Swal.fire(
             "Imagen actualizada",
             "Tu nueva foto de perfil se ha subido",
@@ -261,269 +235,23 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         }
       })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        Swal.fire("Oops", "Error al subir la imagen", "error");
-      });
+      .catch(() => Swal.fire("Oops", "Error al subir la imagen", "error"));
   });
 
-  //==================================>
-  //CLASSES MODAL
-  //==================================>
-
-  document.getElementById("teachContainer");
-
-  let selectedProfCard = null;
-
-  document.getElementById("openClasses").addEventListener("click", async () => {
-    const config = serviceModalMap.classes;
-
-    profListContainer.innerHTML = "<p>Cargando profesores...</p>";
-
-    try {
-      const res = await fetch("./accion/getProfesores.php");
-      const data = await res.json();
-
-      if (data.consultaResponse.codigoError !== "0") {
-        profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
-        return;
-      }
-
-      const profesores = data.consultaResponse.datos;
-      profListContainer.innerHTML = "";
-      let firstCard = null;
-
-      profesores.forEach((prof, index) => {
-        const card = document.createElement("div");
-        card.className = "profCard";
-        card.innerHTML = `<img src="./accion/imgPerfilUser/${prof.imgperfil}" alt="${prof.nombre}" />
-                          <h3>${prof.nombre}</h3>`;
-
-        let isFetchingClassData = false;
-
-        card.addEventListener("click", async () => {
-          if (isFetchingClassData) return;
-
-          isFetchingClassData = true;
-
-          if (selectedProfCard) {
-            selectedProfCard.classList.remove("selected-teacher");
-          }
-          card.classList.add("selected-teacher");
-          selectedProfCard = card;
-
-          try {
-            await handleProfessorSelection(prof.id, {
-              ...config,
-              container: classCalendar,
-              hoursContainer: classhs,
-            });
-            document
-              .getElementById("interested")
-              .addEventListener("click", function () {
-                Swal.fire({
-                  title: "Genial!",
-                  html:
-                    "<p>Ponte en contacto con nuestro profesor por este número: " +
-                    prof.celular.replace(598, 0) +
-                    "<img src='/img/whatsapp.png'> </p>",
-                  icon: "success",
-                });
-              });
-          } finally {
-            isFetchingClassData = false;
-          }
-        });
-
-        profListContainer.appendChild(card);
-
-        if (index === 0) {
-          firstCard = card;
-        }
-      });
-      if (firstCard) {
-        firstCard.click();
-      }
-    } catch (err) {
-      console.error("Error al cargar profesores", err);
-      profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
-    }
-  });
-
-  async function handleProfessorSelection(profeId, config) {
-    const { servicios, container, hoursContainer } = config;
-
-    container.innerHTML = "<p>Cargando días</p>";
-    hoursContainer.innerHTML = "";
-
-    const formData = new URLSearchParams();
-    formData.append("servicio", servicios);
-    formData.append("profe", profeId);
-
-    try {
-      const res = await fetch("./accion/getDias.php", {
-        method: "POST",
-        headers: { "content-type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
-      });
-
-      const json = await res.json();
-      container.innerHTML = "";
-
-      if (json.consultaResponse.codigoError === "0") {
-        const datos = json.consultaResponse.datos;
-
-        calendarUtils.classes = populateCalendarCards(
-          container,
-          datos,
-          (selectedDay) => {
-            fetchHours(
-              {
-                ...selectedDay,
-                servicios,
-                profe: profeId,
-              },
-              hoursContainer,
-            );
-          },
-          servicios,
-        );
-      } else {
-        container.innerHTML = "<p>Error al cargar los días</p>";
-        console.error(json.consultaResponse.detalleError);
-      }
-    } catch (err) {
-      container.innerHTML = "<p>Error de conexión";
-      console.error("Error en handleProfessorSelection:", err);
-    }
-  }
-
-  //===================================================>
-  //CALENDARS
-  //===================================================>
-
-  const courtCalendar = document.getElementById("court-calendar");
-  const classCalendar = document.getElementById("classes-calendar");
-  const cantineCalendar = document.getElementById("cantine-calendar");
-  const trainingCalendar = document.getElementById("training-calendar");
-  const rivalsCalendar = document.getElementById("rivals-calendar");
-  const profListContainer = document.getElementById("profList");
-
-  const courths = document.getElementById("court-hs"); // First container
-  const classhs = document.getElementById("class-hs");
-  const cantinehs = document.getElementById("cantine-hs");
-  const traininghs = document.getElementById("training-hs");
-  const rivalshs = document.getElementById("rivals-hs");
-
-  const shortDays = {
-    lunes: "lun",
-    martes: "mar",
-    miercoles: "mié",
-    jueves: "jue",
-    viernes: "vie",
-    sabado: "sáb",
-    domingo: "dom",
-  };
-
-  const serviceModalMap = {
-    court: {
-      modal: cModal,
-      content: ".cModal-content",
-      servicios: 1,
-      servicios: [
-        { id: 1, label: "Cancha 1" },
-        { id: 6, label: "Cancha 2" },
-      ],
-      profe: 0,
-      container: courtCalendar,
-      hoursContainer: courths,
-      confirmButtonId: "acceptCourt",
-    },
-    classes: {
-      modal: clModal,
-      content: ".clModal-content",
-      servicios: 2,
-      profe: null,
-      container: classCalendar,
-      hoursContainer: classhs,
-      confirmButtonId: "acceptClasses",
-    },
-    training: {
-      modal: tModal,
-      content: ".tModal-content",
-      servicios: 3,
-      profe: 0,
-      container: trainingCalendar,
-      hoursContainer: traininghs,
-      confirmButtonId: "acceptTraining",
-    },
-    rivals: {
-      modal: rModal,
-      content: ".rModal-content",
-      servicios: 4,
-      profe: 0,
-      container: rivalsCalendar,
-      hoursContainer: rivalshs,
-      confirmButtonId: "acceptRivals",
-    },
-    // cantine: {
-    //   modal: caModal,
-    //   content: ".caModal-content",
-    //   servicio: 5,
-    //   profe: 0,
-    //   container: cantineCalendar,
-    //   hoursContainer: cantinehs,
-    //   confirmButtonId: "acceptCantine",
-    // },
-  };
-
-  const modalState = {};
+  // ── Calendar helpers ───────────────────────────────────────────────────────
   const calendarUtils = {};
+  const modalState = {};
   let selectedHourCard = null;
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  function formatLocalDateToYMD(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
-
-  // ===============================
-  // SERVICE SWITCH
-  // ===============================
-  function renderServiceSwitch(container, services, onChange) {
-    container.innerHTML = "";
-    services.forEach((s, index) => {
-      const btn = document.createElement("button");
-      btn.textContent = s.label;
-      btn.className = index === 0 ? "active" : "";
-      btn.onclick = () => {
-        container
-          .querySelectorAll("button")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        onChange(s.id);
-      };
-      container.appendChild(btn);
-    });
-  }
-
-  // ===============================
-  // CALENDAR
-  // ===============================
   function populateCalendarCards(
     containerDiv,
     calendarData,
     onDaySelected,
     servicio,
-    preSelectedDate, // ← add this
+    preSelectedDate,
   ) {
     const today = new Date();
-    let selectedCard = null;
+    let selectedCalCard = null;
     let selectedCardData = null;
     const fragment = document.createDocumentFragment();
 
@@ -532,10 +260,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const actualDate = new Date(today);
       actualDate.setDate(today.getDate() + index);
 
-      // Rivals auto-available today
-      if (Number(servicio) === 4) {
-        if (formatLocalDateToYMD(today) === formatLocalDateToYMD(actualDate))
-          estado = 1;
+      // Rivals always available today
+      if (
+        Number(servicio) === 4 &&
+        formatLocalDateToYMD(today) === formatLocalDateToYMD(actualDate)
+      ) {
+        estado = 1;
       }
 
       const dayCard = document.createElement("div");
@@ -544,9 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const monthName = actualDate.toLocaleDateString("es-ES", {
         month: "short",
       });
-      dayCard.innerHTML = `<span class="day">${shortDays[dia]}</span>
-                         <span class="date">${dayNumber}</span>
-                         <span class="month">${monthName}</span>`;
+      dayCard.innerHTML = `
+        <span class="day">${SHORT_DAYS[dia]}</span>
+        <span class="date">${dayNumber}</span>
+        <span class="month">${monthName}</span>`;
 
       if (estado === 1) {
         dayCard.style.backgroundColor = "red";
@@ -554,9 +285,9 @@ document.addEventListener("DOMContentLoaded", () => {
         dayCard.style.pointerEvents = "none";
       } else {
         dayCard.addEventListener("click", () => {
-          if (selectedCard) resetCardStyle(selectedCard);
+          if (selectedCalCard) resetCardStyle(selectedCalCard);
           styleSelectedCard(dayCard);
-          selectedCard = dayCard;
+          selectedCalCard = dayCard;
           selectedCardData = {
             ...dayInfo,
             dayNumber,
@@ -568,13 +299,14 @@ document.addEventListener("DOMContentLoaded", () => {
             fecha: formatLocalDateToYMD(actualDate),
           });
         });
+
         const isTarget = preSelectedDate
           ? formatLocalDateToYMD(actualDate) === preSelectedDate
-          : !selectedCard; // fallback: first available card
+          : !selectedCalCard;
 
-        if (isTarget && !selectedCard) {
+        if (isTarget && !selectedCalCard) {
           styleSelectedCard(dayCard);
-          selectedCard = dayCard;
+          selectedCalCard = dayCard;
           selectedCardData = {
             ...dayInfo,
             dayNumber,
@@ -593,45 +325,40 @@ document.addEventListener("DOMContentLoaded", () => {
     containerDiv.appendChild(fragment);
 
     function styleSelectedCard(card) {
-      card.style.backgroundColor = "var(--primary-color)";
-      card.querySelector(".day").style.textShadow = "1px 0 0 black";
-      card.querySelector(".date").style.textShadow = "1px 0 0 black";
+      card.style.backgroundColor = "var(--primary)";
       card.style.color = "black";
+      card.querySelectorAll(".day,.date,.month").forEach((el) => {
+        el.style.color = "black";
+        el.style.textShadow = "none";
+      });
     }
 
     function resetCardStyle(card) {
       card.style.backgroundColor = "";
-      card.querySelector(".day").style.textShadow = "";
-      card.querySelector(".date").style.textShadow = "";
       card.style.color = "";
+      card.querySelectorAll(".day,.date,.month").forEach((el) => {
+        el.style.color = "";
+        el.style.textShadow = "";
+      });
     }
 
     return { getSelectedCardData: () => selectedCardData };
   }
 
-  // ===============================
-  // HOURS
-  // ===============================
+  // ── Hours ──────────────────────────────────────────────────────────────────
   async function fetchHours({ servicio, profe, fecha }, container) {
     selectedHourCard = null;
     container.innerHTML = "<p>Cargando horarios...</p>";
-
     try {
-      const formData = new URLSearchParams({ servicio, profe, fecha });
       const res = await fetch("./accion/getHorarios.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
+        body: new URLSearchParams({ servicio, profe, fecha }).toString(),
       });
       const json = await res.json();
       container.innerHTML = "";
-
       if (json.consultaResponse.codigoError === "0") {
-        generateHourCards(container, json.consultaResponse.datos, {
-          servicio,
-          profe,
-          fecha,
-        });
+        generateHourCards(container, json.consultaResponse.datos);
       } else {
         container.innerHTML = "<p>Error al cargar horarios</p>";
       }
@@ -652,97 +379,135 @@ document.addEventListener("DOMContentLoaded", () => {
         card.style.opacity = "0.6";
         card.style.pointerEvents = "none";
       } else {
-        card.addEventListener("click", () => toggleHourCard(card));
+        card.addEventListener("click", () => {
+          if (selectedHourCard) selectedHourCard.classList.remove("selected");
+          card.classList.add("selected");
+          selectedHourCard = card;
+        });
       }
       container.appendChild(card);
     });
   }
 
-  function toggleHourCard(card) {
-    if (selectedHourCard) selectedHourCard.classList.remove("selected");
-    card.classList.add("selected");
-    selectedHourCard = card;
+  // ── Service modal map ──────────────────────────────────────────────────────
+  const serviceModalMap = {
+    court: {
+      modal: cModal,
+      content: ".cModal-content",
+      servicios: [
+        { id: 1, label: "Cancha 1" },
+        { id: 6, label: "Cancha 2" },
+      ],
+      profe: 0,
+      container: document.getElementById("court-calendar"),
+      hoursContainer: document.getElementById("court-hs"),
+      confirmButtonId: "acceptCourt",
+    },
+    classes: {
+      modal: clModal,
+      content: ".clModal-content",
+      servicios: [{ id: 2, label: "Clases" }],
+      profe: null,
+      container: document.getElementById("classes-calendar"),
+      hoursContainer: document.getElementById("class-hs"),
+      confirmButtonId: "acceptClasses",
+    },
+    training: {
+      modal: tModal,
+      content: ".tModal-content",
+      servicios: [{ id: 3, label: "Entrenamiento" }],
+      profe: 0,
+      container: document.getElementById("training-calendar"),
+      hoursContainer: document.getElementById("training-hs"),
+      confirmButtonId: "acceptTraining",
+    },
+    rivals: {
+      modal: rModal,
+      content: ".rModal-content",
+      servicios: [{ id: 4, label: "Partido" }],
+      profe: 0,
+      container: document.getElementById("rivals-calendar"),
+      hoursContainer: document.getElementById("rivals-hs"),
+      confirmButtonId: "acceptRivals",
+    },
+  };
+
+  // ── Service switch ─────────────────────────────────────────────────────────
+  function renderServiceSwitch(container, services, onChange) {
+    container.innerHTML = "";
+    services.forEach((s, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = s.label;
+      btn.className = index === 0 ? "active" : "";
+      btn.onclick = () => {
+        container
+          .querySelectorAll("button")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        onChange(s.id);
+      };
+      container.appendChild(btn);
+    });
   }
 
-  // ===============================
-  // MODAL OPEN + SERVICE SWITCH
-  // ===============================
-  // document.getElementById("openCourt").addEventListener("click", function () {
-  //   Swal.fire({
-  //     icon: "info",
-  //     toast: true,
-  //     title: "Este mes de Diciembre 50% de descuento alquilando Cancha 2!",
-  //     position: "top-end",
-  //     showConfirmButton: false,
-  //     timer: 5000,
-  //     timerProgressBar: true,
-  //     didOpen: (toast) => {
-  //       toast.onmouseenter = Swal.stopTimer;
-  //       toast.onmouseleave = Swal.resumeTimer;
-  //     },
-  //   });
-  // });
-
-  Object.entries(serviceModalMap).forEach(([key, config]) => {
-    document.getElementById(`open${capitalize(key)}`).onclick = async () => {
-      openModal(config.modal, config.content);
-
-      const serviciosArr = Array.isArray(config.servicios)
-        ? config.servicios
-        : [{ id: config.servicios, label: "Servicio" }];
-
-      modalState[key] = { servicio: serviciosArr[0].id };
-
-      const serviceSwitch = config.modal.querySelector(".service-switch");
-      if (serviciosArr.length > 1 && serviceSwitch) {
-        renderServiceSwitch(serviceSwitch, serviciosArr, (newServicio) => {
-          modalState[key].servicio = newServicio;
-          loadCalendarForService(key, newServicio);
-        });
-      }
-
-      await loadCalendarForService(key, modalState[key].servicio);
-    };
-  });
-
-  // ===============================
-  // LOAD CALENDAR FOR SERVICE
-  // ===============================
+  // ── Load calendar ──────────────────────────────────────────────────────────
   async function loadCalendarForService(key, servicio) {
     const { profe, container, hoursContainer } = serviceModalMap[key];
     container.innerHTML = "<p>Cargando...</p>";
     hoursContainer.innerHTML = "";
     selectedHourCard = null;
 
-    const formData = new URLSearchParams({ servicio, profe });
-    const res = await fetch("./accion/getDias.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
-    });
-
-    const json = await res.json();
-    container.innerHTML = "";
-
-    if (json.consultaResponse.codigoError === "0") {
-      calendarUtils[key] = populateCalendarCards(
-        container,
-        json.consultaResponse.datos,
-        (selectedDay) => {
-          modalState[key].selectedDate = selectedDay.fecha; // ← save it
-          fetchHours({ ...selectedDay, servicio, profe }, hoursContainer);
-        },
-        servicio,
-        modalState[key].selectedDate, // ← restore it on reload
-      );
-    } else {
-      container.innerHTML = "<p>Error al cargar los días</p>";
+    try {
+      const res = await fetch("./accion/getDias.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ servicio, profe }).toString(),
+      });
+      const json = await res.json();
+      container.innerHTML = "";
+      if (json.consultaResponse.codigoError === "0") {
+        calendarUtils[key] = populateCalendarCards(
+          container,
+          json.consultaResponse.datos,
+          (selectedDay) => {
+            modalState[key].selectedDate = selectedDay.fecha;
+            fetchHours({ ...selectedDay, servicio, profe }, hoursContainer);
+          },
+          servicio,
+          modalState[key]?.selectedDate,
+        );
+      } else {
+        container.innerHTML = "<p>Error al cargar los días</p>";
+      }
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = "<p>Error de conexión</p>";
     }
   }
 
-  // ===============================
-  // RESERVATION
-  // ===============================
+  // ── Open modals + service switch ───────────────────────────────────────────
+  Object.entries(serviceModalMap).forEach(([key, config]) => {
+    const openBtn = document.getElementById(`open${capitalize(key)}`);
+    if (!openBtn) return;
+
+    openBtn.onclick = async () => {
+      openModal(config.modal, config.content);
+      const firstService = config.servicios[0];
+      modalState[key] = { servicio: firstService.id };
+
+      const switchEl = config.modal.querySelector(".service-switch");
+      if (config.servicios.length > 1 && switchEl) {
+        renderServiceSwitch(switchEl, config.servicios, (newServicio) => {
+          modalState[key].servicio = newServicio;
+          loadCalendarForService(key, newServicio);
+        });
+      }
+
+      await loadCalendarForService(key, firstService.id);
+    };
+  });
+
+  // ── Reservations ───────────────────────────────────────────────────────────
   Object.entries(serviceModalMap).forEach(([key, config]) => {
     const btn = document.getElementById(config.confirmButtonId);
     if (!btn) return;
@@ -754,41 +519,37 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!selectedHourCard)
         return Swal.fire("Error", "Por favor selecciona una hora.", "error");
 
-      const selectedHour = selectedHourCard.querySelector(".hour").textContent;
+      const hora = selectedHourCard.querySelector(".hour").textContent;
       const formattedDate = selectedDay.date;
 
-      const confirmation = await Swal.fire({
+      const confirmed = await Swal.fire({
         title: "¿Estás seguro?",
-        text: `¿Deseas reservar para el ${formatDateName(
-          formattedDate,
-        )} a las ${selectedHour}?`,
+        text: `¿Reservar para el ${formatDateName(formattedDate)} a las ${hora}?`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Sí, reservar",
         cancelButtonText: "Cancelar",
       });
-      if (!confirmation.isConfirmed) return;
-
-      const formData = new URLSearchParams({
-        fecha: formattedDate,
-        servicio: modalState[key].servicio,
-        profe: config.profe,
-        usuario: userId,
-        hora: selectedHour,
-      });
+      if (!confirmed.isConfirmed) return;
 
       try {
         const res = await fetch("../accion/putReserv.php", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: formData.toString(),
+          body: new URLSearchParams({
+            fecha: formattedDate,
+            servicio: modalState[key].servicio,
+            profe: config.profe,
+            usuario: userId,
+            hora,
+          }).toString(),
         });
         const json = await res.json();
         if (json.consultaResponse?.codigoError === "0") {
           Swal.fire("Éxito", "Reserva realizada con éxito", "success");
           closeModal(config.modal, config.content);
         } else {
-          Swal.fire("Error", `${json.consultaResponse.detalleError}`, "error");
+          Swal.fire("Error", json.consultaResponse.detalleError, "error");
         }
       } catch (err) {
         console.error(err);
@@ -797,41 +558,125 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function formatDateName(dateStr) {
-    const [year, month, day] = dateStr.split("-").map(Number);
-    const date = new Date(year, month - 1, day); // Local time
+  // ── Classes – professor list ───────────────────────────────────────────────
+  let selectedProfCard = null;
 
-    const dayNum = date.getDate(); // Local getter
-    const monthName = date.toLocaleString("es-ES", {
-      month: "long",
-      timeZone: "America/Montevideo", // Uruguay's time zone
-    });
+  document.getElementById("openClasses").addEventListener("click", async () => {
+    const profListContainer = document.getElementById("profList");
+    const config = serviceModalMap.classes;
 
-    return `${dayNum} de ${monthName}`;
+    profListContainer.innerHTML = "<p>Cargando profesores...</p>";
+    try {
+      const res = await fetch("./accion/getProfesores.php");
+      const data = await res.json();
+
+      if (data.consultaResponse.codigoError !== "0") {
+        profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
+        return;
+      }
+
+      const profesores = data.consultaResponse.datos;
+      profListContainer.innerHTML = "";
+      let firstCard = null;
+
+      profesores.forEach((prof, index) => {
+        const card = document.createElement("div");
+        card.className = "profCard";
+        card.innerHTML = `<img src="./accion/imgPerfilUser/${prof.imgperfil}" alt="${prof.nombre}" /><h3>${prof.nombre}</h3>`;
+
+        let isFetching = false;
+        card.addEventListener("click", async () => {
+          if (isFetching) return;
+          isFetching = true;
+          if (selectedProfCard)
+            selectedProfCard.classList.remove("selected-teacher");
+          card.classList.add("selected-teacher");
+          selectedProfCard = card;
+
+          try {
+            await handleProfessorSelection(prof.id, {
+              ...config,
+              container: document.getElementById("classes-calendar"),
+              hoursContainer: document.getElementById("class-hs"),
+            });
+            document.getElementById("interested").onclick = () => {
+              Swal.fire({
+                title: "Genial!",
+                html: `<p>Ponte en contacto con nuestro profesor por este número: ${prof.celular.replace(598, 0)}<img src='/img/whatsapp.png'></p>`,
+                icon: "success",
+              });
+            };
+          } finally {
+            isFetching = false;
+          }
+        });
+
+        profListContainer.appendChild(card);
+        if (index === 0) firstCard = card;
+      });
+
+      firstCard?.click();
+    } catch (err) {
+      console.error("Error al cargar profesores", err);
+      profListContainer.innerHTML = "<p>Error al cargar profesores</p>";
+    }
+  });
+
+  async function handleProfessorSelection(
+    profeId,
+    { servicios, container, hoursContainer },
+  ) {
+    container.innerHTML = "<p>Cargando días</p>";
+    hoursContainer.innerHTML = "";
+    try {
+      const res = await fetch("./accion/getDias.php", {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          servicio: servicios,
+          profe: profeId,
+        }).toString(),
+      });
+      const json = await res.json();
+      container.innerHTML = "";
+      if (json.consultaResponse.codigoError === "0") {
+        calendarUtils.classes = populateCalendarCards(
+          container,
+          json.consultaResponse.datos,
+          (selectedDay) =>
+            fetchHours(
+              { ...selectedDay, servicios, profe: profeId },
+              hoursContainer,
+            ),
+          servicios,
+        );
+      } else {
+        container.innerHTML = "<p>Error al cargar los días</p>";
+      }
+    } catch (err) {
+      container.innerHTML = "<p>Error de conexión";
+      console.error(err);
+    }
   }
 
-  //================================================================>
-  //USER HOURS
-  //================================================================>
+  // ── User reservations ──────────────────────────────────────────────────────
+  const reserveContainer = document.getElementById("reserveContainer");
+  let allReservations = [];
 
-  const container = document.getElementById("reserveContainer");
-  const serviceImages = {
+  const SERVICE_IMAGES = {
     1: "./img/resCancha.png",
     2: "./img/resClases.png",
     3: "./img/resEntrenar.png",
     4: "./img/resRivales.png",
     5: "./img/resChelada.png",
     6: "./img/resCancha.png",
-    // Add more services as needed
   };
 
   async function fetchProfile(userIdToFetch) {
-    const PD = new URLSearchParams();
-    PD.append("idPerfil", userIdToFetch);
     const res = await fetch("./accion/getPerfil.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: PD.toString(),
+      body: new URLSearchParams({ idPerfil: userIdToFetch }).toString(),
     });
     const js = await res.json();
     if (js.consultaResponse?.codigoError === "0") {
@@ -840,302 +685,226 @@ document.addEventListener("DOMContentLoaded", () => {
         img: `./accion/imgPerfilUser/${js.consultaResponse.imgperfil}`,
         id: userIdToFetch,
       };
-    } else {
-      console.error("Perfil error", js);
-      return null;
     }
+    return null;
   }
 
   async function loadUserReservations() {
-    container.innerHTML = "<p>Cargando tus reservas...</p>";
+    reserveContainer.innerHTML = "<p>Cargando tus reservas...</p>";
 
-    let now = new Date();
-    let sevenDays = new Date(now);
+    const now = new Date();
+    const sevenDays = new Date(now);
     sevenDays.setDate(now.getDate() + 7);
 
-    let sevenDaysBack = new Date(now);
-    sevenDaysBack.setDate(now.getDate());
-
-    function formatDate(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}/${month}/${day}`;
-    }
-
-    const fechaHasta = formatDate(sevenDays);
-    const fechaDesde = formatDate(sevenDaysBack);
-
-    const formData = new URLSearchParams();
-    formData.append("fechaDesde", fechaDesde);
-    formData.append("fechaHasta", fechaHasta);
-    formData.append("idUser", userId);
+    const fmt = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}/${m}/${day}`;
+    };
 
     try {
       const res = await fetch("./accion/getHorasUser.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
+        body: new URLSearchParams({
+          fechaDesde: fmt(now),
+          fechaHasta: fmt(sevenDays),
+          idUser: userId,
+        }).toString(),
       });
-
       const json = await res.json();
 
-      if (json.consultaResponse?.codigoError === "0") {
-        const datos = json.consultaResponse.datos;
-        allReservations = datos; // Save all reservations
-        container.innerHTML = "";
+      if (json.consultaResponse?.codigoError !== "0") {
+        reserveContainer.innerHTML = "<p>No tiene horas reservadas.</p>";
+        return;
+      }
 
-        for (const item of datos) {
-          const card = document.createElement("div");
-          card.className = "rCard";
+      const datos = json.consultaResponse.datos;
+      allReservations = datos;
+      reserveContainer.innerHTML = "";
 
-          const [year, month, day] = item.fecha.split("-").map(Number);
-          const itemDate = new Date(year, month - 1, day);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
+      for (const item of datos) {
+        const card = document.createElement("div");
+        card.className = "rCard";
 
-          if (itemDate < today) {
-            card.style.backgroundColor = "#e0e0e0";
-            card.style.color = "black";
-          } else if (itemDate.getTime() === today.getTime()) {
-            card.style.backgroundColor = "#003266";
-            card.style.color = "var(--primary-color)";
-            card.style.boxShadow = "0 0 20px var(--primary-color)";
-          } else {
-            card.style.backgroundColor = "#003266";
-          }
+        const [y, mo, d] = item.fecha.split("-").map(Number);
+        const itemDate = new Date(y, mo - 1, d);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-          let displayName = "";
-          let displayImage, secondaryImage;
-
-          if (item.servicio == 4) {
-            if (item.idUserRival != 0 && item.idUserRival != userId) {
-              const profile = await fetchProfile(item.idUserRival);
-              displayName = profile?.name || "";
-              displayImage = profile?.img || serviceImages[4];
-              secondaryImage = "./img/vs.png";
-            } else if (item.idUserRival == userId) {
-              const profile = await fetchProfile(item.idUsuario);
-              displayName = profile?.name || "";
-              displayImage = profile?.img || serviceImages[4];
-              secondaryImage = "./img/vs.png";
-            } else {
-              displayImage = serviceImages[4];
-            }
-          } else {
-            displayImage = serviceImages[item.servicio] || "images/default.png";
-          }
-
-          function formatDateName(dateStr) {
-            const [year, month, day] = dateStr.split("-").map(Number);
-            const date = new Date(year, month - 1, day); // Local time
-
-            const dayNum = date.getDate(); // Local getter
-            const monthName = date.toLocaleString("es-ES", {
-              month: "long",
-              timeZone: "America/Montevideo", // Uruguay's time zone
-            });
-
-            return `${dayNum} de ${monthName}`;
-          }
-
-          const formattedDate = formatDateName(item.fecha);
-
-          const dateP = document.createElement("p");
-          dateP.innerHTML = `<strong>${formattedDate}</strong>`;
-
-          const hourP = document.createElement("p");
-          hourP.innerHTML = `<strong>${item.hora
-            .split(":")
-            .slice(0, 2)
-            .join(":")}</strong>`;
-
-          const canchaP = document.createElement("p");
-          canchaP.innerHTML = `<strong>${item.nombreServicio}</strong>`;
-
-          const imageWrapper = document.createElement("div");
-          imageWrapper.className = "image-wrapper";
-
-          if (secondaryImage) {
-            const img2 = document.createElement("img");
-            img2.src = secondaryImage;
-            img2.alt = "Versus";
-            img2.className = "versus-icon";
-            imageWrapper.appendChild(img2);
-          }
-
-          const img = document.createElement("img");
-          img.src = displayImage;
-          img.alt = displayName || `Servicio ${item.servicio}`;
-          img.className = "service-icon";
-          imageWrapper.appendChild(img);
-
-          card.appendChild(canchaP);
-          card.appendChild(dateP);
-          card.appendChild(imageWrapper);
-
-          if (displayName) {
-            const nameP = document.createElement("p");
-            nameP.textContent = displayName;
-            nameP.className = "rival-name";
-            card.appendChild(nameP);
-          }
-
-          card.appendChild(hourP);
-
-          const invitedIds = [
-            item.idUsuario,
-            item.invitado1,
-            item.invitado2,
-            item.invitado3,
-          ].filter((id) => id !== "0" && id !== "");
-
-          // Always include the reserving user
-          const totalPlayers = invitedIds.length;
-
-          const playerImg = document.createElement("img");
-          playerImg.src = `./img/${totalPlayers}players.png`;
-          playerImg.className = "players";
-          card.appendChild(playerImg);
-
-          if (item.timeEstado) {
-            const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
-            const now = new Date();
-            const oneHourAfter = new Date(
-              estadoDate.getTime() + 60 * 60 * 1000,
-            );
-
-            if (now >= estadoDate && now <= oneHourAfter) {
-              const cancelButton = document.createElement("button");
-              cancelButton.className = "cancel-button";
-              cancelButton.dataset.id = item.id;
-              cancelButton.innerHTML =
-                "<img style='width: 25px;' src='./img/cancelar.png'>";
-
-              cancelButton.addEventListener("click", async () => {
-                const id = cancelButton.dataset.id;
-
-                const confirm = await Swal.fire({
-                  title: "¿Cancelar reserva?",
-                  text: "Esta acción no se puede deshacer.",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonText: "Sí, cancelar",
-                  cancelButtonText: "No, volver",
-                  reverseButtons: true,
-                });
-
-                if (confirm.isConfirmed) {
-                  try {
-                    var isInvitedUser = false;
-
-                    if (item.idUsuario != userId) {
-                      isInvitedUser = true;
-                    }
-
-                    const cancelData = new URLSearchParams();
-
-                    let cancelUrl = "";
-
-                    if (isInvitedUser) {
-                      cancelUrl = "./accion/putCancelInvitado.php";
-                      cancelData.append("idReserva", id);
-                      cancelData.append("idInvitado", userId);
-                    } else {
-                      cancelUrl = "./accion/putReservCancel.php";
-                      cancelData.append("idReserv", id);
-                    }
-
-                    const res = await fetch(cancelUrl, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                      },
-                      body: cancelData.toString(),
-                    });
-
-                    const result = await res.json();
-
-                    if (result.consultaResponse?.codigoError === "0") {
-                      Swal.fire({
-                        title: "Cancelado",
-                        text: "Tu reserva ha sido cancelada.",
-                        icon: "success",
-                        timer: 2000,
-                        showConfirmButton: false,
-                      });
-
-                      await loadUserReservations();
-                    } else {
-                      Swal.fire(
-                        "Error",
-                        result.consultaResponse.detalleError,
-                        "error",
-                      );
-                      console.error("Respuesta del servidor:", result);
-                    }
-                  } catch (err) {
-                    console.error("Error al cancelar:", err);
-                    Swal.fire(
-                      "Error",
-                      "Hubo un problema al conectar con el servidor.",
-                      "error",
-                    );
-                  }
-                }
-              });
-
-              card.appendChild(cancelButton);
-            }
-          }
-
-          container.appendChild(card);
-          card.addEventListener("click", (e) => {
-            // Prevent clicks on cancel button from triggering modal
-            if (e.target.closest(".cancel-button")) return;
-
-            debouncedOpenInviteModal(item);
-          });
+        if (itemDate < today) {
+          card.style.backgroundColor = "#e0e0e0";
+          card.style.color = "black";
+        } else if (itemDate.getTime() === today.getTime()) {
+          card.style.backgroundColor = "#003266";
+          card.style.color = "var(--primary)";
+          card.style.boxShadow = "0 0 20px var(--primary)";
+        } else {
+          card.style.backgroundColor = "#003266";
         }
-      } else {
-        container.innerHTML = "<p>No tiene horas reservadas.</p>";
+
+        let displayName, displayImage, secondaryImage;
+
+        if (item.servicio == 4) {
+          const rivalId =
+            item.idUserRival != 0 && item.idUserRival != userId
+              ? item.idUserRival
+              : item.idUserRival == userId
+                ? item.idUsuario
+                : null;
+          if (rivalId) {
+            const profile = await fetchProfile(rivalId);
+            displayName = profile?.name || "";
+            displayImage = profile?.img || SERVICE_IMAGES[4];
+            secondaryImage = "./img/vs.png";
+          } else {
+            displayImage = SERVICE_IMAGES[4];
+          }
+        } else {
+          displayImage = SERVICE_IMAGES[item.servicio] || "images/default.png";
+        }
+
+        const canchaP = document.createElement("p");
+        canchaP.innerHTML = `<strong>${item.nombreServicio}</strong>`;
+
+        const dateP = document.createElement("p");
+        dateP.innerHTML = `<strong>${formatDateName(item.fecha)}</strong>`;
+
+        const hourP = document.createElement("p");
+        hourP.innerHTML = `<strong>${item.hora.split(":").slice(0, 2).join(":")}</strong>`;
+
+        const imageWrapper = document.createElement("div");
+        imageWrapper.className = "image-wrapper";
+
+        if (secondaryImage) {
+          const img2 = document.createElement("img");
+          img2.src = secondaryImage;
+          img2.className = "versus-icon";
+          imageWrapper.appendChild(img2);
+        }
+
+        const img = document.createElement("img");
+        img.src = displayImage;
+        img.className = "service-icon";
+        imageWrapper.appendChild(img);
+
+        card.append(canchaP, dateP, imageWrapper);
+
+        if (displayName) {
+          const nameP = document.createElement("p");
+          nameP.textContent = displayName;
+          nameP.className = "rival-name";
+          card.appendChild(nameP);
+        }
+
+        card.appendChild(hourP);
+
+        const invitedIds = [
+          item.idUsuario,
+          item.invitado1,
+          item.invitado2,
+          item.invitado3,
+        ].filter((id) => id !== "0" && id !== "");
+        const playerImg = document.createElement("img");
+        playerImg.src = `./img/${invitedIds.length}players.png`;
+        playerImg.className = "players";
+        card.appendChild(playerImg);
+
+        // Cancel button (only within 1 hour of reservation creation)
+        if (item.timeEstado) {
+          const estadoDate = new Date(item.timeEstado.replace(" ", "T"));
+          const nowMs = Date.now();
+          if (
+            nowMs >= estadoDate.getTime() &&
+            nowMs <= estadoDate.getTime() + 3_600_000
+          ) {
+            const cancelButton = document.createElement("button");
+            cancelButton.className = "cancel-button";
+            cancelButton.dataset.id = item.id;
+            cancelButton.innerHTML =
+              "<img style='width:16px;' src='./img/cancelar.png'>";
+            cancelButton.addEventListener("click", async () => {
+              const id = cancelButton.dataset.id;
+              const confirm = await Swal.fire({
+                title: "¿Cancelar reserva?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, cancelar",
+                cancelButtonText: "No, volver",
+                reverseButtons: true,
+              });
+              if (!confirm.isConfirmed) return;
+
+              try {
+                const isInvited = item.idUsuario != userId;
+                const url = isInvited
+                  ? "./accion/putCancelInvitado.php"
+                  : "./accion/putReservCancel.php";
+                const body = isInvited
+                  ? new URLSearchParams({ idReserva: id, idInvitado: userId })
+                  : new URLSearchParams({ idReserv: id });
+
+                const res = await fetch(url, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  body: body.toString(),
+                });
+                const result = await res.json();
+
+                if (result.consultaResponse?.codigoError === "0") {
+                  Swal.fire({
+                    title: "Cancelado",
+                    text: "Tu reserva ha sido cancelada.",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false,
+                  });
+                  await loadUserReservations();
+                } else {
+                  Swal.fire(
+                    "Error",
+                    result.consultaResponse.detalleError,
+                    "error",
+                  );
+                }
+              } catch (err) {
+                console.error(err);
+                Swal.fire(
+                  "Error",
+                  "Hubo un problema al conectar con el servidor.",
+                  "error",
+                );
+              }
+            });
+            card.appendChild(cancelButton);
+          }
+        }
+
+        reserveContainer.appendChild(card);
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".cancel-button")) return;
+          debouncedOpenInviteModal(item);
+        });
       }
     } catch (error) {
       console.error("Error de conexion:", error);
     }
   }
 
-  //==================================================>
-  //AGREGAR JUGADORES
-  //==================================================>
+  document
+    .getElementById("openHours")
+    .addEventListener("click", loadUserReservations);
 
-  let allReservations = []; // Store full reservation data
+  // ── Invite modal ───────────────────────────────────────────────────────────
+  let allReservationsRef = allReservations;
   let selectedReservationId = null;
-
-  function debounce(fn, delay) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => fn(...args), delay);
-    };
-  }
-
-  function getProfileImage(pic) {
-    const DEFAULT_IMG = "./accion/imgPerfilUser/profile.png";
-
-    const valid =
-      pic &&
-      pic.trim() !== "" &&
-      pic !== "0" &&
-      pic.toLowerCase() !== "profile.png" &&
-      pic.toLowerCase() !== "default.png";
-
-    return valid ? `./accion/imgPerfilUser/${pic}` : DEFAULT_IMG;
-  }
+  let selectedInviteUser = null;
 
   const debouncedOpenInviteModal = debounce(openInviteModal, 300);
-
-  let selectedInviteUser = null;
 
   async function updateInviteResults(input, invitedIds) {
     const resultsDiv = document.getElementById("inviteResults");
@@ -1145,15 +914,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!input || input.trim().length < 2) return;
 
-    const searchData = new URLSearchParams();
-    searchData.append("filtroPerfil", input.trim());
-
     const res = await fetch("./accion/getPerfiles.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: searchData.toString(),
+      body: new URLSearchParams({ filtroPerfil: input.trim() }).toString(),
     });
-
     const data = await res.json();
 
     if (data.consultaResponse?.codigoError === "0") {
@@ -1170,14 +935,10 @@ document.addEventListener("DOMContentLoaded", () => {
       options.forEach((p) => {
         const item = document.createElement("div");
         item.className = "search-result-item";
-        item.dataset.id = p.id;
-        item.dataset.nombre = p.nombre;
-        item.dataset.imgperfil = p.imgperfil || "";
         item.innerHTML = `
-        <img src="${getProfileImage(p.imgperfil)}" class="invite-profile-img" alt="${p.nombre}"
-             onerror="this.src='./accion/imgPerfilUser/profile.png'">
-        <span>${p.nombre}${p.usuario ? ` (${p.usuario})` : ""}</span>
-      `;
+          <img src="${getProfileImage(p.imgperfil)}" class="invite-profile-img" alt="${p.nombre}"
+               onerror="this.src='./accion/imgPerfilUser/profile.png'">
+          <span>${p.nombre}${p.usuario ? ` (${p.usuario})` : ""}</span>`;
         item.addEventListener("click", () => {
           resultsDiv
             .querySelectorAll(".search-result-item")
@@ -1205,36 +966,30 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     const searchInput = document.getElementById("inviteSearch");
-    const addBtn = document.getElementById("addInviteBtn");
-
     searchInput.value = "";
     document.getElementById("inviteResults").innerHTML = "";
     selectedInviteUser = null;
-    addBtn.disabled = true;
+    document.getElementById("addInviteBtn").disabled = true;
 
-    const debouncedSearch = debounce((e) => {
-      updateInviteResults(e.target.value, invitedIds);
-    }, 400);
-
+    const debouncedSearch = debounce(
+      (e) => updateInviteResults(e.target.value, invitedIds),
+      400,
+    );
     searchInput.removeEventListener("input", searchInput._debouncedSearch);
     searchInput._debouncedSearch = debouncedSearch;
     searchInput.addEventListener("input", debouncedSearch);
 
-    addBtn.onclick = async () => {
+    document.getElementById("addInviteBtn").onclick = async () => {
       if (!selectedInviteUser) return;
-
-      const payload = new URLSearchParams();
-      payload.append("idReserva", reservationId);
-      payload.append("idInvitado", selectedInviteUser.id);
-
       const res = await fetch("./accion/putConfirmInvitados.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: payload.toString(),
+        body: new URLSearchParams({
+          idReserva: reservationId,
+          idInvitado: selectedInviteUser.id,
+        }).toString(),
       });
-
       const result = await res.json();
-
       if (result.consultaResponse?.codigoError === "0") {
         Swal.fire({
           title: "Invitado agregado",
@@ -1242,11 +997,8 @@ document.addEventListener("DOMContentLoaded", () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        closeModal(
-          document.getElementById("slotInviteModal"),
-          ".aModal-content",
-        );
-        closeModal(document.getElementById("inviteModal"), ".iModal-content");
+        closeModal(aModal, ".aModal-content");
+        closeModal(iModal, ".iModal-content");
         await loadUserReservations();
         const updated = allReservations.find((r) => r.id === reservationId);
         if (updated) debouncedOpenInviteModal(updated);
@@ -1255,14 +1007,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
-    openModal(document.getElementById("slotInviteModal"), ".aModal-content");
+    openModal(aModal, ".aModal-content");
   }
 
   async function openInviteModal(reservation) {
     selectedReservationId = reservation.id;
-    const shouldShowInviteUI =
+    const canInvite =
       reservation.idUsuario == userId || reservation.idUserRival == userId;
-
     const invitedIds = [
       reservation.idUsuario,
       reservation.invitado1,
@@ -1270,14 +1021,13 @@ document.addEventListener("DOMContentLoaded", () => {
       reservation.invitado3,
     ];
 
-    const uniqueOrderedSlots = [];
+    const uniqueSlots = [];
     const seen = new Set();
-
-    for (let id of invitedIds) {
+    for (const id of invitedIds) {
       if (id === "0" || id === "") {
-        uniqueOrderedSlots.push("0");
+        uniqueSlots.push("0");
       } else if (!seen.has(id)) {
-        uniqueOrderedSlots.push(id);
+        uniqueSlots.push(id);
         seen.add(id);
       }
     }
@@ -1285,25 +1035,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const inviteListUl = document.getElementById("inviteListUl");
     inviteListUl.innerHTML = "";
 
-    for (let id of uniqueOrderedSlots) {
+    for (const id of uniqueSlots) {
       const li = document.createElement("li");
       li.className = "invite-list-item";
-
       const img = document.createElement("img");
       const span = document.createElement("span");
 
       if (id === "0") {
         img.src = "./img/emptySlot.png";
-        img.alt = "vacío";
         img.className = "invite-profile-img";
         span.textContent = "lugar vacío";
-
-        if (shouldShowInviteUI) {
+        if (canInvite) {
           li.classList.add("clickable-slot");
-          li.style.cursor = "pointer";
-          li.onclick = () => {
-            openSlotInviteModal(selectedReservationId);
-          };
+          li.onclick = () => openSlotInviteModal(selectedReservationId);
         }
       } else {
         const profile = await fetchProfile(id);
@@ -1311,268 +1055,176 @@ document.addEventListener("DOMContentLoaded", () => {
         img.onerror = function () {
           this.src = "./img/profile.png";
         };
-        img.alt = "□";
         img.className = "invite-profile-img";
-
         let label = profile.name;
         if (id === reservation.idUsuario.toString()) label += " (Organizador)";
         else if (id === userId.toString()) label += " (Tú)";
         span.textContent = label;
       }
 
-      li.appendChild(img);
-      li.appendChild(span);
+      li.append(img, span);
       inviteListUl.appendChild(li);
     }
 
-    openModal(document.getElementById("inviteModal"), ".iModal-content");
+    openModal(iModal, ".iModal-content");
   }
 
-  // 🔁 Attach the handler
-  document.getElementById("openHours").addEventListener("click", () => {
-    loadUserReservations();
-  });
-
-  //================================================================>
-  //VERSUS MODAL
-  //================================================================>
-
+  // ── Versus modal ───────────────────────────────────────────────────────────
   const versusContainer = document.getElementById("match-container");
 
   function isCancelable(timeEstado) {
     if (!timeEstado) return false;
-
-    const estadoDate = new Date(timeEstado.replace(" ", "T"));
-    const now = new Date();
-    const oneHourAfter = new Date(estadoDate.getTime() + 60 * 60 * 1000);
-
-    return now >= estadoDate && now <= oneHourAfter;
+    const t = new Date(timeEstado.replace(" ", "T")).getTime();
+    const n = Date.now();
+    return n >= t && n <= t + 3_600_000;
   }
 
   function checkDate(fechaStr) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    const [year, month, day] = fechaStr.split("-");
-    const fecha = new Date(year, month - 1, day);
-
-    return fecha >= today;
+    const [y, m, d] = fechaStr.split("-");
+    return new Date(y, m - 1, d) >= today;
   }
-
-  const versusData = new URLSearchParams();
-  versusData.append("idUser", userId);
-  versusData.append("estado", 1);
 
   function fetchVersusData() {
     fetch("./accion/getHsVs.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: versusData.toString(),
+      body: new URLSearchParams({ idUser: userId, estado: 1 }).toString(),
     })
-      .then((response) => response.json())
+      .then((r) => r.json())
       .then((data) => {
         const consulta = data.consultaResponse || {};
-
-        // ✅ Always safe
         const datos = Array.isArray(consulta.datos) ? consulta.datos : [];
         const partidoActivo = consulta.partidoActivo === true;
 
-        // ----- EXISTING ICON LOGIC -----
-        const versusIcon = document.getElementById("versusIcon");
-
-        const checkFuture = datos.some((item) => checkDate(item.fecha));
-        versusIcon.src = checkFuture ? "./img/vs.gif" : "./img/vs_.gif";
-
-        // ----- NEW ICON BASED ON partidoActivo -----
-        const partidoIcon = document.getElementById("partidoIcon");
-
-        if (partidoActivo) {
-          partidoIcon.src = "./img/reserva.gif";
-        } else {
-          partidoIcon.src = "./img/reserva_.gif";
-        }
+        document.getElementById("versusIcon").src = datos.some((item) =>
+          checkDate(item.fecha),
+        )
+          ? "./img/vs.gif"
+          : "./img/vs_.gif";
+        document.getElementById("partidoIcon").src = partidoActivo
+          ? "./img/reserva.gif"
+          : "./img/reserva_.gif";
       })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
+      .catch(console.error);
   }
 
-  // Call it immediately once
   fetchVersusData();
+  setInterval(fetchVersusData, 5000);
 
-  // Set interval to call it every 30 seconds
-  setInterval(fetchVersusData, 5000); // 30000 milliseconds = 30 seconds
-
-  document.getElementById("openVersus").addEventListener("click", async (e) => {
-    const formData = new URLSearchParams();
-    formData.append("idUser", userId);
-    formData.append("estado", 1);
-
+  document.getElementById("openVersus").addEventListener("click", async () => {
     try {
       const res = await fetch("./accion/getHsVs.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
+        body: new URLSearchParams({ idUser: userId, estado: 1 }).toString(),
       });
-
       const json = await res.json();
 
-      if (json.consultaResponse?.codigoError === "0") {
-        const datos = json.consultaResponse.datos;
-        versusContainer.innerHTML = "";
+      if (json.consultaResponse?.codigoError !== "0") {
+        versusContainer.innerHTML = "No hay partidos disponibles.";
+        return;
+      }
 
-        for (const item of datos) {
-          const { idUsuario, fecha, hora, idReserva } = item;
+      versusContainer.innerHTML = "";
 
-          // Fetch user profile
-          const perfilData = new URLSearchParams();
-          perfilData.append("idPerfil", idUsuario);
+      for (const item of json.consultaResponse.datos) {
+        const { idUsuario, fecha, hora, idReserva } = item;
 
-          const perfilRes = await fetch("./accion/getPerfil.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: perfilData.toString(),
-          });
+        const perfilRes = await fetch("./accion/getPerfil.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ idPerfil: idUsuario }).toString(),
+        });
+        const perfil = (await perfilRes.json()).consultaResponse;
 
-          const perfilJson = await perfilRes.json();
-          const perfil = perfilJson.consultaResponse;
-
-          // Create card
-          const card = document.createElement("div");
-          card.className = "vCard";
-
-          function formatDateName(dateStr) {
-            const [year, month, day] = dateStr.split("-").map(Number);
-            const date = new Date(year, month - 1, day); // Local time
-
-            const dayNum = date.getDate(); // Local getter
-            const monthName = date.toLocaleString("es-ES", {
-              month: "long",
-              timeZone: "America/Montevideo", // Uruguay's time zone
-            });
-
-            return `${dayNum} de ${monthName}`;
-          }
-
-          const fechaSimple = formatDateName(fecha);
-
-          card.innerHTML = `
+        const card = document.createElement("div");
+        card.className = "vCard";
+        card.innerHTML = `
           <div class="user-info">
-            <img src="./accion/imgPerfilUser/${perfil.imgperfil}" alt="${
-              perfil.nombre
-            }" class="profile-img" />
+            <img src="./accion/imgPerfilUser/${perfil.imgperfil}" alt="${perfil.nombre}" class="profile-img" />
             <div>
               <p><strong>${perfil.nombre}</strong></p>
-              <p>${fechaSimple} - ${hora.split(":").slice(0, 2).join(":")}</p>
+              <p>${formatDateName(fecha)} - ${hora.split(":").slice(0, 2).join(":")}</p>
             </div>
-          </div>
-        `;
+          </div>`;
 
-          const button = document.createElement("button");
-          button.style.display = "none";
+        const button = document.createElement("button");
 
-          if (String(idUsuario) === String(userId)) {
-            if (isCancelable(item.timeEstado)) {
-              // Cancel button
-              button.style.display = "block";
-              button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
-              button.className = "cancel-btn";
-              button.style.background = "none";
-              button.style.border = "none";
-              button.style.cursor = "pointer";
-              button.addEventListener("click", async () => {
-                const confirm = await Swal.fire({
-                  title: "¿Cancelar reserva?",
-                  text: "Esta acción no se puede deshacer.",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonText: "Sí, cancelar",
-                  cancelButtonText: "No",
-                });
-
-                if (confirm.isConfirmed) {
-                  const cancelData = new URLSearchParams();
-                  cancelData.append("idReserv", idReserva);
-
-                  const res = await fetch("./accion/putReservCancel.php", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: cancelData.toString(),
-                  });
-
-                  const json = await res.json();
-
-                  if (json.consultaResponse?.codigoError === "0") {
-                    Swal.fire(
-                      "Cancelado",
-                      "La reserva ha sido cancelada.",
-                      "success",
-                    );
-                    card.remove(); // Remove card from UI
-                    closeModal(vModal, ".vModal-content");
-                  } else {
-                    Swal.fire(
-                      "Error",
-                      `${json.consultaResponse.detalleError}`,
-                      "error",
-                    );
-                  }
-                }
-              });
-            }
-          } else {
-            // Confirm button
-            button.style.display = "block";
-            button.innerHTML = `<img src="./img/confirmar.png" alt="Cancelar" class="btn-icon" />`;
-            button.className = "confirm-btn";
-            button.style.background = "none";
-            button.style.border = "none";
-            button.style.cursor = "pointer";
+        if (String(idUsuario) === String(userId)) {
+          if (isCancelable(item.timeEstado)) {
+            button.innerHTML = `<img src="./img/cancelar.png" alt="Cancelar" class="btn-icon" />`;
+            button.className = "cancel-btn";
             button.addEventListener("click", async () => {
-              const { value: message } = await Swal.fire({
-                title: "¿Confirmar participación?",
-                input: "text",
-                inputLabel: "Escribe un mensaje (opcional)",
+              const confirm = await Swal.fire({
+                title: "¿Cancelar reserva?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Confirmar",
-                cancelButtonText: "Cancelar",
+                confirmButtonText: "Sí, cancelar",
+                cancelButtonText: "No",
               });
-
-              if (message !== undefined) {
-                const confirmData = new URLSearchParams();
-                confirmData.append("idReserva", idReserva);
-                confirmData.append("idRival", userId);
-                confirmData.append("mensaje", message);
-
-                await fetch("./accion/putConfirmVS.php", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                  },
-                  body: confirmData.toString(),
-                });
-
+              if (!confirm.isConfirmed) return;
+              const res = await fetch("./accion/putReservCancel.php", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({ idReserv: idReserva }).toString(),
+              });
+              const json = await res.json();
+              if (json.consultaResponse?.codigoError === "0") {
                 Swal.fire(
-                  "Confirmado",
-                  "Tu participación ha sido confirmada.",
+                  "Cancelado",
+                  "La reserva ha sido cancelada.",
                   "success",
                 );
-                card.remove(); // Optionally remove or update card
+                card.remove();
                 closeModal(vModal, ".vModal-content");
+              } else {
+                Swal.fire("Error", json.consultaResponse.detalleError, "error");
               }
             });
+            card.appendChild(button);
           }
-
+        } else {
+          button.innerHTML = `<img src="./img/confirmar.png" alt="Confirmar" class="btn-icon" />`;
+          button.className = "confirm-btn";
+          button.addEventListener("click", async () => {
+            const { value: message } = await Swal.fire({
+              title: "¿Confirmar participación?",
+              input: "text",
+              inputLabel: "Escribe un mensaje (opcional)",
+              showCancelButton: true,
+              confirmButtonText: "Confirmar",
+              cancelButtonText: "Cancelar",
+            });
+            if (message === undefined) return;
+            await fetch("./accion/putConfirmVS.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams({
+                idReserva,
+                idRival: userId,
+                mensaje: message,
+              }).toString(),
+            });
+            Swal.fire(
+              "Confirmado",
+              "Tu participación ha sido confirmada.",
+              "success",
+            );
+            card.remove();
+            closeModal(vModal, ".vModal-content");
+          });
           card.appendChild(button);
-          versusContainer.appendChild(card);
         }
-      } else {
-        versusContainer.innerHTML = "No hay partidos disponibles.";
+
+        versusContainer.appendChild(card);
       }
     } catch (error) {
-      console.error("Error fetching versus data:", error);
+      console.error(error);
       Swal.fire(
         "Error",
         "Ocurrió un error al conectar con el servidor.",
@@ -1581,34 +1233,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  //====================================================================>
-  //TOURNAMENT MODAL
-  //====================================================================>
+  // ── Tournaments ────────────────────────────────────────────────────────────
+  let selectedTorneoId = null;
+  let selectedTorneoCategoria = null;
 
+  // Show tournament button if active tournaments exist
   fetch("./accion/getTorneos.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "estado=1",
   })
-    .then((res) => res.json())
+    .then((r) => r.json())
     .then((data) => {
       if (data.consultaResponse?.torneos?.length > 0) {
         document.getElementById("openTournament").classList.remove("hidden");
         document.getElementById("tournamentTitle").classList.remove("hidden");
       }
     })
-    .catch((err) => {
-      console.error("Error fetching torneos:", err);
-    });
-
-  let selectedTorneoId = null;
+    .catch(console.error);
 
   async function loadTorneos() {
     const cardsContainer = document.getElementById("tournamentCards");
     const confirmBtn = document.getElementById("acceptTournament");
     cardsContainer.innerHTML = "<p>Cargando torneos...</p>";
     confirmBtn.disabled = true;
-    selectedTorneoId = null;
+    selectedTorneoId = selectedTorneoCategoria = null;
 
     try {
       const res = await fetch("./accion/getTorneos.php", {
@@ -1617,11 +1266,6 @@ document.addEventListener("DOMContentLoaded", () => {
         body: "estado=1",
       });
       const data = await res.json();
-
-      if (data.consultaResponse?.torneos?.length > 0) {
-        document.getElementById("openTournament").classList.remove("hidden");
-      }
-
       const torneos = data.consultaResponse?.torneos ?? [];
 
       if (torneos.length === 0) {
@@ -1630,27 +1274,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       cardsContainer.innerHTML = "";
-
       torneos.forEach((torneo) => {
-        const card = document.createElement("div");
-        card.className = "tCard";
-
-        const [year, month, day] = torneo.fecha.split("-").map(Number);
-        const fecha = new Date(year, month - 1, day);
-        const fechaStr = fecha.toLocaleDateString("es-ES", {
+        const [y, m, d] = torneo.fecha.split("-").map(Number);
+        const fechaStr = new Date(y, m - 1, d).toLocaleDateString("es-ES", {
           day: "2-digit",
           month: "long",
           year: "numeric",
           timeZone: "America/Montevideo",
         });
 
+        const card = document.createElement("div");
+        card.className = "tCard";
         card.innerHTML = `
-        <h3>${torneo.nombre}</h3>
-        <p>📅 ${fechaStr}</p>
-        <p>🏆 Categoría <strong>${torneo.categoria}</strong></p>
-        <p>💰 Entrada: <strong>$ ${Number(torneo.entre).toLocaleString("es-UY")}</strong></p>
-      `;
-
+          <h3>${torneo.nombre}</h3>
+          <p>📅 ${fechaStr}</p>
+          <p>🏆 Categoría <strong>${torneo.categoria}</strong></p>
+          <p>💰 Entrada: <strong>$ ${Number(torneo.entre).toLocaleString("es-UY")}</strong></p>`;
         card.addEventListener("click", () => {
           cardsContainer
             .querySelectorAll(".tCard")
@@ -1660,20 +1299,17 @@ document.addEventListener("DOMContentLoaded", () => {
           selectedTorneoCategoria = torneo.categoria;
           confirmBtn.disabled = false;
         });
-
         cardsContainer.appendChild(card);
       });
     } catch (err) {
-      console.error("Error al cargar torneos:", err);
+      console.error(err);
       cardsContainer.innerHTML = "<p>Error al cargar torneos.</p>";
     }
   }
 
-  let selectedTorneoCategoria = null;
-
-  document.getElementById("openTournament").addEventListener("click", () => {
-    loadTorneos();
-  });
+  document
+    .getElementById("openTournament")
+    .addEventListener("click", loadTorneos);
 
   document
     .getElementById("acceptTournament")
@@ -1693,18 +1329,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const payload = new URLSearchParams();
-        payload.append("idTorneo", selectedTorneoId);
-        payload.append("idUsuario", userId);
-
         const res = await fetch("./accion/putTorneoAspirante.php", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: payload.toString(),
+          body: new URLSearchParams({
+            idTorneo: selectedTorneoId,
+            idUsuario: userId,
+          }).toString(),
         });
-
         const json = await res.json();
-
         if (json.consultaResponse?.codigoError === "0") {
           Swal.fire({
             icon: "success",
@@ -1729,91 +1362,70 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  //====================================================================>
-  //DEUDA MODAL
-  //=====================================================================>
-
-  const deudaBtn = document.getElementById("openDeuda");
-  if (deudaBtn) {
-    deudaBtn.addEventListener("click", loadDeudaMovimientos);
-  }
+  // ── Deuda modal ────────────────────────────────────────────────────────────
+  document
+    .getElementById("openDeuda")
+    ?.addEventListener("click", loadDeudaMovimientos);
 
   async function loadDeudaMovimientos() {
     const container = document.getElementById("deudaMovimientos");
     container.innerHTML = "<p>Cargando movimientos...</p>";
-
     try {
       const res = await fetch("./accion/getDeudaMovimientos.php");
       const data = await res.json();
-
       if (data.consultaResponse?.codigoError !== "0") {
         container.innerHTML = "<p>Error al cargar movimientos.</p>";
         return;
       }
 
       const movs = data.consultaResponse.movimientos;
-
       if (!movs.length) {
         container.innerHTML = "<p>Sin movimientos registrados.</p>";
         return;
       }
 
-      // Running balance header
       const saldoFinal = movs.reduce(
         (acc, m) => acc + Number(m.debe) - Number(m.haber),
         0,
       );
+      const fmtMoney = (n) =>
+        `$ ${Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2 })}`;
 
       container.innerHTML = `
-      <div class="deuda-summary">
-        <span>Saldo total</span>
-        <span class="deuda-total">$ ${saldoFinal.toLocaleString("es-UY", { minimumFractionDigits: 2 })}</span>
-      </div>
-      <table class="deuda-table">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Origen</th>
-            <th>Debe</th>
-            <th>Haber</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${movs
-            .map(
-              (m) => `
-            <tr>
-              <td>${m.fecha.slice(0, 10)}</td>
-              <td>
-                <span class="deuda-badge ${m.tipo === "Chelada" ? "badge-chelada" : "badge-gopadel"}">
-                  ${m.tipo}
-                </span>
-              </td>
-              <td class="${Number(m.debe) > 0 ? "deuda-debe" : ""}">${Number(m.debe) > 0 ? "$ " + Number(m.debe).toLocaleString("es-UY", { minimumFractionDigits: 2 }) : "—"}</td>
-              <td class="${Number(m.haber) > 0 ? "deuda-haber" : ""}">${Number(m.haber) > 0 ? "$ " + Number(m.haber).toLocaleString("es-UY", { minimumFractionDigits: 2 }) : "—"}</td>
-            </tr>
-          `,
-            )
-            .join("")}
-        </tbody>
-      </table>
-    `;
+        <div class="deuda-summary">
+          <span>Saldo total</span>
+          <span class="deuda-total">${fmtMoney(saldoFinal)}</span>
+        </div>
+        <table class="deuda-table">
+          <thead><tr><th>Fecha</th><th>Origen</th><th>Debe</th><th>Haber</th></tr></thead>
+          <tbody>
+            ${movs
+              .map(
+                (m) => `
+              <tr>
+                <td>${m.fecha.slice(0, 10)}</td>
+                <td><span class="deuda-badge ${m.tipo === "Chelada" ? "badge-chelada" : "badge-gopadel"}">${m.tipo}</span></td>
+                <td class="${Number(m.debe) > 0 ? "deuda-debe" : ""}">${Number(m.debe) > 0 ? fmtMoney(m.debe) : "—"}</td>
+                <td class="${Number(m.haber) > 0 ? "deuda-haber" : ""}">${Number(m.haber) > 0 ? fmtMoney(m.haber) : "—"}</td>
+              </tr>`,
+              )
+              .join("")}
+          </tbody>
+        </table>`;
     } catch (err) {
-      console.error("Error cargando deuda:", err);
+      console.error(err);
       container.innerHTML = "<p>Error de conexión.</p>";
     }
   }
 
   function updateDeudaButton() {
     fetch("./accion/getDeudaUsuario.php")
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
         if (data.consultaResponse?.codigoError !== "0") return;
-
         const saldo = Number(data.consultaResponse.saldo);
         const btn = document.getElementById("openDeuda");
         const points = document.getElementById("openPoints");
-
         if (saldo != 0) {
           btn.textContent = `Deuda $ ${saldo.toLocaleString("es-UY", { minimumFractionDigits: 2 })}`;
           btn.style.display = "";
@@ -1823,47 +1435,13 @@ document.addEventListener("DOMContentLoaded", () => {
           points.style.display = "";
         }
       })
-      .catch((err) => console.error("Error actualizando deuda:", err));
+      .catch(console.error);
   }
 
-  // Run once on load, then every 60 seconds
   updateDeudaButton();
-  setInterval(updateDeudaButton, 60000);
+  setInterval(updateDeudaButton, 60_000);
 
-  //====================================================================>
-  //ESTRELLAS
-  //====================================================================>
-
-  // document.getElementById("stars").addEventListener("click", () => {
-  //   if (userStars === 3) {
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Reputación",
-  //       text: "Tu reputación está impecable! Buen trabajo!",
-  //       timer: 3000,
-  //       showConfirmButton: false,
-  //       position: "top-end",
-  //       timerProgressBar: true,
-  //       toast: true,
-  //     });
-  //   } else {
-  //     Swal.fire({
-  //       icon: "warning",
-  //       title: "Reputación",
-  //       text: "Tu reputación ha sufrido un golpe, comportate para recuperarla!",
-  //       timer: 3000,
-  //       showConfirmButton: false,
-  //       position: "top-end",
-  //       timerProgressBar: true,
-  //       toast: true,
-  //     });
-  //   }
-  // });
-
-  //====================================================================>
-  //PUNTOS
-  //====================================================================>
-
+  // ── Points modal ───────────────────────────────────────────────────────────
   let puntosDisponibles = 0;
 
   document.getElementById("openPoints").addEventListener("click", () => {
@@ -1872,78 +1450,56 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `idPerfil=${encodeURIComponent(userId)}`,
     })
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
         puntosDisponibles = parseInt(data.consultaResponse.puntos, 10);
-        const puntos = data.consultaResponse.puntos;
         document.getElementById("puntosValue").innerHTML = `
-        <h2>Tienes</h2> <span style="color:yellow; font-size:2rem;">${puntos}</span><br> <h2>puntos
- para canjear...!!!</h2>`;
+          <h2>Tienes</h2>
+          <span style="color:yellow;font-size:2rem;">${data.consultaResponse.puntos}</span><br>
+          <h2>puntos para canjear...!!!</h2>`;
       })
-      .catch((err) => console.error(err));
+      .catch(console.error);
   });
 
   document.getElementById("sendPoints").addEventListener("click", () => {
-    const puntos = document.getElementById("puntosInput").value;
-
+    const puntos = Number(document.getElementById("puntosInput").value);
     if (isNaN(puntos) || puntos <= 0) {
-      Swal.fire({
+      return Swal.fire({
         title: "Error",
         text: "Ingresa un número válido de puntos.",
         icon: "error",
       });
-      return;
     }
-
     if (puntos > puntosDisponibles) {
-      Swal.fire({
+      return Swal.fire({
         title: "Error",
         text: `No puedes canjear más de ${puntosDisponibles} puntos.`,
         icon: "error",
       });
-      return;
     }
-
     fetch("./accion/putCanje.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `puntos=${encodeURIComponent(puntos)}`,
     })
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
-        if (data.consultaResponse.codigoError == "0") {
-          Swal.fire({
-            title: "Éxito!",
-            text: `${data.consultaResponse.detalleError}`,
-            icon: "success",
-          });
-        } else {
-          Swal.fire({
-            title: "Error",
-            text: `${data.consultaResponse.detalleError}`,
-            icon: "error",
-          });
-        }
+        const ok = data.consultaResponse.codigoError == "0";
+        Swal.fire({
+          title: ok ? "Éxito!" : "Error",
+          text: data.consultaResponse.detalleError,
+          icon: ok ? "success" : "error",
+        });
       });
   });
 
-  //=======================================================================>
-  //HELPERS
-  //=======================================================================>
-
-  const sanitizeInput = (id) => {
-    const input = document.getElementById(id);
-    input.addEventListener("input", function () {
-      this.value = this.value.replace(/[^0-9]/g, "");
-    });
-  };
-
-  ["puntosInput"].forEach(sanitizeInput);
+  // ── Input sanitizer ────────────────────────────────────────────────────────
+  document.getElementById("puntosInput").addEventListener("input", function () {
+    this.value = this.value.replace(/[^0-9]/g, "");
+  });
 });
 
-//====================================================================>
-//ADMIN
-//====================================================================>
+// ─── Admin ─────────────────────────────────────────────────────────────────────
 
 const adminAccessBtn = document.getElementById("admin-access");
 
@@ -1970,9 +1526,8 @@ if (adminAccessBtn) {
         btn.style.color = "#fff";
       });
     };
-
     Swal.fire({
-      title: "Que desea administrar?",
+      title: "¿Qué desea administrar?",
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: "Reservas de jugadores",
@@ -1980,60 +1535,54 @@ if (adminAccessBtn) {
       cancelButtonText: "Administrar canjes",
       didOpen: () => {
         const actions = document.querySelector(".swal2-actions");
-        if (actions && !document.getElementById("swal-deuda-btn")) {
-          const deudaBtn = document.createElement("button");
-          deudaBtn.id = "swal-deuda-btn";
-          deudaBtn.className = "swal2-styled";
-          deudaBtn.textContent = "Administrar deudas";
-          deudaBtn.style.backgroundColor = "#6c757d";
-          deudaBtn.onclick = () => {
-            Swal.close();
-            window.location.href = "/deuda.php";
-          };
-          actions.appendChild(deudaBtn);
-        }
-        if (actions && !document.getElementById("swal-cierre-btn")) {
-          const cierreBtn = document.createElement("button");
-          cierreBtn.id = "swal-cierre-btn";
-          cierreBtn.className = "swal2-styled";
-          cierreBtn.textContent = "Cierre de caja";
-          cierreBtn.style.backgroundColor = "#1a6b3c";
-          cierreBtn.onclick = () => {
-            Swal.close();
-            abrirCierreCaja();
-          };
-          actions.appendChild(cierreBtn);
-        }
-        if (actions && !document.getElementById("swal-torneo-btn")) {
-          const torneoBtn = document.createElement("button");
-          torneoBtn.id = "swal-torneo-btn";
-          torneoBtn.className = "swal2-styled";
-          torneoBtn.textContent = "Administrar torneos";
-          torneoBtn.style.backgroundColor = "#6c757d";
-          torneoBtn.onclick = () => {
-            Swal.close();
-            window.location.href = "/torneo.php";
-          };
-          actions.appendChild(torneoBtn);
-        }
 
+        const extraButtons = [
+          {
+            id: "swal-deuda-btn",
+            text: "Administrar deudas",
+            color: "#6c757d",
+            href: "/deuda.php",
+          },
+          {
+            id: "swal-torneo-btn",
+            text: "Administrar torneos",
+            color: "#6c757d",
+            href: "/torneo.php",
+          },
+          {
+            id: "swal-cierre-btn",
+            text: "Cierre de caja",
+            color: "#1a6b3c",
+            fn: abrirCierreCaja,
+          },
+        ];
+
+        extraButtons.forEach(({ id, text, color, href, fn }) => {
+          if (document.getElementById(id)) return;
+          const btn = document.createElement("button");
+          btn.id = id;
+          btn.className = "swal2-styled";
+          btn.textContent = text;
+          btn.style.cssText = `background-color:${color};min-width:220px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;font-weight:600;font-size:16px;margin:6px;color:#fff;`;
+          btn.onclick = () => {
+            Swal.close();
+            href ? (window.location.href = href) : fn();
+          };
+          actions?.appendChild(btn);
+        });
         styleAdminSwalButtons();
       },
     }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/admin.php";
-      } else if (result.isDenied) {
-        window.location.href = "/restrict.php";
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
+      if (result.isConfirmed) window.location.href = "/admin.php";
+      else if (result.isDenied) window.location.href = "/restrict.php";
+      else if (result.dismiss === Swal.DismissReason.cancel)
         window.location.href = "/exchange.php";
-      }
     });
   });
 }
 
-// ============================================================
-// CIERRE DE CAJA
-// ============================================================
+// ─── Cierre de caja ────────────────────────────────────────────────────────────
+
 async function abrirCierreCaja() {
   Swal.fire({
     title: "Calculando cierre...",
@@ -2054,28 +1603,18 @@ async function abrirCierreCaja() {
       Swal.fire({
         icon: "warning",
         title: "No se puede cerrar",
-        html:
-          `Hay <strong>${data.pendientes}</strong> hora(s) sin confirmar ` +
-          `o sin medio de pago en el período.<br>` +
-          `Por favor resuelva los pendientes antes de realizar el cierre.`,
+        html: `Hay <strong>${data.pendientes}</strong> hora(s) sin confirmar o sin medio de pago en el período.<br>Por favor resuelva los pendientes antes de realizar el cierre.`,
       });
       return;
     }
 
     const fmt = (n) =>
-      "$ " +
-      Number(n).toLocaleString("es-UY", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
+      `$ ${Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     const t = data.totales;
 
     const tableHtml = `
       <p style="font-size:0.82rem;color:#9ca3af;margin-bottom:14px;text-align:left;">
-        Período: <strong>${formatFechaCierre(data.fechaDesde)}</strong>
-        &nbsp;→&nbsp;
-        <strong>${formatFechaCierre(data.fechaHasta)}</strong>
+        Período: <strong>${formatFechaCierre(data.fechaDesde)}</strong> → <strong>${formatFechaCierre(data.fechaHasta)}</strong>
       </p>
       <table style="width:100%;border-collapse:collapse;font-size:0.92rem;text-align:left;">
         <thead>
@@ -2094,9 +1633,7 @@ async function abrirCierreCaja() {
         </tbody>
         <tfoot>
           <tr style="background:#061425;font-weight:700;color:#4fc3f7;">
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;">TOTAL</td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;"></td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;"></td>
+            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;" colspan="3">TOTAL</td>
             <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;">${fmt(t.TOTAL)}</td>
           </tr>
         </tfoot>
@@ -2104,9 +1641,7 @@ async function abrirCierreCaja() {
       <div style="margin-top:16px;text-align:left;">
         <label style="font-size:0.82rem;color:#9ca3af;">Observaciones (opcional)</label>
         <textarea id="cc-obs"
-          style="width:100%;margin-top:6px;padding:8px 10px;background:#0d1b2a;
-                 border:1px solid #1e3a5f;border-radius:6px;color:#e8eaf0;
-                 font-size:0.88rem;resize:vertical;"
+          style="width:100%;margin-top:6px;padding:8px 10px;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:6px;color:#e8eaf0;font-size:0.88rem;resize:vertical;"
           rows="2" placeholder="Notas del operador..."></textarea>
       </div>`;
 
@@ -2125,7 +1660,6 @@ async function abrirCierreCaja() {
     if (!isConfirmed) return;
 
     const observaciones = document.getElementById("cc-obs")?.value ?? "";
-
     Swal.fire({
       title: "Guardando...",
       allowOutsideClick: false,
@@ -2145,22 +1679,19 @@ async function abrirCierreCaja() {
         observaciones,
       }),
     });
-
     const saveData = await saveRes.json();
 
-    if (saveData.success) {
-      Swal.fire(
-        "¡Cierre realizado!",
-        `El cierre de caja #${saveData.id} fue registrado correctamente.`,
-        "success",
-      );
-    } else {
-      Swal.fire(
-        "Error",
-        saveData.error ?? "No se pudo guardar el cierre.",
-        "error",
-      );
-    }
+    saveData.success
+      ? Swal.fire(
+          "¡Cierre realizado!",
+          `El cierre de caja #${saveData.id} fue registrado correctamente.`,
+          "success",
+        )
+      : Swal.fire(
+          "Error",
+          saveData.error ?? "No se pudo guardar el cierre.",
+          "error",
+        );
   } catch (err) {
     Swal.fire("Error", "Error inesperado: " + err.message, "error");
   }
@@ -2178,24 +1709,17 @@ function buildRowCierre(label, key, data, fmt) {
   const vCobros = data.totalesCobros[k] ?? 0;
   const vTotal = data.totales[key] ?? 0;
   const opacity = vTotal > 0 ? "" : "opacity:0.45;";
-  return `<tr style="border-bottom:1px solid #1a2a40;${opacity}">
-    <td style="padding:8px 12px;">${label}</td>
-    <td style="padding:8px 12px;text-align:right;">${fmt(vPagos)}</td>
-    <td style="padding:8px 12px;text-align:right;">${fmt(vCobros)}</td>
-    <td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(vTotal)}</td>
-  </tr>`;
+  return `
+    <tr style="border-bottom:1px solid #1a2a40;${opacity}">
+      <td style="padding:8px 12px;">${label}</td>
+      <td style="padding:8px 12px;text-align:right;">${fmt(vPagos)}</td>
+      <td style="padding:8px 12px;text-align:right;">${fmt(vCobros)}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:600;">${fmt(vTotal)}</td>
+    </tr>`;
 }
 
 function formatFechaCierre(str) {
   if (!str) return "";
   const d = new Date(str.replace(" ", "T"));
-  return (
-    d.toLocaleDateString("es-UY", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }) +
-    " " +
-    d.toLocaleTimeString("es-UY", { hour: "2-digit", minute: "2-digit" })
-  );
+  return `${d.toLocaleDateString("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" })} ${d.toLocaleTimeString("es-UY", { hour: "2-digit", minute: "2-digit" })}`;
 }
