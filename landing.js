@@ -633,7 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: { "content-type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          servicio: servicios,
+          servicio: servicios[0].id,
           profe: profeId,
         }).toString(),
       });
