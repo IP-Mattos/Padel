@@ -546,8 +546,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const json = await res.json();
         if (json.consultaResponse?.codigoError === "0") {
-          Swal.fire("Éxito", "Reserva realizada con éxito", "success");
           closeModal(config.modal, config.content);
+          await loadUserReservations();
+          const newReservation = allReservations.find(
+            (r) =>
+              r.fecha === formattedDate &&
+              r.hora.startsWith(hora) &&
+              r.servicio == modalState[key].servicio &&
+              r.idUsuario == userId,
+          );
+          if (newReservation) {
+            openInviteModal(newReservation);
+          } else {
+            Swal.fire("Éxito", "Reserva realizada con éxito", "success");
+          }
         } else {
           Swal.fire("Error", json.consultaResponse.detalleError, "error");
         }
@@ -1601,7 +1613,11 @@ async function abrirCierreCaja() {
 
     const periodos = data.periodos ?? [];
     if (periodos.length === 0) {
-      Swal.fire({ icon: "info", title: "Sin actividad", text: "No hay períodos pendientes de cierre." });
+      Swal.fire({
+        icon: "info",
+        title: "Sin actividad",
+        text: "No hay períodos pendientes de cierre.",
+      });
       return;
     }
 
@@ -1615,18 +1631,19 @@ async function abrirCierreCaja() {
 async function procesarSiguienteCierre(periodos, idx) {
   if (idx >= periodos.length) return;
 
-  const periodo     = periodos[idx];
-  const hayMas      = idx < periodos.length - 1;
-  const total       = periodos.length;
-  const esAnterior  = periodo.tipo === "anterior";
+  const periodo = periodos[idx];
+  const hayMas = idx < periodos.length - 1;
+  const total = periodos.length;
+  const esAnterior = periodo.tipo === "anterior";
 
   const labelTipo = esAnterior
     ? `<span style="display:inline-block;padding:3px 10px;border-radius:5px;background:#78350f;color:#fcd34d;font-size:0.82rem;font-weight:700;margin-bottom:8px;">⚠ Período anterior sin cerrar</span>`
-    : (total > 1
-        ? `<span style="display:inline-block;padding:3px 10px;border-radius:5px;background:#0c3547;color:#4fc3f7;font-size:0.82rem;font-weight:700;margin-bottom:8px;">Período actual</span>`
-        : ``);
+    : total > 1
+      ? `<span style="display:inline-block;padding:3px 10px;border-radius:5px;background:#0c3547;color:#4fc3f7;font-size:0.82rem;font-weight:700;margin-bottom:8px;">Período actual</span>`
+      : ``;
 
-  const tituloModal = total > 1 ? `Cierre de caja (${idx + 1}/${total})` : "Cierre de caja";
+  const tituloModal =
+    total > 1 ? `Cierre de caja (${idx + 1}/${total})` : "Cierre de caja";
 
   // ── Con pendientes: mostrar advertencia ──────────────────────────────────
   if (periodo.pendientes > 0) {
@@ -1692,7 +1709,9 @@ async function procesarSiguienteCierre(periodos, idx) {
   const { isConfirmed } = await Swal.fire({
     title: tituloModal,
     html: tableHtml,
-    confirmButtonText: hayMas ? "Confirmar y ver siguiente →" : "Confirmar cierre",
+    confirmButtonText: hayMas
+      ? "Confirmar y ver siguiente →"
+      : "Confirmar cierre",
     confirmButtonColor: "#1a6b3c",
     cancelButtonText: "Cancelar",
     showCancelButton: true,
@@ -1714,19 +1733,23 @@ async function procesarSiguienteCierre(periodos, idx) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      fechaDesde:    periodo.fechaDesde,
-      fechaHasta:    periodo.fechaHasta,
-      efectivo:      t.EFECTIVO,
+      fechaDesde: periodo.fechaDesde,
+      fechaHasta: periodo.fechaHasta,
+      efectivo: t.EFECTIVO,
       transferencia: t.TRANS,
-      mercadopago:   t.MERCPAGO,
-      debito:        t.DEBITO,
+      mercadopago: t.MERCPAGO,
+      debito: t.DEBITO,
       observaciones,
     }),
   });
   const saveData = await saveRes.json();
 
   if (!saveData.success) {
-    Swal.fire("Error", saveData.error ?? "No se pudo guardar el cierre.", "error");
+    Swal.fire(
+      "Error",
+      saveData.error ?? "No se pudo guardar el cierre.",
+      "error",
+    );
     return;
   }
 
