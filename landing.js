@@ -1543,12 +1543,12 @@ if (adminAccessBtn) {
             color: "#6c757d",
             href: "/deuda.php",
           },
-          {
-            id: "swal-torneo-btn",
-            text: "Administrar torneos",
-            color: "#6c757d",
-            href: "/torneo.php",
-          },
+          // {
+          //   id: "swal-torneo-btn",
+          //   text: "Administrar torneos",
+          //   color: "#6c757d",
+          //   href: "/torneo.php",
+          // },
           {
             id: "swal-cierre-btn",
             text: "Cierre de caja",
@@ -1599,101 +1599,154 @@ async function abrirCierreCaja() {
       return;
     }
 
-    if (data.pendientes > 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "No se puede cerrar",
-        html: `Hay <strong>${data.pendientes}</strong> hora(s) sin confirmar o sin medio de pago en el período.<br>Por favor resuelva los pendientes antes de realizar el cierre.`,
-      });
+    const periodos = data.periodos ?? [];
+    if (periodos.length === 0) {
+      Swal.fire({ icon: "info", title: "Sin actividad", text: "No hay períodos pendientes de cierre." });
       return;
     }
 
-    const fmt = (n) =>
-      `$ ${Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const t = data.totales;
+    await procesarSiguienteCierre(periodos, 0);
+  } catch (err) {
+    Swal.fire("Error", "Error inesperado: " + err.message, "error");
+  }
+}
 
-    const tableHtml = `
-      <p style="font-size:0.82rem;color:#9ca3af;margin-bottom:14px;text-align:left;">
-        Período: <strong>${formatFechaCierre(data.fechaDesde)}</strong> → <strong>${formatFechaCierre(data.fechaHasta)}</strong>
-      </p>
-      <table style="width:100%;border-collapse:collapse;font-size:0.92rem;text-align:left;">
-        <thead>
-          <tr style="background:#0d2137;color:#90caf9;">
-            <th style="padding:9px 12px;">Forma de pago</th>
-            <th style="padding:9px 12px;text-align:right;">Alquileres</th>
-            <th style="padding:9px 12px;text-align:right;">Cobros deuda</th>
-            <th style="padding:9px 12px;text-align:right;">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${buildRowCierre("Efectivo", "EFECTIVO", data, fmt)}
-          ${buildRowCierre("Transferencia", "TRANS", data, fmt)}
-          ${buildRowCierre("Mercado Pago", "MERCPAGO", data, fmt)}
-          ${buildRowCierre("Débito", "DEBITO", data, fmt)}
-        </tbody>
-        <tfoot>
-          <tr style="background:#061425;font-weight:700;color:#4fc3f7;">
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;" colspan="3">TOTAL</td>
-            <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;">${fmt(t.TOTAL)}</td>
-          </tr>
-        </tfoot>
-      </table>
-      <div style="margin-top:16px;text-align:left;">
-        <label style="font-size:0.82rem;color:#9ca3af;">Observaciones (opcional)</label>
-        <textarea id="cc-obs"
-          style="width:100%;margin-top:6px;padding:8px 10px;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:6px;color:#e8eaf0;font-size:0.88rem;resize:vertical;"
-          rows="2" placeholder="Notas del operador..."></textarea>
-      </div>`;
+// Procesa los períodos de forma secuencial: muestra uno, y al confirmar avanza al siguiente.
+async function procesarSiguienteCierre(periodos, idx) {
+  if (idx >= periodos.length) return;
 
-    const { isConfirmed } = await Swal.fire({
-      title: "Cierre de caja",
-      html: tableHtml,
-      confirmButtonText: "Confirmar cierre",
+  const periodo     = periodos[idx];
+  const hayMas      = idx < periodos.length - 1;
+  const total       = periodos.length;
+  const esAnterior  = periodo.tipo === "anterior";
+
+  const labelTipo = esAnterior
+    ? `<span style="display:inline-block;padding:3px 10px;border-radius:5px;background:#78350f;color:#fcd34d;font-size:0.82rem;font-weight:700;margin-bottom:8px;">⚠ Período anterior sin cerrar</span>`
+    : (total > 1
+        ? `<span style="display:inline-block;padding:3px 10px;border-radius:5px;background:#0c3547;color:#4fc3f7;font-size:0.82rem;font-weight:700;margin-bottom:8px;">Período actual</span>`
+        : ``);
+
+  const tituloModal = total > 1 ? `Cierre de caja (${idx + 1}/${total})` : "Cierre de caja";
+
+  // ── Con pendientes: mostrar advertencia ──────────────────────────────────
+  if (periodo.pendientes > 0) {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "No se puede cerrar",
+      html: `${labelTipo}
+             Hay <strong>${periodo.pendientes}</strong> hora(s) sin confirmar o sin medio de pago en el período.<br>
+             <small style="color:#9ca3af;">Período: ${formatFechaCierre(periodo.fechaDesde)} → ${formatFechaCierre(periodo.fechaHasta)}</small><br><br>
+             Por favor resuelva los pendientes antes de realizar el cierre.`,
+      confirmButtonText: hayMas ? "Ver período actual →" : "Cerrar",
       confirmButtonColor: "#1a6b3c",
+      showCancelButton: hayMas,
       cancelButtonText: "Cancelar",
-      showCancelButton: true,
-      width: "640px",
       background: "#111c2d",
       color: "#e8eaf0",
     });
+    if (hayMas && result.isConfirmed) {
+      await procesarSiguienteCierre(periodos, idx + 1);
+    }
+    return;
+  }
 
-    if (!isConfirmed) return;
+  // ── Sin pendientes: mostrar tabla de cierre ───────────────────────────────
+  const fmt = (n) =>
+    `$ ${Number(n).toLocaleString("es-UY", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const t = periodo.totales;
 
-    const observaciones = document.getElementById("cc-obs")?.value ?? "";
-    Swal.fire({
-      title: "Guardando...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+  const tableHtml = `
+    <div style="text-align:center;">${labelTipo}</div>
+    <p style="font-size:0.82rem;color:#9ca3af;margin-bottom:14px;text-align:left;">
+      Período: <strong>${formatFechaCierre(periodo.fechaDesde)}</strong> → <strong>${formatFechaCierre(periodo.fechaHasta)}</strong>
+    </p>
+    <table style="width:100%;border-collapse:collapse;font-size:0.92rem;text-align:left;">
+      <thead>
+        <tr style="background:#0d2137;color:#90caf9;">
+          <th style="padding:9px 12px;">Forma de pago</th>
+          <th style="padding:9px 12px;text-align:right;">Alquileres</th>
+          <th style="padding:9px 12px;text-align:right;">Cobros deuda</th>
+          <th style="padding:9px 12px;text-align:right;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${buildRowCierre("Efectivo", "EFECTIVO", periodo, fmt)}
+        ${buildRowCierre("Transferencia", "TRANS", periodo, fmt)}
+        ${buildRowCierre("Mercado Pago", "MERCPAGO", periodo, fmt)}
+        ${buildRowCierre("Débito", "DEBITO", periodo, fmt)}
+      </tbody>
+      <tfoot>
+        <tr style="background:#061425;font-weight:700;color:#4fc3f7;">
+          <td style="padding:11px 12px;border-top:2px solid #1e3a5f;" colspan="3">TOTAL</td>
+          <td style="padding:11px 12px;border-top:2px solid #1e3a5f;text-align:right;">${fmt(t.TOTAL)}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="margin-top:16px;text-align:left;">
+      <label style="font-size:0.82rem;color:#9ca3af;">Observaciones (opcional)</label>
+      <textarea id="cc-obs"
+        style="width:100%;margin-top:6px;padding:8px 10px;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:6px;color:#e8eaf0;font-size:0.88rem;resize:vertical;"
+        rows="2" placeholder="Notas del operador..."></textarea>
+    </div>`;
+
+  const { isConfirmed } = await Swal.fire({
+    title: tituloModal,
+    html: tableHtml,
+    confirmButtonText: hayMas ? "Confirmar y ver siguiente →" : "Confirmar cierre",
+    confirmButtonColor: "#1a6b3c",
+    cancelButtonText: "Cancelar",
+    showCancelButton: true,
+    width: "640px",
+    background: "#111c2d",
+    color: "#e8eaf0",
+  });
+
+  if (!isConfirmed) return;
+
+  const observaciones = document.getElementById("cc-obs")?.value ?? "";
+  Swal.fire({
+    title: "Guardando...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading(),
+  });
+
+  const saveRes = await fetch("./accion/putCierreCaja.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      fechaDesde:    periodo.fechaDesde,
+      fechaHasta:    periodo.fechaHasta,
+      efectivo:      t.EFECTIVO,
+      transferencia: t.TRANS,
+      mercadopago:   t.MERCPAGO,
+      debito:        t.DEBITO,
+      observaciones,
+    }),
+  });
+  const saveData = await saveRes.json();
+
+  if (!saveData.success) {
+    Swal.fire("Error", saveData.error ?? "No se pudo guardar el cierre.", "error");
+    return;
+  }
+
+  if (hayMas) {
+    await Swal.fire({
+      icon: "success",
+      title: `¡Cierre ${idx + 1}/${total} registrado!`,
+      text: `Cierre #${saveData.id} guardado. Continuando con el siguiente período...`,
+      timer: 2000,
+      showConfirmButton: false,
+      background: "#111c2d",
+      color: "#e8eaf0",
     });
-
-    const saveRes = await fetch("./accion/putCierreCaja.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fechaDesde: data.fechaDesde,
-        fechaHasta: data.fechaHasta,
-        efectivo: t.EFECTIVO,
-        transferencia: t.TRANS,
-        mercadopago: t.MERCPAGO,
-        debito: t.DEBITO,
-        observaciones,
-      }),
-    });
-    const saveData = await saveRes.json();
-
-    saveData.success
-      ? Swal.fire(
-          "¡Cierre realizado!",
-          `El cierre de caja #${saveData.id} fue registrado correctamente.`,
-          "success",
-        )
-      : Swal.fire(
-          "Error",
-          saveData.error ?? "No se pudo guardar el cierre.",
-          "error",
-        );
-  } catch (err) {
-    Swal.fire("Error", "Error inesperado: " + err.message, "error");
+    await procesarSiguienteCierre(periodos, idx + 1);
+  } else {
+    Swal.fire(
+      "¡Cierre realizado!",
+      `El cierre de caja #${saveData.id} fue registrado correctamente.`,
+      "success",
+    );
   }
 }
 

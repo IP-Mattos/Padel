@@ -151,6 +151,9 @@ const DEFAULT_PRICE_ALTA = 250;
 async function getPriceForUser(profile, hour, servicio, forceDefault = false) {
   if (servicio === 2) return DEFAULT_PRICE_ALTA;
 
+  // Sin usuario identificado → siempre precio alta
+  if (!profile) return DEFAULT_PRICE_ALTA;
+
   if (!forceDefault) {
     const isActiveSocio =
       profile &&
@@ -161,14 +164,14 @@ async function getPriceForUser(profile, hour, servicio, forceDefault = false) {
     if (isActiveSocio) {
       const categoria = await fetchCategoria(profile.soySocio);
       if (categoria) {
-        return hour < 17
+        return hour <= 17
           ? Number(categoria.valorHoraBaja)
           : Number(categoria.valorHoraAlta);
       }
     }
   }
 
-  return hour < 17 ? DEFAULT_PRICE_BAJA : DEFAULT_PRICE_ALTA;
+  return hour <= 17 ? DEFAULT_PRICE_BAJA : DEFAULT_PRICE_ALTA;
 }
 
 /* --------------------------------------------------------------

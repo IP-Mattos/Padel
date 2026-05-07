@@ -14,37 +14,101 @@ date_default_timezone_set("America/Montevideo");
 $ahora = new DateTime();
 $hora  = (int)$ahora->format('H');
 
-// Si es entre 00:00 y 04:59, el período arranca a las 05:00 del día anterior
-if ($hora < 5) {
-    $fechaDesde = new DateTime('yesterday 05:00:00');
-} else {
-    $fechaDesde = new DateTime('today 05:00:00');
-}
-$fechaHasta = $ahora;
+// Inicio del período "día" actual (ciclo 05:00 → 05:00 siguiente)
+$inicioPeriodoActual = ($hora < 5)
+    ? new DateTime('yesterday 05:00:00')
+    : new DateTime('today 05:00:00');
 
-$fechaDesdeStr  = $fechaDesde->format('Y-m-d H:i:s');
-$fechaHastaStr  = $fechaHasta->format('Y-m-d H:i:s');
-$fechaDesdeDate = $fechaDesde->format('Y-m-d');
-$fechaHastaDate = $fechaHasta->format('Y-m-d');
+// Inicio del período anterior (24 h antes del actual)
+$inicioPeriodoAnterior = (clone $inicioPeriodoActual)->modify('-1 day');
 
 try {
     $conexion = new Conexion();
 
-    // Validar: reservas sin confirmar o sin medio de pago dentro del período
-    $sqlValidar = "SELECT COUNT(*) AS pendientes
+    $iniActStr = $inicioPeriodoActual->format('Y-m-d H:i:s');
+    $iniAntStr = $inicioPeriodoAnterior->format('Y-m-d H:i:s');
+    $ahoraStr  = $ahora->format('Y-m-d H:i:s');
+
+    // ── Período anterior ──────────────────────────────────────────────────────
+    // Busca el último cierre que cerró dentro del rango del período anterior.
+    // Si su fechaHasta llega exactamente hasta iniAct, el período está cerrado.
+    $stmtPrev = $conexion->prepare(
+        "SELECT fechaHasta FROM cierre_caja
+          WHERE fechaHasta >  :iniAnt
+            AND fechaHasta <= :iniAct
+          ORDER BY fechaHasta DESC LIMIT 1"
+    );
+    $stmtPrev->bindParam(':iniAnt', $iniAntStr);
+    $stmtPrev->bindParam(':iniAct', $iniActStr);
+    $stmtPrev->execute();
+    $rowPrev = $stmtPrev->fetch(PDO::FETCH_ASSOC);
+
+    $anteriorDesde = null;
+    if ($rowPrev) {
+        $lastHasta = new DateTime($rowPrev['fechaHasta']);
+        // Gap: el último cierre no llegó hasta el inicio del período actual
+        if ($lastHasta < $inicioPeriodoActual) {
+            $anteriorDesde = $lastHasta;
+        }
+    } else {
+        // Ningún cierre previo en el período anterior → gap completo
+        $anteriorDesde = $inicioPeriodoAnterior;
+    }
+
+    // ── Período actual ────────────────────────────────────────────────────────
+    // Busca el último cierre parcial DENTRO del período actual.
+    // Usamos > (estricto) para no confundir con el cierre que cerró el período anterior.
+    $stmtAct = $conexion->prepare(
+        "SELECT fechaHasta FROM cierre_caja
+          WHERE fechaHasta >  :iniAct
+            AND fechaHasta <  :ahora
+          ORDER BY fechaHasta DESC LIMIT 1"
+    );
+    $stmtAct->bindParam(':iniAct', $iniActStr);
+    $stmtAct->bindParam(':ahora', $ahoraStr);
+    $stmtAct->execute();
+    $rowAct = $stmtAct->fetch(PDO::FETCH_ASSOC);
+
+    $actualDesde = $rowAct ? new DateTime($rowAct['fechaHasta']) : $inicioPeriodoActual;
+
+    // ── Construir lista de períodos pendientes ────────────────────────────────
+    $periodos = [];
+    if ($anteriorDesde !== null) {
+        $periodos[] = calcularPeriodo($conexion, $anteriorDesde, $inicioPeriodoActual, 'anterior');
+    }
+    $periodos[] = calcularPeriodo($conexion, $actualDesde, $ahora, 'actual');
+
+    echo json_encode(['periodos' => $periodos]);
+
+} catch (Exception $e) {
+    echo json_encode(['error' => 'Error al consultar: ' . $e->getMessage()]);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Calcula totales y pendientes para un período determinado
+// ─────────────────────────────────────────────────────────────────────────────
+function calcularPeriodo(PDO $conexion, DateTime $desde, DateTime $hasta, string $tipo): array
+{
+    $desdeStr = $desde->format('Y-m-d H:i:s');
+    $hastaStr = $hasta->format('Y-m-d H:i:s');
+
+    // Reservas sin confirmar o sin medio de pago cuya hora cae dentro del período.
+    // Se usa CONCAT(fecha,' ',hora) para filtrar correctamente en cierres parciales
+    // dentro del mismo día.
+    $sqlPend = "SELECT COUNT(*) AS pendientes
         FROM agenda a
-        WHERE a.fecha BETWEEN :fechaDesde AND :fechaHasta
+        WHERE CONCAT(a.fecha, ' ', a.hora) BETWEEN :desde AND :hasta
           AND (
             a.estado = 1
             OR (a.estado = 2 AND (SELECT COUNT(*) FROM pagos p WHERE p.idAgenda = a.id) = 0)
           )";
-    $stmtV = $conexion->prepare($sqlValidar);
-    $stmtV->bindParam(':fechaDesde', $fechaDesdeDate);
-    $stmtV->bindParam(':fechaHasta', $fechaHastaDate);
+    $stmtV = $conexion->prepare($sqlPend);
+    $stmtV->bindParam(':desde', $desdeStr);
+    $stmtV->bindParam(':hasta', $hastaStr);
     $stmtV->execute();
     $pendientes = (int)$stmtV->fetch(PDO::FETCH_ASSOC)['pendientes'];
 
-    // Totales por forma de pago — tabla pagos (horas de alquiler)
+    // Totales por forma de pago — tabla pagos (alquileres)
     $sqlPagos = "SELECT
         COALESCE(SUM(CASE WHEN fdpUsuario   = 'EFECTIVO' THEN impUsu  ELSE 0 END), 0)
       + COALESCE(SUM(CASE WHEN fdpInvitado1 = 'EFECTIVO' THEN impInv1 ELSE 0 END), 0)
@@ -67,26 +131,24 @@ try {
       + COALESCE(SUM(CASE WHEN fdpInvitado3 = 'DEBITO' THEN impInv3 ELSE 0 END), 0) AS debito
 
     FROM pagos
-    WHERE fecha BETWEEN :fechaDesde AND :fechaHasta";
-
+    WHERE fecha BETWEEN :desde AND :hasta";
     $stmtP = $conexion->prepare($sqlPagos);
-    $stmtP->bindParam(':fechaDesde', $fechaDesdeStr);
-    $stmtP->bindParam(':fechaHasta', $fechaHastaStr);
+    $stmtP->bindParam(':desde', $desdeStr);
+    $stmtP->bindParam(':hasta', $hastaStr);
     $stmtP->execute();
     $totalesPagos = $stmtP->fetch(PDO::FETCH_ASSOC);
 
-    // Totales por forma de pago — tabla deuda_cobros (cobros de deuda)
+    // Totales — cobros de deuda
     $sqlCobros = "SELECT
         COALESCE(SUM(CASE WHEN origen = 'EFECTIVO'  THEN monto ELSE 0 END), 0) AS efectivo,
         COALESCE(SUM(CASE WHEN origen = 'TRANS'     THEN monto ELSE 0 END), 0) AS transferencia,
         COALESCE(SUM(CASE WHEN origen = 'MERCPAGO'  THEN monto ELSE 0 END), 0) AS mercadopago,
         COALESCE(SUM(CASE WHEN origen = 'DEBITO'    THEN monto ELSE 0 END), 0) AS debito
     FROM deuda_cobros
-    WHERE fecha BETWEEN :fechaDesde AND :fechaHasta AND estado = 1";
-
+    WHERE fecha BETWEEN :desde AND :hasta AND estado = 1";
     $stmtC = $conexion->prepare($sqlCobros);
-    $stmtC->bindParam(':fechaDesde', $fechaDesdeStr);
-    $stmtC->bindParam(':fechaHasta', $fechaHastaStr);
+    $stmtC->bindParam(':desde', $desdeStr);
+    $stmtC->bindParam(':hasta', $hastaStr);
     $stmtC->execute();
     $totalesCobros = $stmtC->fetch(PDO::FETCH_ASSOC);
 
@@ -98,16 +160,14 @@ try {
     ];
     $totales['TOTAL'] = round(array_sum($totales), 2);
 
-    echo json_encode([
-        'fechaDesde'    => $fechaDesdeStr,
-        'fechaHasta'    => $fechaHastaStr,
+    return [
+        'tipo'          => $tipo,
+        'fechaDesde'    => $desdeStr,
+        'fechaHasta'    => $hastaStr,
         'pendientes'    => $pendientes,
         'totalesPagos'  => array_map('floatval', $totalesPagos),
         'totalesCobros' => array_map('floatval', $totalesCobros),
         'totales'       => $totales,
-    ]);
-
-} catch (Exception $e) {
-    echo json_encode(['error' => 'Error al consultar: ' . $e->getMessage()]);
+    ];
 }
 ?>
