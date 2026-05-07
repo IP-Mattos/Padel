@@ -465,7 +465,6 @@ async function openPaymentsModal(slot) {
   modalServicio = Number(slot.servicio);
 
   const editablePrice = modalServicio === 2;
-  const isFixed = slot.horaFija == 1;
   const rows = [];
 
   for (let i = 0; i < 4; i++) {
@@ -476,7 +475,6 @@ async function openPaymentsModal(slot) {
         paymentData,
         editablePrice,
         slot.hasPayments,
-        isFixed,
       ),
     );
   }
@@ -495,7 +493,6 @@ async function buildPaymentRow(
   paymentData,
   editable,
   hasPayments,
-  isFixed = false,
 ) {
   const fieldBase = index === 0 ? "Usuario" : `Invitado${index}`;
   const priceInputName = index === 0 ? "impUsu" : `impInv${index}`;
@@ -507,14 +504,10 @@ async function buildPaymentRow(
   const img = getProfileImage(profile?.imgperfil);
   const name = profile?.nombre || "Vacío";
 
-  // Fixed hours: the reserving user (index 0) pays the non-socio default —
-  // no discount regardless of their category. Everyone else pays normally.
-  const forceDefault = isFixed && index === 0;
-
   // Use saved price if it exists; otherwise calculate from categoria
   const price = paymentData?.[priceField]
     ? Number(paymentData[priceField])
-    : await getPriceForUser(profile, modalHour, modalServicio, forceDefault);
+    : await getPriceForUser(profile, modalHour, modalServicio);
 
   const selectedFdp = paymentData?.[fdpField] || "EFECTIVO";
 
