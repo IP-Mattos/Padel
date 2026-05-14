@@ -406,7 +406,10 @@ document.addEventListener("DOMContentLoaded", () => {
     classes: {
       modal: clModal,
       content: ".clModal-content",
-      servicios: [{ id: 2, label: "Clases" }],
+      servicios: [
+        { id: 2, label: "Cancha 1" },
+        { id: 7, label: "Cancha 2" },
+      ],
       profe: null,
       container: document.getElementById("classes-calendar"),
       hoursContainer: document.getElementById("class-hs"),
@@ -415,7 +418,10 @@ document.addEventListener("DOMContentLoaded", () => {
     training: {
       modal: tModal,
       content: ".tModal-content",
-      servicios: [{ id: 3, label: "Entrenamiento" }],
+      servicios: [
+        { id: 3, label: "Cancha 1" },
+        { id: 5, label: "Cancha 2" },
+      ],
       profe: 0,
       container: document.getElementById("training-calendar"),
       hoursContainer: document.getElementById("training-hs"),
@@ -604,6 +610,7 @@ document.addEventListener("DOMContentLoaded", () => {
             selectedProfCard.classList.remove("selected-teacher");
           card.classList.add("selected-teacher");
           selectedProfCard = card;
+          serviceModalMap.classes.profe = prof.id;
 
           try {
             await handleProfessorSelection(prof.id, {

@@ -94,9 +94,10 @@ $formattedDate = date('Y-m-d', strtotime($_SESSION["userFechNac"]));
         </div>
         <h3>Clases</h3>
 
-        <div class="bento-item hidden" id="openTraining">
+        <div class="bento-item" id="openTraining">
           <img src="./img/resEntrenar.png" alt="Entrenar">
         </div>
+        <h3>Entrenar</h3>
 
         <div class="bento-item" id="openRivals">
           <img src="./img/resRivales.png" alt="Oponentes">
@@ -187,14 +188,14 @@ $formattedDate = date('Y-m-d', strtotime($_SESSION["userFechNac"]));
         <img src="./img/resClases.png" alt="" class="service-ico">
         <span id="closeClasses" class="close">&times;</span>
         <div class="teachContainer" id="profList"></div>
+        <?php if ($_SESSION['profesor'] === "1"): ?>
+          <div class="service-switch" id="classes-service-switch"></div>
+        <?php endif; ?>
         <div class="calendar" id="classes-calendar"></div>
         <div class="hs" id="class-hs"></div>
         <div class="buttons">
-          <?php if ($_SESSION['profesor'] === "1"): ?>
-            <button id="acceptClasses">Confirmar</button>
-          <?php else: ?>
-            <button id="interested">Me interesa</button>
-          <?php endif; ?>
+          <button id="acceptClasses" <?= $_SESSION['profesor'] !== "1" ? 'style="display:none;"' : '' ?>>Confirmar</button>
+          <button id="interested" <?= $_SESSION['profesor'] === "1" ? 'style="display:none;"' : '' ?>>Me interesa</button>
         </div>
       </div>
     </div>
@@ -205,6 +206,7 @@ $formattedDate = date('Y-m-d', strtotime($_SESSION["userFechNac"]));
         <img src="./img/resEntrenar.png" alt="" class="service-ico">
         <span id="closeTraining" class="close">&times;</span>
         <h2>Reserva de entrenamiento</h2>
+        <div class="service-switch" id="training-service-switch"></div>
         <div class="calendar" id="training-calendar"></div>
         <div class="hs" id="training-hs"></div>
         <div class="buttons">
