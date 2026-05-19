@@ -464,7 +464,7 @@ async function openPaymentsModal(slot) {
   modalHour = parseInt(slot.hora.slice(0, 2), 10);
   modalServicio = Number(slot.servicio);
 
-  const editablePrice = modalServicio === 2;
+  const editablePrice = [2, 3, 5, 7].includes(modalServicio);
   const rows = [];
 
   for (let i = 0; i < 4; i++) {
