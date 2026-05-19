@@ -381,9 +381,11 @@ if (isset($_SESSION['userId']) && $_SESSION['userId'] == true) {
       <div id="loginModal" class="loginModal">
         <div class="loginModal-content">
           <form id="verifyForm" action="./accion/getValidateCodigo6.php" method="POST">
-            <p>Ingrese el código de confirmación que recibió a WhatsApp:</p>
+            <p id="verifyMessage">Ingrese el código de confirmación que recibió a WhatsApp:</p>
             <input type="tel" name="userInput" id="userInput" placeholder="□□□□□□" maxlength="6" required />
             <input type="hidden" id="cookie">
+            <input type="hidden" id="verifyUserId">
+            <div id="mailOptionContainer"></div>
             <button id="verifyCode">Verificar</button>
             <button id="cancelLogin">Cancelar</button>
           </form>

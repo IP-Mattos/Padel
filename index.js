@@ -265,13 +265,100 @@ document.addEventListener("DOMContentLoaded", () => {
           if (data.confirmacionResponse.codigoError === "0") {
             const token = data.confirmacionResponse.token;
             document.getElementById("cookie").value = token;
-            let currentDate = new Date();
-            currentDate.setTime(
-              currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
-            );
-            let expires = "expires=" + currentDate.toUTCString();
-            document.cookie = `goCookToken=${document.getElementById("cookie").value}; ${expires}; path=/`;
+            const savedCedula = document.getElementById("cedula").value;
+            const savedCelular = document.getElementById("celular").value;
             if (data.confirmacionResponse.usSMS === true) {
+              const userMail = data.confirmacionResponse.userMail;
+              const userId = data.confirmacionResponse.userId;
+
+              document.getElementById("verifyUserId").value = userId;
+
+              const verifyMessage = document.getElementById("verifyMessage");
+              const mailOptionContainer = document.getElementById(
+                "mailOptionContainer",
+              );
+              mailOptionContainer.innerHTML = ""; // reset on each login
+
+              if (userMail) {
+                verifyMessage.textContent =
+                  "Ingrese el código de confirmación que recibió al WhatsApp / Mail:";
+              } else {
+                verifyMessage.textContent =
+                  "Ingrese el código de confirmación que recibió al WhatsApp:";
+
+                mailOptionContainer.innerHTML = `
+      <div id="mailInputGroup" style="margin-top: 10px;">
+        <input type="email" id="mailInput" placeholder="Tu correo electrónico" style="margin-bottom: 6px;" />
+        <button type="button" id="sendToMailBtn">Enviar al mail</button>
+      </div>
+    `;
+
+                document
+                  .getElementById("sendToMailBtn")
+                  .addEventListener("click", function () {
+                    const mail = document
+                      .getElementById("mailInput")
+                      .value.trim();
+                    const uid = document.getElementById("verifyUserId").value;
+
+                    if (!mail) {
+                      Swal.fire({
+                        title: "Atención",
+                        text: "Ingrese un correo válido.",
+                        icon: "warning",
+                      });
+                      return;
+                    }
+
+                    const fd = new FormData();
+                    fd.append("userId", uid);
+                    fd.append("mail", mail);
+
+                    fetch("./accion/saveUserMail.php", {
+                      method: "POST",
+                      body: fd,
+                    })
+                      .then((r) => r.json())
+                      .then((res) => {
+                        if (res.success) {
+                          // 2. Re-call loginUserFast now that mail is saved — it will send the code there too
+                          const loginFd = new FormData();
+                          loginFd.append("cedula", savedCedula);
+                          loginFd.append("celular", savedCelular);
+
+                          fetch("./accion/loginUserFast.php", {
+                            method: "POST",
+                            body: loginFd,
+                          })
+                            .then((r) => r.json())
+                            .then(() => {
+                              verifyMessage.textContent =
+                                "Ingrese el código de confirmación que recibió al WhatsApp / Mail:";
+                              mailOptionContainer.innerHTML = "";
+                              Swal.fire({
+                                title: "Listo",
+                                text: "Se envió el código al mail.",
+                                icon: "success",
+                              });
+                            });
+                        } else {
+                          Swal.fire({
+                            title: "Error",
+                            text: res.message || "No se pudo guardar el mail.",
+                            icon: "error",
+                          });
+                        }
+                      })
+                      .catch(() => {
+                        Swal.fire({
+                          title: "Error",
+                          text: "Ocurrió un problema al guardar el mail.",
+                          icon: "error",
+                        });
+                      });
+                  });
+              }
+
               loginModal.style.display = "block";
             } else {
               window.location.href = "/landing.php";
